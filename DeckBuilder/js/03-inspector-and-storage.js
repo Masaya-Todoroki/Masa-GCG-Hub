@@ -371,6 +371,31 @@ function exitStartupDeckSelection() {
 $('save').onclick = showSavedDecks;
 $('closeSavedDecks').onclick = () => { $('savedDecksModal').classList.remove('open'); exitStartupDeckSelection(); };
 $('saveCurrentDeck').onclick = saveDeckChanges;
+$('createNewDeck').onclick = () => {
+    const proposed = prompt('Name your new deck:', 'New Deck');
+    if (proposed === null) return;
+    const name = proposed.trim();
+    if (!name) { alert('Please enter a deck name.'); return; }
+    try {
+        const items = getSavedDecks();
+        const finalName = uniqueDeckName(name, items);
+        const fresh = { id: newDeckId(), name: finalName, cards: {}, updated: Date.now() };
+        items.push(fresh);
+        putSavedDecks(items);
+        deck = {};
+        activeSavedDeckId = fresh.id;
+        $('deckName').value = finalName;
+        render();
+        renderDeck();
+        renderSavedDecks();
+        autosaveDraft();
+        $('savedDecksModal').classList.remove('open');
+        exitStartupDeckSelection();
+    } catch (err) {
+        alert('Could not create deck: ' + err.message);
+    }
+};
+
 function loadSavedDeck(d) {
     deck = { ...d.cards };
     $('deckName').value = d.name || 'Untitled Deck';

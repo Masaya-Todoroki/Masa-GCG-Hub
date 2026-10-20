@@ -453,3 +453,16 @@ body:has(#modal.open) { overflow: hidden; }
 
 /* #endregion Shared Card Quantity Controls — Overrides */
 
+
+/* Saved decks: compact single-row header on desktop */
+#savedDecksModal .deck-text-top { flex-wrap: nowrap; gap: 12px; }
+#savedDecksModal .deck-text-top h2 { flex: 0 0 auto; white-space: nowrap; font-size: 20px; }
+#savedDecksModal .saved-deck-top-buttons { display: flex; align-items: center; justify-content: flex-end; flex-wrap: nowrap; gap: 7px; min-width: 0; }
+#savedDecksModal .saved-deck-top-buttons .btn { white-space: nowrap; flex: 0 0 auto; font-size: 12px; padding: 8px 10px; }
+#savedDecksModal #createNewDeck { background: #263b5a; border-color: #42618c; color: #e9f1ff; }
+#savedDecksModal #createNewDeck:hover { background: #34537e; }
+@media (max-width: 540px) {
+  #savedDecksModal .deck-text-top { flex-wrap: wrap; }
+  #savedDecksModal .saved-deck-top-buttons { width: 100%; justify-content: flex-start; }
+  #savedDecksModal .saved-deck-top-buttons .btn { flex: 1 1 auto; }
+}
