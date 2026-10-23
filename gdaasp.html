@@ -123,7 +123,7 @@
             transform-origin: 0 0;
             user-select: none;
             -webkit-user-drag: none;
-            pointer-events: none;
+            pointer-events: auto;
         }
 
 
@@ -463,6 +463,9 @@
         viewer.addEventListener(
             "pointerdown",
             function (event) {
+
+                // Let the browser handle right-click and its image context menu.
+                if (event.pointerType === "mouse" && event.button !== 0) return;
 
                 viewer.setPointerCapture(
                     event.pointerId
