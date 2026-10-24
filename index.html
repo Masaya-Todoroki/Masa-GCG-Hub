@@ -5,152 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masaya - GCG Hub</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: linear-gradient(135deg, #1e1e2f, #2c2c54);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            padding: 50px;
-            border-radius: 24px;
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin: 0;
-        }
-
-        .subtitle {
-            margin: 15px 0 40px;
-            opacity: 0.75;
-            font-size: 1rem;
-        }
-
-        .set-section {
-            margin-top: 30px;
-        }
-
-        .set-title {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            opacity: 0.9;
-        }
-
-        .button-row {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn {
-            text-decoration: none;
-            padding: 14px 28px;
-            border-radius: 50px;
-            background: linear-gradient(180deg, #5f82ff, #4a6cff);
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.25s ease;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
-        }
-
-        .btn:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
-        }
-
-        .btn:active {
-            transform: translateY(0) scale(1);
-        }
-
-        .btn.disabled {
-            pointer-events: none;
-            opacity: 0.5;
-            cursor: default;
-        }
-
-
-        /* Top-level hub tabs */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin: -15px 0 30px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.12);
-        }
-
-        .tab-btn {
-            border: 0;
-            background: transparent;
-            color: rgba(255,255,255,0.65);
-            font: inherit;
-            font-weight: bold;
-            padding: 10px 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tab-btn:hover {
-            color: white;
-            background: rgba(255,255,255,0.07);
-        }
-
-        .tab-btn.active {
-            color: white;
-            background: linear-gradient(180deg, #5f82ff, #4a6cff);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.25);
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 35px 25px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .button-row {
-                flex-direction: column;
-            }
-
-            .tabs {
-                gap: 3px;
-            }
-
-            .tab-btn {
-                padding: 9px 10px;
-                font-size: 0.88rem;
-            }
-
-            .btn {
-                width: 100%;
-                box-sizing: border-box;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
@@ -172,50 +27,50 @@
         <div class="set-section">
             <h2 class="set-title">Promos</h2>
             <div class="button-row">
-                <a href="https://masayatodoroki.com/storepromos" class="btn">Store Promos</a>
-                <a href="https://masayatodoroki.com/ex-base-resource-promos" class="btn">EX Base/EX Resources/Resources</a>
+                <a href="storepromos.html" class="btn">Store Promos</a>
+                <a href="ex-base-resource-promos.html" class="btn">EX Base/EX Resources/Resources</a>
             </div>
         </div>
 
         <div class="set-section">
             <h2 class="set-title">GD06</h2>
             <div class="button-row">
-                <a href="https://masayatodoroki.com/gdreveals.html?set=GD06" class="btn">Reveal List</a>
-                <a href="https://masayatodoroki.com/gdaasp.html?set=GD06" class="btn">AA-SP</a>
-                <a href="https://masayatodoroki.com/GCG-AAPairings.html?set=GD06" class="btn disabled">AA Pairings (Coming Soon)</a>
+                <a href="gdreveals.html?set=GD06" class="btn">Reveal List</a>
+                <a href="gdaasp.html?set=GD06" class="btn">AA-SP</a>
+                <a href="GCG-AAPairings.html?set=GD06" class="btn disabled">AA Pairings (Coming Soon)</a>
             </div>
         </div>
 
         <div class="set-section">
             <h2 class="set-title">GD05</h2>
             <div class="button-row">
-                <a href="https://masayatodoroki.com/gdreveals.html?set=GD05" class="btn">Reveal List</a>
-                <a href="https://masayatodoroki.com/gdaasp.html?set=GD05" class="btn">AA-SP</a>
-                <a href="https://masayatodoroki.com/GCG-AAPairings.html?set=GD05" class="btn">AA Pairings</a>
+                <a href="gdreveals.html?set=GD05" class="btn">Reveal List</a>
+                <a href="gdaasp.html?set=GD05" class="btn">AA-SP</a>
+                <a href="GCG-AAPairings.html?set=GD05" class="btn">AA Pairings</a>
             </div>
         </div>
 
         <div class="set-section">
             <h2 class="set-title">GD04</h2>
             <div class="button-row">
-                <a href="https://masayatodoroki.com/gdreveals.html?set=GD04" class="btn">Reveal List</a>
-                <a href="https://masayatodoroki.com/gdaasp.html?set=GD04" class="btn">AA-SP</a>
-                <a href="https://masayatodoroki.com/GCG-AAPairings.html?set=GD04" class="btn">AA Pairings</a>
+                <a href="gdreveals.html?set=GD04" class="btn">Reveal List</a>
+                <a href="gdaasp.html?set=GD04" class="btn">AA-SP</a>
+                <a href="GCG-AAPairings.html?set=GD04" class="btn">AA Pairings</a>
             </div>
         </div>
 
         <div class="set-section">
             <h2 class="set-title">GD03</h2>
             <div class="button-row">
-                <a href="https://masayatodoroki.com/gdreveals.html?set=GD03" class="btn">AA Pairings</a>
+                <a href="gdreveals.html?set=GD03" class="btn">AA Pairings</a>
             </div>
         </div>
 
         <div class="set-section">
             <h2 class="set-title">EB01</h2>
             <div class="button-row">
-                <a href="https://masayatodoroki.com/gdreveals.html?set=EB01" class="btn">Reveal List</a>
-                <a href="https://masayatodoroki.com/GCG-AAPairings.html?set=EB01" class="btn">AA Pairings</a>
+                <a href="gdreveals.html?set=EB01" class="btn">Reveal List</a>
+                <a href="GCG-AAPairings.html?set=EB01" class="btn">AA Pairings</a>
             </div>
         </div>
         </div>
@@ -224,7 +79,7 @@
         <div id="deck-builders" class="tab-content">
             <div class="set-section">
                 <div class="button-row">
-                    <a href="https://masayatodoroki.com/DeckBuilder" class="btn" target="_blank" rel="noopener noreferrer">Masa's Deck Builder</a>
+                    <a href="DeckBuilder" class="btn" target="_blank" rel="noopener noreferrer">Masa's Deck Builder</a>
                     <a href="https://exburst.dev/gundam/" class="btn" target="_blank" rel="noopener noreferrer">ExBurst</a>
                     <a href="https://tcggather.com/decks/build/new?tcg=gundam" class="btn" target="_blank" rel="noopener noreferrer">TCG Gather</a>
                 </div>
@@ -243,24 +98,10 @@
         </div>
     </div>
 
-    <script>
-        // Tab switching. To add a tab: add a button with data-tab="your-id"
-        // and a matching <div id="your-id" class="tab-content">...</div>.
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-
-                button.classList.add('active');
-                document.getElementById(button.dataset.tab).classList.add('active');
-            });
-        });
-    </script>
+    
     <!-- Cloudflare Web Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "21db3789c68b42d09f9d4f6ec60400cf"}'></script>
     <!-- End Cloudflare Web Analytics -->
+    <script defer src="js/index-app.js"></script>
 </body>
 </html>

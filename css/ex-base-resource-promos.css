@@ -1,0 +1,127 @@
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial,sans-serif;
+            background: #101010;
+            color: #fff
+        }
+
+        header {
+            background: #1b1b1b;
+            border-bottom: 1px solid #333;
+            padding: 20px;
+            text-align: center
+        }
+
+        h1 {
+            margin: 0
+        }
+
+        p {
+            color: #ccc
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid #444;
+            background: #292929;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer
+        }
+
+            .btn:hover {
+                background: #3a3a3a
+            }
+
+            .btn.active {
+                background: #f4f4f4;
+                color: #111
+            }
+
+        main {
+            padding: 30px 3%
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(170px,1fr));
+            gap: 16px;
+            max-width: 1600px;
+            margin: auto
+        }
+
+        .card {
+            background: #1b1b1b;
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: .15s
+        }
+
+            .card:hover {
+                transform: translateY(-3px);
+                border-color: #666
+            }
+
+            .card img {
+                display: block;
+                width: 100%;
+                height: auto;
+                cursor: pointer
+            }
+
+        .viewer {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,.92);
+            z-index: 999
+        }
+
+            .viewer.open {
+                display: flex
+            }
+
+            .viewer img {
+                max-width: 92vw;
+                max-height: 92vh
+            }
+
+        .close {
+            position: fixed;
+            top: 15px;
+            right: 25px;
+            font-size: 48px;
+            color: #fff;
+            cursor: pointer
+        }
+
+        @media(max-width:600px) {
+            .grid {
+                grid-template-columns: repeat(2,minmax(0,1fr));
+                gap: 10px
+            }
+        }
+    

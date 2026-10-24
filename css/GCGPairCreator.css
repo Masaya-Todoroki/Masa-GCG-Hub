@@ -1,0 +1,709 @@
+
+* { box-sizing: border-box; }
+
+:root {
+    --gap: 14px;
+    --panel: rgba(235,235,235,.42);
+    --panel-border: rgba(90,90,90,.25);
+    --control-bg: rgba(255,255,255,.94);
+    --text: #333;
+    --danger: #b63232;
+}
+
+html, body {
+    width:100%;
+    height:100%;
+    margin:0;
+    overflow:hidden;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+    background:
+      linear-gradient(115deg, rgba(255,255,255,.58) 0 9%, transparent 9% 26%, rgba(255,255,255,.48) 26% 32%, transparent 32% 61%, rgba(255,255,255,.42) 61% 69%, transparent 69%),
+      linear-gradient(65deg, transparent 0 18%, rgba(0,210,210,.16) 18% 38%, transparent 38% 62%, rgba(0,180,210,.15) 62% 76%, transparent 76%),
+      #72e5e7;
+    background-attachment: fixed;
+}
+
+button, select, input { font: inherit; }
+.hidden { display:none !important; }
+
+.version-badge {
+    position: fixed;
+    top: max(8px, env(safe-area-inset-top));
+    right: max(10px, env(safe-area-inset-right));
+    z-index: 3000;
+    padding: 5px 9px;
+    border: 1px solid rgba(80,80,80,.35);
+    border-radius: 7px;
+    background: rgba(255,255,255,.88);
+    color: #555;
+    font-size: 12px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+/* Password */
+#password-screen {
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    display:grid;
+    place-items:center;
+    padding:24px;
+}
+
+.login-panel {
+    width:min(430px,100%);
+    padding:28px;
+    border:1px solid rgba(70,70,70,.35);
+    border-radius:16px;
+    background:rgba(255,255,255,.94);
+    box-shadow:0 16px 45px rgba(0,0,0,.18);
+}
+
+.login-panel h1 {
+    margin:0 0 10px;
+    text-align:center;
+    font-size:1.8rem;
+}
+
+.login-panel p {
+    margin:0 0 20px;
+    text-align:center;
+    color:#666;
+}
+
+.password-row {
+    display:flex;
+    gap:10px;
+}
+
+#password-input {
+    flex:1;
+    min-width:0;
+    padding:12px 14px;
+    border:1px solid #aaa;
+    border-radius:9px;
+    background:#fff;
+}
+
+.primary-button,
+.control-button,
+.action-button,
+.back-button {
+    border:1px solid #777;
+    border-radius:9px;
+    background:#fff;
+    color:#333;
+    cursor:pointer;
+}
+
+.primary-button {
+    padding:11px 18px;
+}
+
+.primary-button:hover,
+.control-button:hover,
+.action-button:hover,
+.back-button:hover {
+    background:#f3f3f3;
+}
+
+.primary-button:disabled,
+.action-button:disabled {
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+#password-message {
+    min-height:1.2em;
+    margin-top:12px;
+    text-align:center;
+    color:#a33;
+    font-size:.9rem;
+}
+
+/* App */
+#app {
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    padding:14px;
+    overflow:hidden;
+}
+
+.app-layout {
+    width:100%;
+    height:100%;
+    min-height:0;
+    display:grid;
+    grid-template-columns:270px minmax(0,1fr);
+    gap:var(--gap);
+}
+
+.sidebar {
+    min-width:0;
+    min-height:0;
+    height:100%;
+    display:grid;
+    grid-template-rows:auto auto auto minmax(0,1fr) minmax(0,1fr) auto auto auto;
+    gap:10px;
+}
+
+.control-button {
+    width:100%;
+    min-height:44px;
+    padding:8px 12px;
+}
+
+#mode-toggle.delete-active {
+    border-color:#9d5555;
+    background:#fff2f2;
+    color:#812b2b;
+}
+
+.set-select {
+    width:100%;
+    height:48px;
+    padding:0 14px;
+    border:1px solid #777;
+    border-radius:8px;
+    background:var(--control-bg);
+    color:#444;
+    font-size:1.15rem;
+}
+
+.selected-card {
+    width:100%;
+    height:100%;
+    max-width:100%;
+    min-height:0;
+    min-width:0;
+    aspect-ratio:auto;
+    justify-self:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    border:1px solid rgba(120,120,120,.4);
+    border-radius:11px;
+    background:rgba(255,255,255,.93);
+    box-shadow:0 2px 4px rgba(0,0,0,.08);
+}
+
+.selected-card img {
+    /* Scale the full card to the available slot, never crop it. */
+    display:block;
+    width:auto;
+    height:auto;
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    object-position:center;
+    flex:none;
+    user-select:none;
+    -webkit-user-drag:none;
+}
+
+.create-button {
+    width:100%;
+    height:52px;
+    padding:0 14px;
+    border:1px solid #777;
+    border-radius:8px;
+    background:var(--control-bg);
+    color:#333;
+    font-size:1.35rem;
+    cursor:pointer;
+}
+
+.create-button:hover { background:#fff; }
+.create-button:disabled { opacity:.5; cursor:not-allowed; }
+
+.sidebar.delete-mode {
+    grid-template-rows:auto auto auto auto 1fr;
+}
+
+.sidebar.delete-mode .add-only {
+    display:none !important;
+}
+
+.mode-note {
+    display:none;
+    align-self:start;
+    padding:14px;
+    border:1px solid rgba(90,90,90,.25);
+    border-radius:10px;
+    background:rgba(255,255,255,.65);
+    line-height:1.4;
+    color:#555;
+}
+
+.sidebar.delete-mode .mode-note {
+    display:block;
+}
+
+/* Keep the same two button slots in every set, avoiding preview resizing. */
+.sidebar:not(.delete-mode) #add-card-button.hidden,
+.sidebar:not(.delete-mode) #refresh-cards-button.hidden {
+    display:block !important;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+/* Main panel */
+.main-panel {
+    min-width:0;
+    min-height:0;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    padding:10px;
+    overflow:hidden;
+    border:1px solid var(--panel-border);
+    border-radius:6px;
+    background:var(--panel);
+}
+
+.top-row {
+    flex:0 0 auto;
+    min-height:24px;
+    margin-bottom:6px;
+}
+
+.status {
+    min-height:1.2em;
+    color:#555;
+    font-size:.9rem;
+}
+
+/* Gallery sizing copied from the successful reference approach:
+   browser owns card height; images use natural portrait ratio. */
+.card-grid,
+.pair-grid {
+    flex:1 1 auto;
+    min-height:0;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(170px, 1fr));
+    grid-auto-rows:max-content;
+    gap:16px;
+    align-content:start;
+    align-items:start;
+    padding-right:4px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    user-select:none;
+    scrollbar-gutter:stable;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+}
+
+.card-grid { cursor:grab; }
+.card-grid.dragging { cursor:grabbing; }
+
+.card-button {
+    position:relative;
+    display:block;
+    align-self:start;
+    width:100%;
+    height:max-content;
+    padding:0;
+    margin:0;
+    border:0;
+    border-radius:12px;
+    overflow:hidden;
+    background:transparent;
+    cursor:pointer;
+}
+
+.card-button img {
+    display:block;
+    width:100%;
+    height:auto;
+    max-width:100%;
+    user-select:none;
+    -webkit-user-drag:none;
+}
+
+.card-button:hover {
+    transform:translateY(-2px);
+}
+
+.card-button.selected-1::after,
+.card-button.selected-2::after {
+    content:"";
+    position:absolute;
+    inset:0;
+    border:4px solid;
+    pointer-events:none;
+}
+
+.card-button.selected-1::after { border-color:#3678ff; }
+.card-button.selected-2::after { border-color:#ff8b36; }
+
+.empty-state {
+    padding:30px;
+    text-align:center;
+    color:#666;
+}
+
+/* Delete pair detail */
+.delete-view {
+    min-height:0;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+}
+
+.delete-view-header {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:0 0 auto;
+    margin-bottom:10px;
+}
+
+.back-button {
+    min-height:40px;
+    padding:8px 14px;
+}
+
+.delete-title {
+    min-width:0;
+    font-size:1.05rem;
+    font-weight:bold;
+    color:#444;
+}
+
+.delete-scroll {
+    min-height:0;
+    flex:1 1 auto;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:2px 4px 8px 2px;
+    scrollbar-gutter:stable;
+    -webkit-overflow-scrolling:touch;
+}
+
+.selected-delete-card {
+    width:min(250px, 42vw);
+    margin:0 auto 14px;
+}
+
+.selected-delete-card img {
+    display:block;
+    width:100%;
+    height:auto;
+    border-radius:12px;
+}
+
+.delete-subtitle {
+    margin:4px 0 12px;
+    text-align:center;
+    color:#555;
+    font-weight:bold;
+}
+
+.pair-grid {
+    overflow:visible;
+    flex:none;
+    /* Do not stretch a single paired card to fill the entire row. */
+    grid-template-columns:repeat(auto-fill, minmax(min(170px, 100%), 190px));
+    justify-content:start;
+}
+
+.delete-confirm-wrap {
+    min-height:0;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+}
+
+.confirm-pair {
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:clamp(12px,4vw,40px);
+    overflow:auto;
+    padding:12px;
+}
+
+.confirm-card {
+    width:min(280px, 38%);
+    min-width:0;
+}
+
+.confirm-card img {
+    width:100%;
+    height:auto;
+    display:block;
+    border-radius:12px;
+}
+
+.confirm-plus {
+    font-size:clamp(1.8rem,5vw,3.5rem);
+    color:#555;
+    flex:0 0 auto;
+}
+
+.delete-button {
+    flex:0 0 auto;
+    width:min(520px,100%);
+    min-height:54px;
+    margin:10px auto 0;
+    border:1px solid #8e3535;
+    border-radius:9px;
+    background:#fff3f3;
+    color:#8e2f2f;
+    font-size:1.2rem;
+    cursor:pointer;
+}
+
+.delete-button:hover {
+    background:#ffe6e6;
+}
+
+/* Unrevealed card overlay */
+.card-button .unrevealed-label { z-index:5; }
+.selected-card .unrevealed-label, .confirm-card .unrevealed-label, .selected-delete-card .unrevealed-label { z-index:5; }
+.card-button .unrevealed-label, .selected-card .unrevealed-label,
+.confirm-card .unrevealed-label, .selected-delete-card .unrevealed-label {
+    position:absolute; left:4%; right:4%; top:43%; transform:translateY(-50%);
+    padding:10px 3px; border-radius:6px; text-align:center;
+    color:#fff; background:rgba(0,0,0,.76); font-size:clamp(11px,1.3vw,18px);
+    font-weight:800; letter-spacing:.04em; pointer-events:none;
+}
+.card-button .unrevealed-id {position:absolute;bottom:5%;left:5%;right:5%;text-align:center;
+    color:white;background:rgba(0,0,0,.78);padding:5px;font-weight:bold;pointer-events:none;}
+.selected-card, .confirm-card, .selected-delete-card { position:relative; }
+.add-card-id-row {display:flex;align-items:center;gap:10px;width:100%;}
+.add-card-prefix {font-size:1.15rem;font-weight:700;white-space:nowrap;}
+.add-card-id-row .add-card-input {flex:1;min-width:0;width:auto;}
+.add-card-input {width:100%;padding:12px;border:1px solid #999;border-radius:8px;text-align:center;font-size:1.15rem;}
+.add-card-preview {position:relative;width:min(200px,65%);margin:14px auto;}
+.add-card-preview img {display:block;width:100%;border-radius:9px;}
+.add-card-preview .unrevealed-label {position:absolute;top:42%;left:3%;right:3%;background:rgba(0,0,0,.75);color:white;padding:10px 3px;font-weight:bold;}
+.add-card-actions {display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.add-card-actions button {padding:11px 18px;}
+
+/* Status modal */
+.modal-overlay {
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:grid;
+    place-items:center;
+    padding:24px;
+    background:rgba(0,0,0,.34);
+    backdrop-filter:blur(2px);
+}
+
+.modal-panel {
+    width:min(410px,100%);
+    padding:28px;
+    border:1px solid rgba(70,70,70,.35);
+    border-radius:16px;
+    background:rgba(255,255,255,.97);
+    box-shadow:0 16px 45px rgba(0,0,0,.24);
+    text-align:center;
+}
+
+.modal-panel h2 {
+    margin:0 0 12px;
+    font-size:1.55rem;
+}
+
+.modal-message {
+    min-height:2.6em;
+    display:grid;
+    place-items:center;
+    margin-bottom:18px;
+    color:#555;
+    line-height:1.4;
+}
+
+.modal-spinner {
+    width:34px;
+    height:34px;
+    margin:2px auto 16px;
+    border:4px solid rgba(0,0,0,.14);
+    border-top-color:#444;
+    border-radius:50%;
+    animation:modal-spin .8s linear infinite;
+}
+
+@keyframes modal-spin {
+    to { transform:rotate(360deg); }
+}
+
+.modal-ok {
+    min-width:120px;
+    height:44px;
+    padding:0 22px;
+    border:1px solid #777;
+    border-radius:9px;
+    background:#fff;
+    color:#333;
+    cursor:pointer;
+}
+
+.modal-ok:hover { background:#f3f3f3; }
+.modal-ok:disabled { opacity:.45; cursor:not-allowed; }
+
+/* Responsive */
+@media (max-width:1350px) and (min-aspect-ratio:1/1) {
+    .app-layout { grid-template-columns:230px minmax(0,1fr); }
+}
+
+@media (max-width:1050px) and (min-aspect-ratio:1/1) {
+    .app-layout { grid-template-columns:200px minmax(0,1fr); }
+}
+
+@media (max-aspect-ratio:4/5) {
+    #app {
+        padding:
+          max(10px,env(safe-area-inset-top))
+          max(10px,env(safe-area-inset-right))
+          max(10px,env(safe-area-inset-bottom))
+          max(10px,env(safe-area-inset-left));
+    }
+
+    .app-layout {
+        grid-template-columns:1fr;
+        grid-template-rows:auto minmax(0,1fr);
+        gap:10px;
+    }
+
+    .sidebar {
+        height:auto;
+        min-height:0;
+        grid-template-columns:1fr 1fr;
+        grid-template-rows:auto auto auto auto auto auto auto;
+        gap:8px;
+    }
+
+    #home-button,
+    #mode-toggle {
+        min-height:42px;
+    }
+
+    #add-card-button, #refresh-cards-button { grid-column:1/-1; }
+
+    .set-select {
+        grid-column:1/-1;
+        height:46px;
+        font-size:1rem;
+    }
+
+    .selected-card {
+        width:100%;
+        height:100%;
+        max-width:100%;
+        min-height:0;
+        justify-self:center;
+    }
+
+    .create-button {
+        grid-column:1/-1;
+        height:46px;
+        font-size:1.1rem;
+    }
+
+    .sidebar.delete-mode {
+        grid-template-columns:1fr 1fr;
+        grid-template-rows:auto auto auto;
+    }
+
+    .sidebar.delete-mode #add-card-button, .sidebar.delete-mode #refresh-cards-button { grid-column:1/-1; }
+    .sidebar.delete-mode .set-select {
+        grid-column:1/-1;
+    }
+
+    .sidebar.delete-mode .mode-note {
+        display:none;
+    }
+
+    .main-panel {
+        width:100%;
+        height:100%;
+        min-height:0;
+        padding:8px;
+    }
+
+    .top-row {
+        min-height:20px;
+        margin-bottom:5px;
+    }
+
+    .status { font-size:.82rem; }
+}
+
+@media (min-aspect-ratio:4/5) and (max-height:700px) {
+    #app { padding:8px; }
+    .app-layout {
+        grid-template-columns:minmax(160px,22vw) minmax(0,1fr);
+        gap:10px;
+    }
+    .sidebar { gap:7px; }
+    .control-button { min-height:36px; padding:5px 8px; font-size:.9rem; }
+    .set-select { height:38px; font-size:.9rem; }
+    .selected-card { width:100%; height:100%; min-height:0; }
+    .create-button { height:42px; font-size:1rem; }
+    .mode-note { padding:8px; font-size:.8rem; }
+    .main-panel { padding:7px; }
+    .top-row { min-height:18px; margin-bottom:4px; }
+    .status { font-size:.78rem; }
+}
+
+@media (max-width:600px) {
+    .card-grid,
+    .pair-grid {
+        grid-template-columns:repeat(4,minmax(0,1fr));
+        gap:6px;
+    }
+
+    .confirm-pair {
+        gap:10px;
+    }
+
+    .confirm-card {
+        width:44%;
+    }
+}
+
+/* Mobile: persistent compact controls, scrollable gallery filling remaining screen. */
+@media (max-aspect-ratio:4/5) {
+    #app { height:100dvh; overflow:hidden; padding:6px; }
+    .app-layout { height:100%; min-height:0; display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto minmax(0,1fr); gap:6px; }
+    .sidebar, .sidebar.delete-mode {
+        display:grid; height:auto; min-height:0;
+        grid-template-columns:repeat(4,minmax(0,1fr));
+        grid-template-rows:36px 38px clamp(86px,14dvh,130px) 40px 40px;
+        gap:5px;
+    }
+    #home-button { grid-column:1/3; grid-row:1; }
+    #mode-toggle { grid-column:3/5; grid-row:1; }
+    #home-button, #mode-toggle { min-height:0; padding:3px 4px; font-size:clamp(11px,3vw,15px); }
+    .set-select, .sidebar.delete-mode .set-select { grid-column:1/-1; grid-row:2; height:38px; min-height:0; padding:0 10px; }
+    #selected-1 { grid-column:1/3; grid-row:3; }
+    #selected-2 { grid-column:3/5; grid-row:3; }
+    .selected-card { height:100%; min-height:0; width:100%; }
+    .selected-card img { max-height:100%; max-width:100%; object-fit:contain; }
+    #create-pair { grid-column:1/-1; grid-row:4; height:40px; min-height:0; font-size:1rem; }
+    #add-card-button { grid-column:1/3; grid-row:5; }
+    #refresh-cards-button { grid-column:3/5; grid-row:5; }
+    #add-card-button, #refresh-cards-button { min-height:0; height:40px; padding:3px; font-size:clamp(11px,3vw,14px); }
+    .sidebar.delete-mode { grid-template-rows:36px 38px; }
+    .sidebar.delete-mode .mode-note { display:none; }
+    .main-panel { min-height:0; height:100%; padding:6px; overflow:hidden; }
+    .gallery-view, .delete-view { min-height:0; }
+    .top-row { min-height:18px; margin-bottom:4px; }
+    .card-grid { min-height:0; overflow-y:auto; }
+    /* Force four columns in portrait mobile layout, regardless of CSS viewport width. */
+    #card-grid, #pair-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+}
