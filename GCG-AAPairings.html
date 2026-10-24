@@ -429,7 +429,22 @@
         // Hidden preview: keyboard shortcut or 3-second title hold toggles GD06 navigation.
         // This is a convenience feature, not an access-control mechanism.
         const HIDDEN_SET_CODES = new Set(["GD06"]);
-        let showHiddenSets = false;
+        const PREVIEW_SESSION_KEY = "gcg-aa-hidden-preview";
+        let showHiddenSets = sessionStorage.getItem(PREVIEW_SESSION_KEY) === "unlocked";
+
+        function toggleHiddenSets() {
+            showHiddenSets = !showHiddenSets;
+            if (showHiddenSets) {
+                sessionStorage.setItem(PREVIEW_SESSION_KEY, "unlocked");
+            } else {
+                sessionStorage.removeItem(PREVIEW_SESSION_KEY);
+            }
+            if (!showHiddenSets && currentSet && HIDDEN_SET_CODES.has(currentSet.code)) {
+                loadSet(SETS[0].code, true);
+            } else {
+                renderSetButtons();
+            }
+        }
 
         let currentSet = null;
         let cards = [];
@@ -724,7 +739,15 @@
         }
 
         async function loadSet(setCode, shouldUpdateUrl = false) {
-            const selectedSet = SETS.find(set => set.code.toUpperCase() === String(setCode).toUpperCase()) || SETS[0];
+            const requestedSet = SETS.find(set => set.code.toUpperCase() === String(setCode).toUpperCase()) || SETS[0];
+            const isLocked = HIDDEN_SET_CODES.has(requestedSet.code) && !showHiddenSets;
+            const selectedSet = isLocked ? SETS[0] : requestedSet;
+            if (isLocked) {
+                // Replace rather than push: Back won't reopen the locked preview URL.
+                const safeUrl = new URL(window.location.href);
+                safeUrl.searchParams.set("set", selectedSet.code);
+                window.history.replaceState({}, "", safeUrl);
+            }
             currentSet = selectedSet;
 
             pageTitle.textContent = selectedSet.title;
@@ -903,8 +926,7 @@
         document.addEventListener("keydown", event => {
             if (event.ctrlKey && event.shiftKey && event.code === "Digit6" && !event.repeat) {
                 event.preventDefault();
-                showHiddenSets = !showHiddenSets;
-                renderSetButtons();
+                toggleHiddenSets();
             }
         });
 
@@ -928,8 +950,7 @@
             titleHoldStart = { x: event.clientX, y: event.clientY };
             titleHoldTimer = setTimeout(() => {
                 titleHoldTriggered = true;
-                showHiddenSets = !showHiddenSets;
-                renderSetButtons();
+                toggleHiddenSets();
                 cancelTitleHold();
             }, 3000);
         });
