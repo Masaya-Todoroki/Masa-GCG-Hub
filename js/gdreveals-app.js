@@ -2,45 +2,36 @@
            Set Selection
            ========================= */
 
-        const params =
-            new URLSearchParams(window.location.search);
+/* ============================================
+   SET CONFIGURATION — edit this list for new sets
+   ============================================ */
+const SET_CODES = ["GD04", "GD05", "GD06", "EB01"];
+const DEFAULT_SET = "GD06";
 
-        const set =
-            params.get("set") || "GD06";
+/* ============================================
+   Set Selection & Automatic Navigation Buttons
+   ============================================ */
+const params = new URLSearchParams(window.location.search);
+const requestedSet = (params.get("set") || "").toUpperCase();
+const set = SET_CODES.includes(requestedSet) ? requestedSet : DEFAULT_SET;
 
+const viewer = document.getElementById("viewer");
+const image = document.getElementById("revealImage");
+const toolbar = document.getElementById("toolbar");
 
-        const viewer =
-            document.getElementById("viewer");
+for (const code of SET_CODES) {
+    const button = document.createElement("a");
+    button.href = `?set=${encodeURIComponent(code)}`;
+    button.className = "btn set-button";
+    button.dataset.set = code;
+    button.textContent = code;
+    if (code === set) button.classList.add("current");
+    toolbar.appendChild(button);
+}
 
-        const image =
-            document.getElementById("revealImage");
-
-        const toolbar =
-            document.getElementById("toolbar");
-
-        const setButtons =
-            document.querySelectorAll(".set-button");
-
-
-        image.src =
-            `/images/${set}/${set}Reveal.jpg`;
-
-        image.alt =
-            `${set} Reveal List`;
-
-        document.title =
-            `${set} Reveal List`;
-
-
-        setButtons.forEach(function (button) {
-
-            if (button.dataset.set === set) {
-
-                button.classList.add("current");
-
-            }
-
-        });
+image.src = `/images/${set}/${set}Reveal.jpg`;
+image.alt = `${set} Reveal List`;
+document.title = `${set} Reveal List`;
 
 
         /* =========================
