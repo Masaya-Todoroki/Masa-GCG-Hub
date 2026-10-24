@@ -341,6 +341,35 @@
                 font-size: 0.62rem;
             }
         }
+
+        /* Shown only when the official alt-art image is unavailable. */
+        .card-art { position: relative; width: 100%; }
+        .card-art img { display: block; width: 100%; }
+        .reveal-ribbon {
+            display: none;
+            position: absolute;
+            top: 50%; left: 0; right: 0;
+            transform: translateY(-50%) rotate(-12deg);
+            padding: 8px 3px;
+            background: rgba(12, 12, 12, .88);
+            color: #fff;
+            border-top: 2px solid #e0bb63;
+            border-bottom: 2px solid #e0bb63;
+            font-weight: 800;
+            font-size: clamp(9px, 1.5vw, 15px);
+            text-align: center;
+            letter-spacing: .035em;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .card-art.unrevealed .reveal-ribbon { display: block; }
+        .selected-card .card-art { width: 180px; max-width: 40%; flex-shrink: 0; }
+        .selected-card .card-art img { width: 100%; max-width: 100%; }
+        .selected-card .reveal-ribbon { font-size: 12px; }
+        @media (max-width: 700px) {
+            .selected-card .card-art { width: 140px; max-width: 40%; }
+            .reveal-ribbon { font-size: 9px; padding: 5px 2px; }
+        }
     </style>
 </head>
 
@@ -383,54 +412,24 @@
         const SUPABASE_URL = "https://vixudhbgvihtdynhcfey.supabase.co";
         const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_zBf__8-D1Tu01z6i8Tg96g_Rx4BL33r";
 
-        // Add future sets here.
-        // code = what appears in the URL, e.g. ?set=GD04
-        // csvUrl = card metadata only: Type and Card name/ID
-        // imageFolder = where the images are saved
-        const SETS = [
-            {
-                code: "GD01",
-                label: "GD01",
-                title: "GD01 - Alt Art Pairings",
-                csvUrl: "data/GD01Pairings.csv",
-                imageFolder: "images/GD01"
-            },
-            {
-                code: "GD02",
-                label: "GD02",
-                title: "GD02 - Alt Art Pairings",
-                csvUrl: "data/GD02Pairings.csv",
-                imageFolder: "images/GD02"
-            },
-            {
-                code: "GD03",
-                label: "GD03",
-                title: "GD03 - Alt Art Pairings",
-                csvUrl: "data/GD03Pairings.csv",
-                imageFolder: "images/GD03"
-            },
-            {
-                code: "GD04",
-                label: "GD04",
-                title: "GD04 - Alt Art Pairings",
-                csvUrl: "data/GD04Pairings.csv",
-                imageFolder: "images/GD04"
-            },
-            {
-                code: "GD05",
-                label: "GD05",
-                title: "GD05 - Alt Art Pairings",
-                csvUrl: "data/GD05Pairings.csv",
-                imageFolder: "images/GD05"
-            },
-            {
-                code: "EB01",
-                label: "EB01",
-                title: "EB01 - Alt Art Pairings",
-                csvUrl: "data/EB01Pairings.csv",
-                imageFolder: "images/EB01"
-            }
+        // Add new sets here. CSV paths, image folders, labels and titles
+        // are generated automatically from the set code.
+        const SET_CODES = [
+            "GD01", "GD02", "GD03", "GD04", "GD05", "GD06", "EB01"
         ];
+
+        const SETS = SET_CODES.map(code => ({
+            code,
+            label: code,
+            title: `${code} - Alt Art Pairings`,
+            csvUrl: `data/${code}Pairings.csv`,
+            imageFolder: `images/${code}`
+        }));
+
+        // Hidden preview: keyboard shortcut or 3-second title hold toggles GD06 navigation.
+        // This is a convenience feature, not an access-control mechanism.
+        const HIDDEN_SET_CODES = new Set(["GD06"]);
+        let showHiddenSets = false;
 
         let currentSet = null;
         let cards = [];
@@ -453,6 +452,23 @@
 
         function getImage(cardId) {
             return `${currentSet.imageFolder}/${cardId}.png`;
+        }
+
+        // Try the alt art first, then the regular card, then a generic placeholder.
+        function enableImageFallback(img, cardId) {
+            if (!img) return;
+            const setCode = cardId.split("-")[0];
+            const fallbackImages = [
+                `DeckBuilder/Cards/${setCode}/${cardId}.webp`,
+                "images/basic/Card_White.png"
+            ];
+            let nextFallback = 0;
+            img.addEventListener("error", () => {
+                if (nextFallback < fallbackImages.length) {
+                    img.closest(".card-art")?.classList.add("unrevealed");
+                    img.src = fallbackImages[nextFallback++];
+                }
+            });
         }
 
         // Supports GD04-001, EB01-001, ST01-001, or similar future set codes.
@@ -690,7 +706,7 @@
             setButtons.appendChild(homeButton);
 
             // Set buttons
-            SETS.forEach(set => {
+            SETS.filter(set => showHiddenSets || !HIDDEN_SET_CODES.has(set.code)).forEach(set => {
                 const button = document.createElement("button");
                 button.className = "set-button";
                 button.textContent = set.label;
@@ -789,13 +805,14 @@
             cardEl.className = "card";
 
             cardEl.innerHTML = `
-                        <img src="${getImage(card.id)}" alt="${card.name}" loading="lazy">
+                        <div class="card-art"><img src="${getImage(card.id)}" alt="${card.name}" loading="lazy"><div class="reveal-ribbon">TO BE REVEALED</div></div>
                         <div class="card-text">
                             <div class="card-name">${card.name}</div>
                             <div class="type-box">${card.type}</div>
                         </div>
                     `;
 
+            enableImageFallback(cardEl.querySelector("img"), card.id);
             cardEl.addEventListener("click", () => onClick(card));
             return cardEl;
         }
@@ -824,7 +841,7 @@
             const pricingHTML = getPricingHTML(card.id);
 
             selectedCard.innerHTML = `
-                        <img src="${getImage(card.id)}" alt="${card.name}">
+                        <div class="card-art"><img src="${getImage(card.id)}" alt="${card.name}"><div class="reveal-ribbon">TO BE REVEALED</div></div>
                         <div class="selected-info">
                             <h2>${card.name}</h2>
                             <p><strong>ID:</strong> ${card.id}</p>
@@ -833,6 +850,8 @@
                             ${pricingHTML}
                         </div>
                     `;
+
+            enableImageFallback(selectedCard.querySelector("img"), card.id);
 
             pairGrid.innerHTML = "";
 
@@ -879,6 +898,51 @@
 
         window.addEventListener("popstate", () => {
             loadSet(getSetFromUrl(), false);
+        });
+
+        document.addEventListener("keydown", event => {
+            if (event.ctrlKey && event.shiftKey && event.code === "Digit6" && !event.repeat) {
+                event.preventDefault();
+                showHiddenSets = !showHiddenSets;
+                renderSetButtons();
+            }
+        });
+
+        // On mobile, press and hold the page title for 3 seconds.
+        // Pointer events also support a mouse hold on desktop.
+        let titleHoldTimer = null;
+        let titleHoldStart = null;
+        let titleHoldTriggered = false;
+        function cancelTitleHold() {
+            clearTimeout(titleHoldTimer);
+            titleHoldTimer = null;
+            titleHoldStart = null;
+        }
+        pageTitle.style.touchAction = "pan-y";
+        pageTitle.style.userSelect = "none";
+        pageTitle.style.webkitUserSelect = "none";
+        pageTitle.addEventListener("pointerdown", event => {
+            if (event.button !== 0) return;
+            cancelTitleHold();
+            titleHoldTriggered = false;
+            titleHoldStart = { x: event.clientX, y: event.clientY };
+            titleHoldTimer = setTimeout(() => {
+                titleHoldTriggered = true;
+                showHiddenSets = !showHiddenSets;
+                renderSetButtons();
+                cancelTitleHold();
+            }, 3000);
+        });
+        pageTitle.addEventListener("pointermove", event => {
+            if (titleHoldStart && Math.hypot(event.clientX - titleHoldStart.x, event.clientY - titleHoldStart.y) > 12) {
+                cancelTitleHold();
+            }
+        });
+        ["pointerup", "pointercancel", "pointerleave"].forEach(type =>
+            pageTitle.addEventListener(type, cancelTitleHold)
+        );
+        pageTitle.addEventListener("contextmenu", event => {
+            if (titleHoldTimer || titleHoldTriggered) event.preventDefault();
         });
 
         function init() {
