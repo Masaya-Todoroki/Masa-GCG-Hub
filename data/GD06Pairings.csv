@@ -1,7 +1,6 @@
 Type,Card
 "Unit	",GD06-001 Gundam GP01Fb
 "Unit	",GD06-002 Infinite Justice Gundam
-"Unit	",GD06-004 Gundam GP01
 "Unit	",GD06-005 Akatsuki (Shiranui)
 "Unit	",GD06-018 Elpeo Ple's Qubeley Mk-?
 "Unit	",GD06-019 Turn X
@@ -22,6 +21,7 @@ Type,Card
 "Pilot	",GD06-088 Judau Ashta
 "Pilot	",GD06-093 Anavel Gato
 "Pilot	",GD06-097 Harry Ord
+"Command	",GD06
 "Command	",GD06
 "Command	",GD06
 "Command	",GD06-118 Infinite Variations

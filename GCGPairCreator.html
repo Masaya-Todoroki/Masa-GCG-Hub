@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>GCG Pair Creator v1.5</title>
+<title>GCG Pair Creator v1.6.4.2.1</title>
 <style>
 * { box-sizing: border-box; }
 
@@ -155,7 +155,7 @@ button, select, input { font: inherit; }
     min-height:0;
     height:100%;
     display:grid;
-    grid-template-rows:auto auto auto minmax(0,1fr) minmax(0,1fr) auto;
+    grid-template-rows:auto auto auto auto minmax(0,1fr) minmax(0,1fr) auto;
     gap:10px;
 }
 
@@ -183,11 +183,12 @@ button, select, input { font: inherit; }
 }
 
 .selected-card {
-    width:auto;
+    width:100%;
     height:100%;
     max-width:100%;
     min-height:0;
-    aspect-ratio:63 / 88;
+    min-width:0;
+    aspect-ratio:auto;
     justify-self:center;
     display:grid;
     place-items:center;
@@ -223,7 +224,7 @@ button, select, input { font: inherit; }
 .create-button:disabled { opacity:.5; cursor:not-allowed; }
 
 .sidebar.delete-mode {
-    grid-template-rows:auto auto auto 1fr;
+    grid-template-rows:auto auto auto auto 1fr;
 }
 
 .sidebar.delete-mode .add-only {
@@ -456,6 +457,26 @@ button, select, input { font: inherit; }
     background:#ffe6e6;
 }
 
+/* Unrevealed card overlay */
+.card-button .unrevealed-label { z-index:5; }
+.selected-card .unrevealed-label, .confirm-card .unrevealed-label, .selected-delete-card .unrevealed-label { z-index:5; }
+.card-button .unrevealed-label, .selected-card .unrevealed-label,
+.confirm-card .unrevealed-label, .selected-delete-card .unrevealed-label {
+    position:absolute; left:4%; right:4%; top:43%; transform:translateY(-50%);
+    padding:10px 3px; border-radius:6px; text-align:center;
+    color:#fff; background:rgba(0,0,0,.76); font-size:clamp(11px,1.3vw,18px);
+    font-weight:800; letter-spacing:.04em; pointer-events:none;
+}
+.card-button .unrevealed-id {position:absolute;bottom:5%;left:5%;right:5%;text-align:center;
+    color:white;background:rgba(0,0,0,.78);padding:5px;font-weight:bold;pointer-events:none;}
+.selected-card, .confirm-card, .selected-delete-card { position:relative; }
+.add-card-input {width:100%;padding:12px;border:1px solid #999;border-radius:8px;text-align:center;font-size:1.15rem;}
+.add-card-preview {position:relative;width:min(200px,65%);margin:14px auto;}
+.add-card-preview img {display:block;width:100%;border-radius:9px;}
+.add-card-preview .unrevealed-label {position:absolute;top:42%;left:3%;right:3%;background:rgba(0,0,0,.75);color:white;padding:10px 3px;font-weight:bold;}
+.add-card-actions {display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.add-card-actions button {padding:11px 18px;}
+
 /* Status modal */
 .modal-overlay {
     position:fixed;
@@ -557,6 +578,8 @@ button, select, input { font: inherit; }
         min-height:42px;
     }
 
+    #add-card-button, #refresh-cards-button { grid-column:1/-1; }
+
     .set-select {
         grid-column:1/-1;
         height:46px;
@@ -581,6 +604,7 @@ button, select, input { font: inherit; }
         grid-template-rows:auto auto auto;
     }
 
+    .sidebar.delete-mode #add-card-button, .sidebar.delete-mode #refresh-cards-button { grid-column:1/-1; }
     .sidebar.delete-mode .set-select {
         grid-column:1/-1;
     }
@@ -644,7 +668,7 @@ button, select, input { font: inherit; }
 </head>
 
 <body>
-<div id="version-badge" class="version-badge">GCG Pair Creator · v1.5</div>
+<div id="version-badge" class="version-badge">GCG Pair Creator · v1.6.7</div>
 
 <section id="password-screen">
     <div class="login-panel">
@@ -664,6 +688,8 @@ button, select, input { font: inherit; }
             <button id="home-button" class="control-button">Home</button>
             <button id="mode-toggle" class="control-button">Switch to Delete Pairs</button>
             <select id="set-select" class="set-select"></select>
+            <button id="add-card-button" class="control-button hidden" type="button">+ Add Card ID</button>
+            <button id="refresh-cards-button" class="control-button hidden" type="button">↻ Refresh Cards</button>
 
             <div id="selected-1" class="selected-card add-only"></div>
             <div id="selected-2" class="selected-card add-only"></div>
@@ -713,6 +739,21 @@ button, select, input { font: inherit; }
     </div>
 </main>
 
+<div id="add-card-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="add-card-title">
+    <div class="modal-panel">
+        <h2 id="add-card-title">Add Unrevealed Card</h2>
+        <p>Enter a GD06 card ID (e.g. 050 or GD06-050).</p>
+        <input id="add-card-input" class="add-card-input" type="text" maxlength="8" placeholder="GD06-050" autocomplete="off">
+        <div id="add-card-feedback" class="modal-message" style="min-height:1.4em;margin:10px 0;"></div>
+        <div id="add-card-preview" class="add-card-preview hidden"></div>
+        <div class="add-card-actions">
+            <button id="add-card-cancel" class="back-button" type="button">Cancel</button>
+            <button id="add-card-next" class="primary-button" type="button">Preview Card</button>
+            <button id="add-card-confirm" class="primary-button hidden" type="button">Confirm & Add</button>
+        </div>
+    </div>
+</div>
+
 <div id="status-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="status-modal-title">
     <div class="modal-panel">
         <h2 id="status-modal-title">Pair Status</h2>
@@ -734,11 +775,16 @@ const SETS = [
     { code:"GD03", csvUrl:"data/GD03Pairings.csv", imageFolder:"images/GD03" },
     { code:"GD04", csvUrl:"data/GD04Pairings.csv", imageFolder:"images/GD04" },
     { code:"GD05", csvUrl:"data/GD05Pairings.csv", imageFolder:"images/GD05" },
+    { code:"GD06", csvUrl:"data/GD06Pairings.csv", imageFolder:"DeckBuilder/Cards/GD06" },
     { code:"EB01", csvUrl:"data/EB01Pairings.csv", imageFolder:"images/EB01" }
 ];
 
 let currentSet = SETS[0];
 let cards = [];
+let jsonCardIds = new Set();
+let extraCardIds = new Set();
+let verifiedPassword = "";
+let refreshTimer = null;
 let cardMap = {};
 
 let selectedCard1 = null;
@@ -766,6 +812,16 @@ const sidebar = document.getElementById("sidebar");
 const homeButton = document.getElementById("home-button");
 const modeToggle = document.getElementById("mode-toggle");
 const setSelect = document.getElementById("set-select");
+const addCardButton = document.getElementById("add-card-button");
+const refreshCardsButton = document.getElementById("refresh-cards-button");
+const addCardModal = document.getElementById("add-card-modal");
+const addCardInput = document.getElementById("add-card-input");
+const addCardFeedback = document.getElementById("add-card-feedback");
+const addCardPreview = document.getElementById("add-card-preview");
+const addCardCancel = document.getElementById("add-card-cancel");
+const addCardNext = document.getElementById("add-card-next");
+const addCardConfirm = document.getElementById("add-card-confirm");
+let pendingCardId = null;
 
 const galleryView = document.getElementById("gallery-view");
 const status = document.getElementById("status");
@@ -830,6 +886,7 @@ async function validatePassword() {
             return;
         }
 
+        verifiedPassword = password;
         passwordMessage.textContent = "";
         passwordScreen.classList.add("hidden");
         versionBadge.classList.add("hidden");
@@ -914,6 +971,83 @@ function normalizePair(card1, card2) {
         .join("|");
 }
 
+function isManualUnrevealed(id) {
+    return currentSet.code === "GD06" && !jsonCardIds.has(id) && (extraCardIds.has(id) || cards.some(card => card.id === id));
+}
+function fallbackCardImage(img) {
+    const id = img.alt || "";
+    const normal = `DeckBuilder/Cards/GD06/${id}.webp`;
+    if (id.startsWith("GD06-") && !img.dataset.triedNormal) {
+        img.dataset.triedNormal = "1";
+        img.src = normal;
+        return;
+    }
+    img.onerror = null;
+    img.src = CARD_BACK_URL;
+}
+function cardImageHTML(id, lazy = false) {
+    const safeId = String(id).replace(/[^A-Z0-9-]/g, "");
+    const url = getImageUrlById(safeId);
+    const label = isManualUnrevealed(safeId)
+        ? `<span class="unrevealed-label">TO BE REVEALED</span>` : "";
+    return `<img src="${url}" alt="${safeId}" ${lazy ? 'loading="lazy"' : ''} draggable="false" onerror="fallbackCardImage(this)">${label}`;
+}
+function normalizeNewId(value) {
+    const v = String(value || "").trim().toUpperCase();
+    const match = v.match(/^(?:GD06-?)?(\d{1,3})$/);
+    if (!match) return null;
+    const n = Number(match[1]);
+    if (n < 1 || n > 999) return null;
+    return `GD06-${String(n).padStart(3, "0")}`;
+}
+function getAllCardIds() { return new Set(cards.map(card => card.id)); }
+function mergeExtraCards(ids) {
+    if (currentSet.code !== "GD06") return;
+    const nextIds = new Set(ids);
+    const changed = nextIds.size !== extraCardIds.size || [...nextIds].some(id => !extraCardIds.has(id));
+    if (!changed) return false;
+    extraCardIds = nextIds;
+    const merged = new Map(cards.map(card => [card.id, card]));
+    for (const id of ids) {
+        if (!merged.has(id)) merged.set(id, {id, name:id, type:""});
+    }
+    cards = Array.from(merged.values()).sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric:true}));
+    cardMap = Object.fromEntries(cards.map(card => [card.id,card]));
+    renderGalleryCards();
+    renderSelectedCards();
+    setStatus(`${cards.length} cards loaded (${ids.filter(id => !jsonCardIds.has(id)).length} manually added).`);
+    return true;
+}
+async function fetchExtraCards() {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/pairing_cards?select=card_id&card_id=like.GD06-*`, {
+        headers:{apikey:SUPABASE_PUBLISHABLE_KEY}
+    });
+    if (!response.ok) throw new Error(`Could not load manually added cards (${response.status})`);
+    const data = await response.json();
+    return data.map(row => row.card_id).filter(id => /^GD06-\d{3}$/.test(id));
+}
+async function refreshExtraCards() {
+    if (currentSet.code !== "GD06") return;
+    const ids = await fetchExtraCards();
+    if (currentSet.code === "GD06") return mergeExtraCards(ids);
+    return false;
+}
+refreshCardsButton.addEventListener("click", async () => {
+    if (currentSet.code !== "GD06" || databaseBusy || refreshCardsButton.disabled) return;
+    refreshCardsButton.disabled = true;
+    const previousText = refreshCardsButton.textContent;
+    refreshCardsButton.textContent = "Refreshing...";
+    try {
+        await refreshExtraCards();
+        setStatus(`${cards.length} cards loaded. Cards refreshed.`);
+    } catch (error) {
+        console.error(error);
+        setStatus(`Could not refresh cards: ${error.message}`);
+    } finally {
+        refreshCardsButton.disabled = false;
+        refreshCardsButton.textContent = previousText;
+    }
+});
 function getImageUrl(card) {
     return getImageUrlById(card.id);
 }
@@ -922,7 +1056,7 @@ function getImageUrlById(cardId) {
     const id = String(cardId || "").toUpperCase();
     const setCode = id.substring(0,4);
     const set = SETS.find(item => item.code === setCode) || currentSet;
-    return `${set.imageFolder}/${id}.png`;
+    return set.code === "GD06" ? `images/GD06/${id}.png` : `${set.imageFolder}/${id}.png`;
 }
 
 function getCardById(cardId) {
@@ -1056,14 +1190,14 @@ function selectAddCard(card) {
     }
 
     renderSelectedCards();
-    renderGalleryCards();
+    updateGallerySelection();
 }
 
 function renderSelectedCard(container, card) {
     const src = card ? getImageUrl(card) : CARD_BACK_URL;
     const alt = card ? card.id : "Card back";
 
-    container.innerHTML =
+    container.innerHTML = card ? cardImageHTML(card.id) :
         `<img src="${src}" alt="${alt}" draggable="false">`;
 }
 
@@ -1142,6 +1276,7 @@ async function createPair() {
 function createGalleryCard(card, clickHandler) {
     const button = document.createElement("button");
     button.className = "card-button";
+    button.dataset.cardId = card.id;
 
     if (currentMode === "add") {
         if (selectedCard1 && selectedCard1.id === card.id) {
@@ -1152,8 +1287,7 @@ function createGalleryCard(card, clickHandler) {
         }
     }
 
-    button.innerHTML =
-        `<img src="${getImageUrl(card)}" alt="${card.id}" loading="lazy" draggable="false">`;
+    button.innerHTML = cardImageHTML(card.id, true);
 
     button.addEventListener("click", () => {
         if (Date.now() < suppressCardClickUntil) return;
@@ -1161,6 +1295,14 @@ function createGalleryCard(card, clickHandler) {
     });
 
     return button;
+}
+
+function updateGallerySelection() {
+    for (const button of cardGrid.children) {
+        const id = button.dataset.cardId;
+        button.classList.toggle("selected-1", currentMode === "add" && selectedCard1?.id === id);
+        button.classList.toggle("selected-2", currentMode === "add" && selectedCard2?.id === id);
+    }
 }
 
 function renderGalleryCards() {
@@ -1188,8 +1330,7 @@ function openDeletePairs(card) {
     deletePairsTitle.textContent =
         `${card.id} — choose the paired card to delete`;
 
-    deleteSelectedCard.innerHTML =
-        `<img src="${getImageUrl(card)}" alt="${card.id}">`;
+    deleteSelectedCard.innerHTML = cardImageHTML(card.id);
 
     renderPairedCards(card);
     showView(deletePairsView);
@@ -1210,8 +1351,8 @@ function renderPairedCards(card) {
 
         const button = document.createElement("button");
         button.className = "card-button";
-        button.innerHTML =
-            `<img src="${getImageUrlById(pairId)}" alt="${pairId}" loading="lazy" draggable="false">`;
+    button.dataset.cardId = card.id;
+        button.innerHTML = cardImageHTML(pairId, true);
 
         button.addEventListener("click", () => {
             openDeleteConfirm(card, pairCard);
@@ -1225,11 +1366,9 @@ function openDeleteConfirm(card1, card2) {
     deletePrimaryCard = card1;
     deleteSecondaryCard = card2;
 
-    confirmCard1.innerHTML =
-        `<img src="${getImageUrlById(card1.id)}" alt="${card1.id}">`;
+    confirmCard1.innerHTML = cardImageHTML(card1.id);
 
-    confirmCard2.innerHTML =
-        `<img src="${getImageUrlById(card2.id)}" alt="${card2.id}">`;
+    confirmCard2.innerHTML = cardImageHTML(card2.id);
 
     deletePairButton.textContent =
         `Delete ${card1.id} + ${card2.id}`;
@@ -1383,6 +1522,10 @@ async function loadSet(code) {
     if (!set) return;
 
     currentSet = set;
+    addCardButton.classList.toggle("hidden", set.code !== "GD06");
+    refreshCardsButton.classList.toggle("hidden", set.code !== "GD06");
+    if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+    jsonCardIds.clear(); extraCardIds.clear();
 
     selectedCard1 = null;
     selectedCard2 = null;
@@ -1395,14 +1538,39 @@ async function loadSet(code) {
     setStatus(`Loading ${set.code}...`);
 
     try {
-        const response = await fetch(set.csvUrl);
-
-        if (!response.ok) {
-            throw new Error(`Could not load ${set.csvUrl}`);
+        if (false && set.jsonUrl) {
+            const candidates = [
+                set.jsonUrl,
+                "DeckBuilder/data/GD06.json",
+                "DeckBuilder/GD06.json",
+                "data/GD06.json",
+                "Data/GD06.json",
+                "GD06.json"
+            ];
+            let json = null;
+            const failures = [];
+            for (const path of [...new Set(candidates)]) {
+                try {
+                    const response = await fetch(path, {cache:"no-store"});
+                    if (!response.ok) { failures.push(`${path} (${response.status})`); continue; }
+                    json = await response.json();
+                    break;
+                } catch (error) { failures.push(`${path} (${error.message})`); }
+            }
+            if (!json) throw new Error(`GD06 JSON not found. Checked: ${failures.join(", ")}`);
+            const entries = Array.isArray(json) ? json : (json.cards || []);
+            cards = entries.filter(card => card && /^GD06-\d{3}$/.test(String(card.id || "")))
+                .map(card => ({id:card.id, name:card.name || card.id, type:card.type || ""}));
+            jsonCardIds = new Set(cards.map(card => card.id));
+        } else {
+            const response = await fetch(set.csvUrl);
+            if (!response.ok) throw new Error(`Could not load ${set.csvUrl}`);
+            cards = parseCSV(await response.text());
+            if (set.code === "GD06") {
+                cards = cards.filter(card => /^GD06-\d{3}$/.test(card.id));
+                jsonCardIds = new Set(cards.map(card => card.id));
+            }
         }
-
-        const csv = await response.text();
-        cards = parseCSV(csv);
 
         cardMap = {};
         cards.forEach(card => {
@@ -1412,11 +1580,14 @@ async function loadSet(code) {
         cardGrid.scrollTop = 0;
         renderGalleryCards();
 
-        setStatus(
-            currentMode === "delete"
-                ? `${cards.length} cards loaded. Select a card to view its pairs.`
-                : `${cards.length} cards loaded.`
-        );
+        setStatus(`${cards.length} cards loaded.`);
+        if (set.code === "GD06") {
+            try { await refreshExtraCards(); }
+            catch (error) { console.error(error); setStatus(`${cards.length} CSV cards loaded. Could not load Supabase extras.`); }
+            refreshTimer = setInterval(() => {
+                if (currentSet.code === "GD06" && !databaseBusy) refreshExtraCards().catch(console.error);
+            }, 20000);
+        }
     }
     catch (error) {
         console.error(error);
@@ -1451,6 +1622,83 @@ async function initializeApp() {
 
     await loadSet(setSelect.value);
 }
+
+
+/* Add unrevealed GD06 card */
+function closeAddCardModal() {
+    if (databaseBusy) return;
+    addCardModal.classList.add("hidden");
+    pendingCardId = null;
+}
+addCardButton.addEventListener("click", () => {
+    pendingCardId = null;
+    addCardInput.value = "";
+    addCardFeedback.textContent = "";
+    addCardPreview.classList.add("hidden");
+    addCardNext.classList.remove("hidden");
+    addCardConfirm.classList.add("hidden");
+    addCardModal.classList.remove("hidden");
+    addCardInput.focus();
+});
+addCardCancel.addEventListener("click", closeAddCardModal);
+addCardInput.addEventListener("input", () => {
+    pendingCardId = null;
+    addCardNext.classList.remove("hidden");
+    addCardConfirm.classList.add("hidden");
+    addCardPreview.classList.add("hidden");
+    addCardFeedback.textContent = "";
+});
+addCardInput.addEventListener("keydown", event => {
+    if (event.key === "Enter" && !addCardNext.classList.contains("hidden")) addCardNext.click();
+});
+addCardNext.addEventListener("click", () => {
+    const id = normalizeNewId(addCardInput.value);
+    if (!id) { addCardFeedback.textContent = "Enter a valid GD06 number (001–999)."; return; }
+    // Preview must not depend on Supabase being configured or reachable.
+    if (getAllCardIds().has(id)) {
+        addCardFeedback.textContent = `${id} already exists in the gallery.`;
+        return;
+    }
+    pendingCardId = id;
+    addCardPreview.innerHTML = `<img src="DeckBuilder/Cards/GD06/${id}.webp" alt="${id}" onerror="this.onerror=null;this.src='${CARD_BACK_URL}'"><div class="unrevealed-label">TO BE REVEALED<br>${id}</div>`;
+    addCardPreview.classList.remove("hidden");
+    addCardFeedback.textContent = `Confirm the normal card artwork for ${id}.`;
+    addCardNext.classList.add("hidden");
+    addCardConfirm.classList.remove("hidden");
+});
+addCardConfirm.addEventListener("click", async () => {
+    if (!pendingCardId || databaseBusy) return;
+    databaseBusy = true;
+    addCardConfirm.disabled = true;
+    addCardFeedback.textContent = "Saving card...";
+    try {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/add-pairing-card`, {
+            method:"POST",
+            headers:{"Content-Type":"application/json",apikey:SUPABASE_PUBLISHABLE_KEY,
+                Authorization:`Bearer ${SUPABASE_PUBLISHABLE_KEY}`},
+            body:JSON.stringify({password:verifiedPassword, card_id:pendingCardId})
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+        const savedId = pendingCardId;
+        // Add the saved card locally immediately; other users pick it up on refresh.
+        extraCardIds.add(savedId);
+        if (!cardMap[savedId]) {
+            cards.push({id:savedId, name:savedId, type:""});
+            cards.sort((a,b) => a.id.localeCompare(b.id, undefined, {numeric:true}));
+            cardMap[savedId] = {id:savedId, name:savedId, type:""};
+        }
+        renderGalleryCards();
+        renderSelectedCards();
+        setStatus(`${cards.length} cards loaded.`);
+        addCardModal.classList.add("hidden");
+        pendingCardId = null;
+        showStatusModal(`${savedId} is now available for everyone.`, false, "Card Added");
+    } catch(error) {
+        console.error(error);
+        addCardFeedback.textContent = `Could not save to Supabase: ${error.message}. The preview works locally, but sharing requires the pairing_cards table and add-pairing-card Edge Function.`;
+    } finally { databaseBusy = false; addCardConfirm.disabled = false; }
+});
 
 /* Desktop mouse drag scrolling */
 let dragActive = false;
