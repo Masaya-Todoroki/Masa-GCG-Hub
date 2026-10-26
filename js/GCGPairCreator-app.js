@@ -282,7 +282,7 @@ function getImageUrlById(cardId) {
     const id = String(cardId || "").toUpperCase();
     const setCode = id.substring(0,4);
     const set = SETS.find(item => item.code === setCode) || currentSet;
-    return set.code === "GD06" ? `images/GD06/${id}.png` : `${set.imageFolder}/${id}.png`;
+    return set.code === "GD06" ? `images/GD06/${id}.webp` : `${set.imageFolder}/${id}.webp`;
 }
 
 function getCardById(cardId) {

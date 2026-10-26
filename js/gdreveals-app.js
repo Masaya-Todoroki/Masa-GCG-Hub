@@ -29,7 +29,7 @@ for (const code of SET_CODES) {
     toolbar.appendChild(button);
 }
 
-image.src = `/images/${set}/${set}Reveal.jpg`;
+image.src = `/images/${set}/${set}Reveal.webp`;
 image.alt = `${set} Reveal List`;
 document.title = `${set} Reveal List`;
 

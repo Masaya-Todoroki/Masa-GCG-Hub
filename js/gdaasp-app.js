@@ -26,7 +26,7 @@ for (const code of SET_CODES) {
     toolbar.appendChild(button);
 }
 
-image.src = `/images/${set}/${set}_AASPReveal.jpg`;
+image.src = `/images/${set}/${set}_AASPReveal.webp`;
 image.alt = `${set} AA/SP Reveal List`;
 document.title = `${set} AA/SP Reveal List`;
 

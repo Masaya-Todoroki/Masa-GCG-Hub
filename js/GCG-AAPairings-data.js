@@ -42,7 +42,7 @@
         const galleryEmpty = document.getElementById("gallery-empty");
 
         function getImage(cardId) {
-            return `${currentSet.imageFolder}/${cardId}.png`;
+            return `${currentSet.imageFolder}/${cardId}.webp`;
         }
 
         // Try the alt art first, then the regular card, then a generic placeholder.

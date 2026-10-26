@@ -14,7 +14,7 @@
             for (let i = 1; i <= set.amount; i++) {
                 const num = String(i).padStart(3, "0");
                 const id = `${set.prefix}-${num}`;
-                html += `<div class="card"><img src="${root}/${set.folder}/${id}.png" alt="${id}" width="500" height="700"></div>`;
+                html += `<div class="card"><img src="${root}/${set.folder}/${id}.webp" alt="${id}" width="500" height="700"></div>`;
             }
             html += "</div>";
             content.innerHTML = html;

@@ -103,7 +103,7 @@
                 isWinner ? "w" : "";
 
             const fileName =
-                `${number}${suffix}.png`;
+                `${number}${suffix}.webp`;
 
             const imagePath =
                 `${imageRoot}/${folder}/${fileName}`;
