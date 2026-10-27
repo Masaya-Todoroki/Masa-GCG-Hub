@@ -9,6 +9,12 @@ from datetime import datetime
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
+try:
+    from tkinterdnd2 import DND_FILES, TkinterDnD
+    RootWindow = TkinterDnD.Tk
+except ImportError:
+    DND_FILES = None
+    RootWindow = tk.Tk
 
 BASE = Path(__file__).resolve().parent
 SETTINGS_FILE = Path.home() / ".gcg_tools_settings.json"
@@ -45,7 +51,7 @@ def write_sets(text, kind, sets, default):
     if n != 1: raise ValueError('Could not safely replace config.')
     return updated
 
-class App(tk.Tk):
+class App(RootWindow):
     def __init__(self):
         super().__init__()
         self.title('GCG Tools')
@@ -53,6 +59,9 @@ class App(tk.Tk):
         self.minsize(700, 560)
         self.site = tk.StringVar(value=self.restore_site_folder())
         self.folder = tk.StringVar()
+        self.single_file = tk.StringVar()
+        self.single_format = tk.StringVar(value="WEBP")
+        self.single_quality = tk.IntVar(value=90)
         self.format = tk.StringVar(value='PNG')
         self.quality = tk.IntVar(value=90)
         self.page = tk.StringVar(value='AA Pairings')
@@ -117,6 +126,8 @@ class App(tk.Tk):
         ttk.Button(row, text='Browse...', command=lambda: self.pick(var)).pack(side='left', padx=(8,0))
 
     def build_images(self, parent):
+        self.build_single_image(parent)
+        ttk.Separator(parent).pack(fill='x', pady=14)
         ttk.Label(parent, text='Batch image conversion', font=('', 13, 'bold')).pack(anchor='w')
         self.folder_row(parent, self.folder, 'Source folder (files in this folder only)')
         row = ttk.Frame(parent); row.pack(anchor='w', pady=6)
@@ -130,6 +141,87 @@ class App(tk.Tk):
         ttk.Label(parent, text='Changes .jpg/.jpeg filenames to .webp WITHOUT converting the underlying image.\nOnly use when the files already contain WebP data.').pack(anchor='w', pady=6)
         ttk.Button(parent, text='Rename JPG extensions to WEBP', command=self.rename).pack(anchor='w', pady=8)
         ttk.Label(parent, text='Conversions go into a PNG / WEBP / JPEG subfolder. Existing outputs are skipped.').pack(anchor='w', pady=12)
+
+    def build_single_image(self, parent):
+        ttk.Label(parent, text='Quick convert — one image', font=('', 13, 'bold')).pack(anchor='w')
+        drop = ttk.Label(parent, text='Drop an image here\n(or click Browse Image)', anchor='center', relief='groove', padding=18)
+        drop.pack(fill='x', pady=(8, 5))
+        if DND_FILES:
+            drop.drop_target_register(DND_FILES)
+            drop.dnd_bind('<<Drop>>', self.on_image_drop)
+        else:
+            drop.configure(text='Browse Image to select a single file\n(install tkinterdnd2 to enable drag and drop)')
+        row = ttk.Frame(parent); row.pack(fill='x', pady=4)
+        ttk.Entry(row, textvariable=self.single_file, state='readonly').pack(side='left', fill='x', expand=True)
+        ttk.Button(row, text='Browse Image...', command=self.pick_single_image).pack(side='left', padx=(8,0))
+        row = ttk.Frame(parent); row.pack(anchor='w', pady=5)
+        ttk.Label(row, text='Convert to:').pack(side='left')
+        ttk.Combobox(row, textvariable=self.single_format, values=['WEBP', 'PNG', 'JPEG'], state='readonly', width=9).pack(side='left', padx=(6, 14))
+        ttk.Label(row, text='Quality:').pack(side='left')
+        ttk.Spinbox(row, from_=1, to=100, textvariable=self.single_quality, width=5).pack(side='left', padx=6)
+        ttk.Button(row, text='Convert Single Image', command=self.convert_single).pack(side='left', padx=(16,0))
+        ttk.Label(parent, text='Click Convert to choose the output filename and location.').pack(anchor='w')
+
+    def pick_single_image(self):
+        path = filedialog.askopenfilename(filetypes=[('Images', '*.png *.jpg *.jpeg *.webp *.bmp *.tif *.tiff *.gif'), ('All files', '*.*')])
+        if path: self.single_file.set(path)
+
+    def on_image_drop(self, event):
+        paths = self.tk.splitlist(event.data)
+        if len(paths) != 1:
+            messagebox.showwarning('Single image', 'Please drop just one image.')
+            return
+        p = Path(paths[0])
+        if not p.is_file() or p.suffix.lower() not in {'.png','.jpg','.jpeg','.webp','.bmp','.tif','.tiff','.gif'}:
+            messagebox.showerror('Image', 'Please drop a supported image file.')
+            return
+        self.single_file.set(str(p))
+
+    def convert_single(self):
+        src = Path(self.single_file.get())
+        if not src.is_file(): return messagebox.showerror('Image', 'Choose an image first.')
+        fmt = self.single_format.get()
+        try: quality = self.single_quality.get()
+        except tk.TclError: return messagebox.showerror('Quality', 'Enter a quality from 1 to 100.')
+        if not 1 <= quality <= 100: return messagebox.showerror('Quality', 'Enter a quality from 1 to 100.')
+        ext = '.jpg' if fmt == 'JPEG' else '.' + fmt.lower()
+        # Keep the original base name in the Save As dialog.
+        proposed = src.with_suffix(ext)
+        file_type = {'PNG': 'PNG image', 'WEBP': 'WebP image', 'JPEG': 'JPEG image'}[fmt]
+        selected = filedialog.asksaveasfilename(
+            title='Save converted image as',
+            initialdir=str(src.parent),
+            initialfile=proposed.name,
+            defaultextension=ext,
+            filetypes=[(file_type, '*' + ext)],
+        )
+        if not selected:
+            return  # User cancelled the save dialog.
+        dst = Path(selected)
+        if dst.suffix.lower() != ext:
+            return messagebox.showerror('File extension', f'Please save with the {ext} extension.')
+        if dst.resolve() == src.resolve():
+            return messagebox.showerror('Original image', 'Choose a different filename to keep the original image safe.')
+        if dst.exists() and not messagebox.askyesno('Replace file?', f'{dst.name} already exists. Replace it?'):
+            return
+        try:
+            from PIL import Image, ImageOps
+            with Image.open(src) as im:
+                im = ImageOps.exif_transpose(im)
+                if fmt == 'JPEG':
+                    if im.mode not in ('RGB', 'L'):
+                        rgba = im.convert('RGBA')
+                        bg = Image.new('RGB', rgba.size, 'white')
+                        bg.paste(rgba, mask=rgba.getchannel('A'))
+                        im = bg
+                elif im.mode not in ('RGB', 'RGBA'):
+                    im = im.convert('RGBA')
+                opts = {'quality': quality} if fmt in ('WEBP','JPEG') else {}
+                im.save(dst, format=fmt, **opts)
+            self.log(f'Quick converted {src.name} → {dst.name}')
+            messagebox.showinfo('Converted', f'Saved:\n{dst}')
+        except Exception as e:
+            messagebox.showerror('Conversion failed', str(e))
 
     def run_worker(self, fn):
         threading.Thread(target=fn, daemon=True).start()

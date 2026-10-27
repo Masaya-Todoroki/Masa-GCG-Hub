@@ -9,7 +9,7 @@ GCG Tools (Windows)
    js/gdaasp-app.js (SET_CODES + DEFAULT_SET)
    Reveal pages need the updated dynamic-set scripts.
 5. Load the page, change the set list, and Save Changes.
-   Every save makes a timestamped .bak backup beside the JS file.
+   Every save makes a timestamped .bak backup in Backups/js/.
    It will refuse to save if the file changed externally since loading.
 6. Photoshop Export uses the original JSX file. In Photoshop, File > Scripts > Browse.
 
@@ -28,3 +28,5 @@ Consider excluding Backups/ from your website deployment.
 Website Manager remembers the last selected website root folder across launches.
 The preference is stored in your Windows user home folder as .gcg_tools_settings.json.
 The Image Tools source folder is not remembered.
+
+Quick Convert: Drop a single image onto the drop zone (or Browse Image), choose PNG/WEBP/JPEG and click Convert Single Image. Output is saved to a location you choose, with a safe unique name if needed. Drag and drop requires tkinterdnd2 (installed by the launcher).
