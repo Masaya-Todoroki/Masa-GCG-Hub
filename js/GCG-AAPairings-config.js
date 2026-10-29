@@ -6,7 +6,7 @@
     { code: "GD03", hidden: false },
     { code: "GD04", hidden: false },
     { code: "GD05", hidden: false },
-    { code: "GD06", hidden: true },
+    { code: "GD06", hidden: false },
     { code: "EB01", hidden: false }
 ];
 
