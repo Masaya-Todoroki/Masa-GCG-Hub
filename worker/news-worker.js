@@ -2,7 +2,7 @@
 // Deploy this file to your existing Cloudflare Worker.
 const HANDLES = { ENG: 'GUNDAM_GCG_ENG', JP: 'GUNDAM_GCG_JP' };
 const NITTER_INSTANCES = ['https://nitter.mie.foundation', 'https://nitter.mizuki.st'];
-const MAX_POSTS = 20;
+const MAX_POSTS = 10;
 const CACHE_SECONDS = 1800;
 const STALE_SECONDS = 7 * 24 * 60 * 60;
 const ALLOWED_ORIGIN = '*';
@@ -61,27 +61,36 @@ export function parseRss(xml, handle) {
 function parseOfficialNews(html, lang) {
   const base = `https://www.gundam-gcg.com/${lang === 'JP' ? 'jp' : 'en'}/news/`;
   const items = [], seen = new Set();
-  // Match link targets first; extract the surrounding card text and date.
+  // The official listing links to /products/, /events/, and /news/ articles.
+  // Only accept anchors containing a genuine publication date, rather than
+  // treating navigation links and surrounding page text as announcements.
   const anchors = /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
   let match;
   while ((match = anchors.exec(html)) && items.length < MAX_POSTS) {
-    const rawHref = match[1].replace(/&amp;/g, '&');
+    const fragment = match[2];
+    const text = clean(fragment);
+    const dateMatch = text.match(/(?:20\d{2}[.\/-]\d{1,2}[.\/-]\d{1,2}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},?\s+20\d{2}|20\d{2}年\s*\d{1,2}月\s*\d{1,2}日)/i);
+    if (!dateMatch) continue;
     let url;
-    try { url = new URL(rawHref, base); } catch { continue; }
-    if (url.hostname !== 'www.gundam-gcg.com' || !url.pathname.includes('/news/')) continue;
-    if (url.pathname.replace(/\/+$/, '') === base.replace(/\/+$/, '') || url.searchParams.has('page')) continue;
+    try { url = new URL(match[1].replace(/&amp;/g, '&'), base); } catch { continue; }
+    if (url.hostname !== 'www.gundam-gcg.com') continue;
+    if (!/^\/(en|jp)\/(news|products|events|campaign|rules)\//i.test(url.pathname)) continue;
+    if (url.pathname.replace(/\/+$/, '') === base.replace(/\/+$/, '')) continue;
     if (seen.has(url.href)) continue;
-    const fragment = html.slice(Math.max(0,match.index-400), Math.min(html.length,anchors.lastIndex+350));
-    const title = clean(match[2]).replace(/^(LEARN MORE|詳しくはこちら)\s*/i, '').trim();
-    const nearby = clean(fragment);
-    const heading = title.length > 6 ? title : nearby.slice(0,180);
-    if (heading.length < 7) continue;
-    const date = (nearby.match(/20\d{2}[.\/-]\d{2}[.\/-]\d{2}/) || [])[0] || '';
-    const img = match[2].match(/<img\b[^>]*src=["']([^"']+)["']/i);
+    const title = text.replace(dateMatch[0], ' ').replace(/\bLEARN MORE\b/gi, ' ').replace(/詳しくはこちら/g, ' ').replace(/\s+/g, ' ').trim();
+    if (title.length < 5 || title.length > 250) continue;
+    const date = new Date(dateMatch[0]);
+    const normalizedDate = Number.isNaN(date.getTime()) ? dateMatch[0].replace(/\./g, '-') : date.toISOString().slice(0, 10);
+    const imgMatch = fragment.match(/<img\b[^>]*(?:src|data-src)=["']([^"']+)["']/i);
     let images = [];
-    if (img) { try { const u = new URL(img[1],base); if (u.protocol === 'https:') images = [{thumb:u.href,full:u.href}]; } catch {} }
+    if (imgMatch) {
+      try {
+        const imageUrl = new URL(imgMatch[1].replace(/&amp;/g, '&'), base);
+        if (imageUrl.protocol === 'https:' && !/logo|icon|arrow/i.test(imageUrl.pathname)) images = [{ thumb: imageUrl.href, full: imageUrl.href }];
+      } catch {}
+    }
     seen.add(url.href);
-    items.push({title:heading.slice(0,220),url:url.href,date:date.replace(/\./g,'-'),category:'Official website',images});
+    items.push({ title: title.slice(0, 220), url: url.href, date: normalizedDate, category: 'Official website', images });
   }
   return items;
 }
@@ -93,7 +102,7 @@ export default {
       status, headers: { ...cors, 'Content-Type': 'application/json', ...extra },
     });
     if (request.method === 'OPTIONS') return new Response(null, {
-      headers: { ...cors, 'Access-Control-Allow-Methods': 'GET' },
+      headers: { ...cors, 'Access-Control-Allow-Methods': 'GET', 'Access-Control-Allow-Headers': 'X-GCG-Admin-Token, X-GCG-Force-Refresh' },
     });
     const lang = (new URL(request.url).searchParams.get('lang') || 'ENG').toUpperCase();
     const handle = HANDLES[lang];
@@ -101,11 +110,18 @@ export default {
     if (!['x','website'].includes(source)) return json({error:'source must be x or website'},400);
     if (!handle) return json({ error: 'lang must be ENG or JP' }, 400);
 
+    const forceRequested = request.headers.get('X-GCG-Force-Refresh') === '1';
+    const submittedToken = request.headers.get('X-GCG-Admin-Token') || '';
+    // Configure ADMIN_REFRESH_TOKEN as an encrypted Worker secret in Cloudflare.
+    if (forceRequested && (!env.ADMIN_REFRESH_TOKEN || submittedToken !== env.ADMIN_REFRESH_TOKEN)) {
+      return json({ error: 'Unauthorized refresh' }, 403);
+    }
+    const force = forceRequested;
     const cache = caches.default;
-    const freshKey = new Request(`https://news-cache.local/gcg4/${source}/fresh/${lang}`);
-    const backupKey = new Request(`https://news-cache.local/gcg4/${source}/backup/${lang}`);
+    const freshKey = new Request(`https://news-cache.local/gcg5/${source}/fresh/${lang}`);
+    const backupKey = new Request(`https://news-cache.local/gcg5/${source}/backup/${lang}`);
     const fresh = await cache.match(freshKey);
-    if (fresh) return new Response(fresh.body, {
+    if (fresh && !force) return new Response(fresh.body, {
       headers: { ...cors, 'Content-Type': 'application/json', 'X-Cache': 'HIT' },
     });
 
@@ -126,7 +142,7 @@ export default {
         }
       } catch(err) { console.warn('Official website unavailable:',String(err)); }
       const backup = await cache.match(backupKey);
-      if (backup) return json({...await backup.json(),stale:true},200,{'X-Cache':'STALE'});
+      if (backup && !force) return json({...await backup.json(),stale:true},200,{'X-Cache':'STALE'});
       return json({error:'Official website news unavailable; check Worker parsing against current markup'},502);
     }
 
@@ -150,7 +166,7 @@ export default {
 
     // If mirrors fail, return the last successful result from this Cloudflare data centre.
     const backup = await cache.match(backupKey);
-    if (backup) {
+    if (backup && !force) {
       const payload = await backup.json();
       return json({ ...payload, stale: true }, 200, { 'X-Cache': 'STALE' });
     }

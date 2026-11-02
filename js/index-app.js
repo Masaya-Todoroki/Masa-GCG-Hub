@@ -27,6 +27,7 @@ let activeNewsSource = 'x';
 let newsAttempted = false;
 let newsRenderToken = 0;
 const newsCache = {};
+const newsPending = {};
 
 function formatNewsDate(iso) {
     const d = new Date(iso + 'T00:00:00');
@@ -96,15 +97,36 @@ function renderNewsItems(items) {
     holder.appendChild(list);
 }
 
-async function fetchNews(account, source) {
+async function fetchNews(account, source, force = false, adminToken = '') {
     const cacheKey = `${source}:${account}`;
-    if (!newsCache[cacheKey]) {
-        const res = await fetch(`${NEWS_API_URL}?lang=${account}&source=${source}`);
-        if (!res.ok) throw new Error(`News API returned ${res.status}`);
-        newsCache[cacheKey] = (await res.json()).items;
+    if (force) {
+        const res = await fetch(`${NEWS_API_URL}?lang=${account}&source=${source}`, {
+            headers: { 'X-GCG-Admin-Token': adminToken, 'X-GCG-Force-Refresh': '1' },
+            cache: 'no-store'
+        });
+        if (!res.ok) throw new Error(`Force refresh failed (${res.status})`);
+        const payload = await res.json();
+        newsCache[cacheKey] = payload.items;
+        return payload.items;
     }
-    return newsCache[cacheKey];
+    if (newsCache[cacheKey]) return newsCache[cacheKey];
+    if (!newsPending[cacheKey]) {
+        newsPending[cacheKey] = (async () => {
+            const res = await fetch(`${NEWS_API_URL}?lang=${account}&source=${source}`);
+            if (!res.ok) throw new Error(`News API returned ${res.status}`);
+            const payload = await res.json();
+            newsCache[cacheKey] = payload.items;
+            return payload.items;
+        })().finally(() => { delete newsPending[cacheKey]; });
+    }
+    return newsPending[cacheKey];
 }
+
+// Warm both X feeds as soon as the homepage loads, without delaying the page.
+Promise.allSettled([
+    fetchNews('ENG', 'x'),
+    fetchNews('JP', 'x')
+]);
 
 async function loadNews() {
     newsAttempted = true;
@@ -156,3 +178,52 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
         if (document.getElementById('news').classList.contains('active')) loadNews();
     });
 });
+
+// Secret admin control: hold the News heading for 3 seconds (mouse or touch).
+// Hiding a button is not security: the Worker validates the secret on every refresh.
+(() => {
+    const heading = document.getElementById('news-admin-trigger');
+    const controls = document.getElementById('news-admin-controls');
+    const button = document.getElementById('news-force-refresh');
+    const status = document.getElementById('news-admin-status');
+    if (!heading || !controls || !button || !status) return;
+    let holdTimer = null;
+    let adminToken = '';
+    const cancelHold = () => { if (holdTimer !== null) clearTimeout(holdTimer); holdTimer = null; };
+    heading.addEventListener('pointerdown', e => {
+        if (e.button !== 0) return;
+        cancelHold();
+        holdTimer = setTimeout(() => {
+            holdTimer = null;
+            controls.hidden = !controls.hidden;
+            status.textContent = '';
+        }, 3000);
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(name => heading.addEventListener(name, cancelHold));
+    heading.addEventListener('contextmenu', e => e.preventDefault());
+    button.addEventListener('click', async () => {
+        if (!adminToken) {
+            adminToken = window.prompt('Enter your Cloudflare admin refresh token:') || '';
+            if (!adminToken) return;
+        }
+        const account = activeNewsAccount;
+        const source = activeNewsSource;
+        button.disabled = true;
+        status.textContent = 'Refreshing…';
+        try {
+            const items = await fetchNews(account, source, true, adminToken);
+            if (activeNewsAccount === account && activeNewsSource === source) {
+                ++newsRenderToken;
+                renderNewsItems(items.slice(0, NEWS_MAX_ITEMS));
+                document.getElementById('news-loading').hidden = true;
+            }
+            status.textContent = 'Updated!';
+        } catch (err) {
+            adminToken = ''; // Re-prompt next time if token was incorrect.
+            status.textContent = 'Refresh failed. Check token or feed availability.';
+            console.warn('Admin refresh failed:', err);
+        } finally {
+            button.disabled = false;
+        }
+    });
+})();
