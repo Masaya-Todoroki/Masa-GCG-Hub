@@ -112,12 +112,13 @@ $('deckGridGroups').onclick = handleDeckAction;
 // ============================================================================
 function exportDeckText() { return Object.entries(deck).filter(([id, n]) => Number.isInteger(n) && n > 0 && byId.has(id) && !isToken(byId.get(id))).sort(([a], [b]) => a.localeCompare(b)).map(([id, n]) => `${n} ${id}`).join('\n'); }
 function parseDeckText(input) { const result = {}, errors = []; for (const [index, raw] of input.split(/\r?\n/).entries()) {
-    const line = raw.trim();
+    // Accept common deck-list formats, including copied Markdown and optional names.
+    const line = raw.replace(/\u00a0/g, ' ').trim().replace(/^\*{1,2}/, '').replace(/\\$/, '').replace(/\*{1,2}$/, '').trim();
     if (!line)
         continue;
-    const m = /^(?:x)?(\d+)\s+([A-Za-z0-9]+-\d+)$/i.exec(line);
+    const m = /^(?:x\s*)?(\d+)\s*x?\s*([A-Za-z0-9]+-\d+)(?=$|[\s\\*([:{—–-])(?:.*)$/i.exec(line);
     if (!m) {
-        errors.push(`Line ${index + 1}: Expected 1 GD01-001`);
+        errors.push(`Line ${index + 1}: Expected 1 GD01-001 or 1xGD01-001 (optional card name)`);
         continue;
     }
     const count = Number(m[1]), id = m[2].toUpperCase();
