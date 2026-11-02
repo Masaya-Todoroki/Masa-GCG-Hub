@@ -707,3 +707,17 @@ button, select, input { font: inherit; }
     /* Force four columns in portrait mobile layout, regardless of CSS viewport width. */
     #card-grid, #pair-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
 }
+
+/* Pair selection shortcuts */
+.pair-actions { display:grid; grid-template-columns:minmax(0,1fr) 78px; gap:8px; min-width:0; }
+.pair-actions .create-button { width:100%; min-width:0; }
+.clear-selection-button { min-height:44px; }
+.clear-selection-button:disabled { opacity:.45; cursor:default; }
+.selected-card.can-remove { cursor:pointer; }
+.selected-card.can-remove:hover { border-color:#c35a5a; box-shadow:0 0 0 2px rgba(195,90,90,.16); }
+@media (max-width:900px) { .pair-actions { grid-column:1/-1; } }
+@media (max-aspect-ratio:4/5) {
+    .pair-actions { grid-column:1/-1; grid-row:4; height:40px; gap:5px; }
+    .pair-actions #create-pair { grid-column:auto; grid-row:auto; height:40px; }
+    .pair-actions .clear-selection-button { min-height:0; height:40px; padding:3px; }
+}

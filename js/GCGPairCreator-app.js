@@ -49,6 +49,7 @@ const emptyState = document.getElementById("empty-state");
 
 const selected1 = document.getElementById("selected-1");
 const selected2 = document.getElementById("selected-2");
+const clearPairSelectionButton = document.getElementById("clear-pair-selection");
 const createPairButton = document.getElementById("create-pair");
 
 const deletePairsView = document.getElementById("delete-pairs-view");
@@ -430,7 +431,27 @@ function renderSelectedCard(container, card) {
 function renderSelectedCards() {
     renderSelectedCard(selected1, selectedCard1);
     renderSelectedCard(selected2, selectedCard2);
+    clearPairSelectionButton.disabled = !selectedCard1 && !selectedCard2;
+    selected1.classList.toggle("can-remove", !!selectedCard1);
+    selected2.classList.toggle("can-remove", !!selectedCard2);
+    selected1.title = selectedCard1 ? "Click to remove this card" : "";
+    selected2.title = selectedCard2 ? "Click to remove this card" : "";
 }
+
+// Clicking a selected preview removes just that card, without affecting the other slot.
+selected1.addEventListener("click", () => {
+    if (!selectedCard1 || currentMode !== "add") return;
+    selectedCard1 = null;
+    renderSelectedCards();
+    updateGallerySelection();
+});
+selected2.addEventListener("click", () => {
+    if (!selectedCard2 || currentMode !== "add") return;
+    selectedCard2 = null;
+    renderSelectedCards();
+    updateGallerySelection();
+});
+clearPairSelectionButton.addEventListener("click", clearSelection);
 
 async function createPair() {
     if (databaseBusy) return;
