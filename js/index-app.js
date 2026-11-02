@@ -14,69 +14,115 @@
         });
     
 
-// Official X feeds: fail gracefully when third-party widgets are blocked.
+// News: loaded from the Cloudflare Worker (worker/news-worker.js).
+// After deploying the Worker, paste its URL here:
+const NEWS_API_URL = 'https://gcg-news.masayatodoroki.workers.dev/';
+
+// How many posts to show (the Worker provides up to 20).
+const NEWS_MAX_ITEMS = 10;
+
 const newsAccounts = { ENG: 'English', JP: 'Japanese' };
 let activeNewsAccount = 'ENG';
-let newsScriptPromise;
-let newsRenderToken = 0;
 let newsAttempted = false;
+let newsRenderToken = 0;
+const newsCache = {};
 
-function xWidgetReady() {
-    return Boolean(window.twttr && window.twttr.widgets && window.twttr.widgets.createTimeline);
+function formatNewsDate(iso) {
+    const d = new Date(iso + 'T00:00:00');
+    return isNaN(d) ? iso : d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
-function ensureXWidgets() {
-    if (xWidgetReady()) return Promise.resolve();
-    if (!newsScriptPromise) {
-        newsScriptPromise = new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://platform.twitter.com/widgets.js';
-            script.async = true;
-            script.onload = () => {
-                if (xWidgetReady()) resolve();
-                else if (window.twttr && typeof window.twttr.ready === 'function') {
-                    window.twttr.ready(() => xWidgetReady() ? resolve() : reject(new Error('X widget API unavailable')));
-                } else reject(new Error('X widget API unavailable'));
-            };
-            script.onerror = () => reject(new Error('X widget script blocked'));
-            document.head.appendChild(script);
-        }).catch(error => { newsScriptPromise = undefined; throw error; });
+
+function openLightbox(src) {
+    let box = document.getElementById('news-lightbox');
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'news-lightbox';
+        box.appendChild(document.createElement('img'));
+        box.addEventListener('click', () => { box.hidden = true; });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') box.hidden = true; });
+        document.body.appendChild(box);
     }
-    return newsScriptPromise;
+    box.firstChild.src = src;
+    box.hidden = false;
 }
-function withTimeout(promise, ms) {
-    return Promise.race([
-        promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('X feed timed out')), ms))
-    ]);
+
+function renderNewsItems(items) {
+    const holder = document.getElementById('news-timeline');
+    holder.replaceChildren();
+    const list = document.createElement('ul');
+    list.className = 'news-list';
+    items.forEach(item => {
+        const image = item.images && item.images[0];
+        const li = document.createElement('li');
+        li.className = 'news-item';
+
+        // Thumbnail: opens the image full screen.
+        if (image) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'news-thumb-btn';
+            button.setAttribute('aria-label', 'View image full size');
+            const img = document.createElement('img');
+            img.className = 'news-thumb';
+            img.src = image.thumb;
+            img.alt = '';
+            img.loading = 'lazy';
+            img.referrerPolicy = 'no-referrer';
+            img.addEventListener('error', () => button.remove());
+            button.appendChild(img);
+            button.addEventListener('click', () => openLightbox(image.full));
+            li.appendChild(button);
+        }
+
+        // Rest of the card: opens the post on X.
+        const link = document.createElement('a');
+        link.className = 'news-link';
+        link.href = item.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        const meta = document.createElement('span');
+        meta.className = 'news-meta';
+        meta.textContent = `${formatNewsDate(item.date)} · ${item.category}`;
+        const title = document.createElement('span');
+        title.className = 'news-title';
+        title.textContent = item.title;
+        link.append(meta, title);
+        li.appendChild(link);
+        list.appendChild(li);
+    });
+    holder.appendChild(list);
 }
-async function renderNewsTimeline() {
+
+async function fetchNews(account) {
+    if (!newsCache[account]) {
+        const res = await fetch(`${NEWS_API_URL}?lang=${account}`);
+        if (!res.ok) throw new Error(`News API returned ${res.status}`);
+        newsCache[account] = (await res.json()).items;
+    }
+    return newsCache[account];
+}
+
+async function loadNews() {
     newsAttempted = true;
     const token = ++newsRenderToken;
     const account = activeNewsAccount;
-    const holder = document.getElementById('news-timeline');
     const status = document.getElementById('news-loading');
-    holder.replaceChildren();
+    document.getElementById('news-timeline').replaceChildren();
     status.hidden = false;
     status.textContent = `Loading ${newsAccounts[account]} posts…`;
     try {
-        await withTimeout(ensureXWidgets(), 8000);
+        const items = await fetchNews(account);
         if (token !== newsRenderToken) return;
-        await withTimeout(window.twttr.widgets.createTimeline(
-            { sourceType: 'profile', screenName: `GUNDAM_GCG_${account}` },
-            holder,
-            { theme: 'dark', height: 600, chrome: 'noheader nofooter' }
-        ), 10000);
-        if (token !== newsRenderToken) return;
-        if (!holder.querySelector('iframe')) throw new Error('X did not return a timeline');
+        renderNewsItems(items.slice(0, NEWS_MAX_ITEMS));
         status.hidden = true;
     } catch (error) {
         if (token !== newsRenderToken) return;
-        holder.replaceChildren();
         status.hidden = false;
-        status.textContent = 'X is not displaying the embedded timeline. You can open the official account using the link above.';
-        console.warn('X timeline unavailable:', error);
+        status.textContent = 'X posts could not be loaded right now. Use the link above to open the official account.';
+        console.warn('X posts unavailable:', error);
     }
 }
+
 document.querySelectorAll('.news-lang-btn').forEach(button => {
     button.addEventListener('click', () => {
         if (button.dataset.account === activeNewsAccount) return;
@@ -89,9 +135,9 @@ document.querySelectorAll('.news-lang-btn').forEach(button => {
         const link = document.getElementById('news-account-link');
         link.href = `https://x.com/GUNDAM_GCG_${activeNewsAccount}`;
         link.textContent = `Open ${newsAccounts[activeNewsAccount]} X account`;
-        if (document.getElementById('news').classList.contains('active')) renderNewsTimeline();
+        if (document.getElementById('news').classList.contains('active')) loadNews();
     });
 });
 document.querySelector('[data-tab="news"]')?.addEventListener('click', () => {
-    if (!newsAttempted) renderNewsTimeline();
+    if (!newsAttempted) loadNews();
 });
