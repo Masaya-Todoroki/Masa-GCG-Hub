@@ -144,3 +144,19 @@
             }
         }
     
+/* News tab / official X timeline */
+.news-section { max-width: 680px; margin-left: auto; margin-right: auto; }
+.news-intro { text-align: center; color: rgba(255,255,255,.75); }
+.news-actions { display: flex; justify-content: center; margin: 22px 0; }
+.news-feed { width: 100%; max-width: 560px; margin: 0 auto; min-height: 220px; }
+.news-loading { color: rgba(255,255,255,.65); text-align: center; font-size: .9rem; }
+.news-feed iframe { max-width: 100%; }
+@media (max-width: 600px) {
+    .tabs { flex-wrap: wrap; }
+    .news-actions .btn { text-align: center; }
+}
+
+.news-language-toggle { display:flex; justify-content:center; gap:8px; margin:20px auto 0; }
+.news-lang-btn { cursor:pointer; padding:10px 22px; border:1px solid #666; border-radius:9px; color:#fff; background:#292929; font:inherit; }
+.news-lang-btn.active { background:#b51e2d; border-color:#d7424d; font-weight:700; }
+.news-lang-btn:hover { filter:brightness(1.2); }

@@ -22,6 +22,7 @@
             <button class="tab-btn" data-tab="deck-builders">Deck Builders</button>
             <button class="tab-btn" data-tab="simulators">Simulators</button>
             <button class="tab-btn" data-tab="tools">Tools</button>
+            <button class="tab-btn" data-tab="news">News</button>
         </nav>
 
         <div id="cards" class="tab-content active">
@@ -102,6 +103,22 @@
             <div class="set-section">
                 <div class="button-row">
                     <a href="bracketoverview.html" class="btn">Bracket Overview</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="news" class="tab-content">
+            <div class="set-section news-section">
+                <h2 class="set-title">Gundam Card Game News</h2>
+                <p class="news-intro">Latest posts from the official Gundam Card Game accounts.</p>
+                <div class="news-language-toggle" role="group" aria-label="News language">
+                    <button type="button" class="news-lang-btn active" data-account="ENG" aria-pressed="true">English</button>
+                    <button type="button" class="news-lang-btn" data-account="JP" aria-pressed="false">Japanese</button>
+                </div>
+                <div class="news-actions"><a class="btn" id="news-account-link" href="https://x.com/GUNDAM_GCG_ENG" target="_blank" rel="noopener noreferrer">Open English X account</a></div>
+                <div class="news-feed" id="news-feed">
+                    <p class="news-loading" id="news-loading">Open News to load the official X timeline.</p>
+                    <div id="news-timeline"></div>
                 </div>
             </div>
         </div>
