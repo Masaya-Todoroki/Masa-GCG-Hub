@@ -26,55 +26,35 @@
         </nav>
 
         <div id="cards" class="tab-content active">
-        <div class="set-section">
-            <h2 class="set-title">Promos</h2>
-            <div class="button-row">
-                <a href="storepromos.html" class="btn">Store Promos</a>
-                <a href="ex-base-resource-promos.html" class="btn">EX Base/EX Resources/Resources</a>
+            <div class="set-section">
+                <h2 class="set-title">Promos</h2>
+                <div class="button-row">
+                    <a href="storepromos.html" class="btn">Store Promos</a>
+                    <a href="ex-base-resource-promos.html" class="btn">EX Base/EX Resources/Resources</a>
+                </div>
             </div>
-        </div>
 
-        <div class="set-section">
-            <h2 class="set-title">GD06</h2>
-            <div class="button-row">
-                <a href="gdreveals.html?set=GD06" class="btn">Reveal List</a>
-                <a href="gdaasp.html?set=GD06" class="btn">AA-SP</a>
-                <a href="GCG-AAPairings.html?set=GD06" class="btn">AA Pairings</a>
-            </div>
-        </div>
-
-        <div class="set-section">
-            <h2 class="set-title">GD05</h2>
-            <div class="button-row">
-                <a href="gdreveals.html?set=GD05" class="btn">Reveal List</a>
-                <a href="gdaasp.html?set=GD05" class="btn">AA-SP</a>
-                <a href="GCG-AAPairings.html?set=GD05" class="btn">AA Pairings</a>
-            </div>
-        </div>
-
-        <div class="set-section">
-            <h2 class="set-title">GD04</h2>
-            <div class="button-row">
-                <a href="gdreveals.html?set=GD04" class="btn">Reveal List</a>
-                <a href="gdaasp.html?set=GD04" class="btn">AA-SP</a>
-                <a href="GCG-AAPairings.html?set=GD04" class="btn">AA Pairings</a>
-            </div>
-        </div>
-
-        <div class="set-section">
-            <h2 class="set-title">GD03</h2>
-            <div class="button-row">
-                <a href="gdreveals.html?set=GD03" class="btn">AA Pairings</a>
-            </div>
-        </div>
-
-        <div class="set-section">
-            <h2 class="set-title">EB01</h2>
-            <div class="button-row">
-                <a href="gdreveals.html?set=EB01" class="btn">Reveal List</a>
-                <a href="GCG-AAPairings.html?set=EB01" class="btn">AA Pairings</a>
-            </div>
-        </div>
+            <section class="set-explorer" aria-label="Gundam booster set explorer">
+                <div class="set-explorer-heading">
+                    <h2 class="set-title">Booster Sets</h2>
+                </div>
+                <div class="set-explorer-scroll" id="set-explorer-scroll">
+                    <div class="set-explorer-track" id="set-explorer-track">
+                        <button type="button" class="set-art-panel" data-set="GD06" aria-label="View GD06 options"><img src="images/SetThumbnails/GD06.webp" alt="GD06 key art" loading="lazy"><span>GD06</span></button>
+                        <button type="button" class="set-art-panel" data-set="EB01" aria-label="View EB01 options"><img src="images/SetThumbnails/EB01.webp" alt="EB01 key art" loading="lazy" draggable="false"><span>EB01</span></button>
+                        <button type="button" class="set-art-panel" data-set="GD05" aria-label="View GD05 options"><img src="images/SetThumbnails/GD05.webp" alt="GD05 key art" loading="lazy"><span>GD05</span></button>
+                        <button type="button" class="set-art-panel" data-set="GD04" aria-label="View GD04 options"><img src="images/SetThumbnails/GD04.webp" alt="GD04 key art" loading="lazy"><span>GD04</span></button>
+                        <button type="button" class="set-art-panel" data-set="GD03" aria-label="View GD03 options"><img src="images/SetThumbnails/GD03.webp" alt="GD03 key art" loading="lazy"><span>GD03</span></button>
+                        <button type="button" class="set-art-panel" data-set="GD02" aria-label="View GD02 options"><img src="images/SetThumbnails/GD02.webp" alt="GD02 key art" loading="lazy"><span>GD02</span></button>
+                        <button type="button" class="set-art-panel" data-set="GD01" aria-label="View GD01 options"><img src="images/SetThumbnails/GD01.webp" alt="GD01 key art" loading="lazy"><span>GD01</span></button>
+                    </div>
+                <div class="set-selected-options" id="set-selected-options" hidden>
+                    <h3 id="set-selected-title">GD06</h3>
+                    <div id="set-selected-links" class="set-selected-links"></div>
+                    <p class="set-selected-tip">Click the artwork to return to all sets.</p>
+                </div>
+                </div>
+            </section>
         </div>
 
         <!-- Add more deck builders by copying one of the set-section blocks below. -->

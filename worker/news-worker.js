@@ -2,7 +2,7 @@
 // Deploy this file to your existing Cloudflare Worker.
 const HANDLES = { ENG: 'GUNDAM_GCG_ENG', JP: 'GUNDAM_GCG_JP' };
 const NITTER_INSTANCES = ['https://nitter.mie.foundation', 'https://nitter.mizuki.st'];
-const MAX_POSTS = 10;
+const MAX_POSTS = 20;
 const CACHE_SECONDS = 1800;
 const STALE_SECONDS = 7 * 24 * 60 * 60;
 const ALLOWED_ORIGIN = '*';

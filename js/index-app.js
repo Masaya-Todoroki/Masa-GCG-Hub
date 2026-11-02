@@ -227,3 +227,209 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
         }
     });
 })();
+
+
+// Angled set browser: full-art expansion, links and mouse drag scrolling.
+(() => {
+  const explorer = document.querySelector('.set-explorer');
+  if (!explorer) return;
+  const track = document.getElementById('set-explorer-track');
+  const scroller = document.getElementById('set-explorer-scroll');
+  const options = document.getElementById('set-selected-options');
+  const title = document.getElementById('set-selected-title');
+  const links = document.getElementById('set-selected-links');
+  const panels = [...track.querySelectorAll('.set-art-panel')];
+  const actions = [['Reveal List', 'gdreveals.html'], ['AA-SP', 'gdaasp.html'], ['AA Pairings', 'GCG-AAPairings.html']];
+  let selected = null;
+  let savedScroll = 0;
+  let returning = false;
+  let expanding = false;
+  let selectedPanel = null;
+  const reset = () => {
+    if (returning || !selectedPanel) return;
+    returning = true;
+    const panel = selectedPanel;
+    const start = panel.getBoundingClientRect();
+    const img = panel.querySelector('img');
+    // A temporary copy travels back to the exact original panel position.
+    // The real strip can be restored behind it without geometry jumps.
+    const ghost = document.createElement('div');
+    ghost.className = 'set-return-ghost';
+    const ghostImg = img.cloneNode(true);
+    ghost.appendChild(ghostImg);
+    Object.assign(ghost.style, {position:'fixed',left:`${start.left}px`,top:`${start.top}px`,width:`${start.width}px`,height:`${start.height}px`,zIndex:'9999',pointerEvents:'none',overflow:'hidden',clipPath:'polygon(0 0,100% 0,100% 100%,0 100%)'});
+    document.body.appendChild(ghost);
+    options.hidden = true;
+    explorer.classList.add('is-restoring','is-returning-position');
+    explorer.classList.remove('is-selected');
+    panels.forEach(p => { p.classList.remove('is-active'); p.setAttribute('aria-pressed','false'); });
+    selected = null;
+    selectedPanel = null;
+    const oldScrollBehavior = scroller.style.scrollBehavior;
+    scroller.style.scrollBehavior = 'auto';
+    scroller.scrollLeft = savedScroll;
+    // Force layout so the destination is measured after the original strip returns.
+    const target = panel.getBoundingClientRect();
+    // Match the actual collapsed panel's image framing, not just its outer mask.
+    const finalImageStyle = getComputedStyle(img);
+    const finalClip = getComputedStyle(panel).clipPath;
+    const finalPosition = finalImageStyle.objectPosition;
+    const finalTransform = finalImageStyle.transform === 'none' ? 'none' : finalImageStyle.transform;
+    ghostImg.style.objectPosition = 'center center';
+    ghostImg.style.transform = 'none';
+    ghostImg.style.transformOrigin = 'center center';
+    const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 440;
+    const motion = ghost.animate([
+      {left:`${start.left}px`,top:`${start.top}px`,width:`${start.width}px`,height:`${start.height}px`,clipPath:'polygon(0 0,100% 0,100% 100%,0 100%)',opacity:1},
+      {left:`${target.left}px`,top:`${target.top}px`,width:`${target.width}px`,height:`${target.height}px`,clipPath:finalClip,opacity:1}
+    ], {duration,easing:'cubic-bezier(.2,.75,.2,1)',fill:'forwards'});
+    const imageMotion = ghostImg.animate([
+      {objectPosition:'center center',transform:'none'},
+      {objectPosition:finalPosition,transform:finalTransform}
+    ], {duration,easing:'cubic-bezier(.2,.75,.2,1)',fill:'forwards'});
+    const reveal = scroller.animate([{opacity:0},{opacity:1}],{duration,easing:'ease-out',fill:'forwards'});
+    Promise.allSettled([motion.finished,imageMotion.finished,reveal.finished]).then(() => {
+      ghost.remove();
+      motion.cancel(); imageMotion.cancel(); reveal.cancel();
+      explorer.classList.remove('is-returning-position','is-restoring');
+      scroller.style.scrollBehavior = oldScrollBehavior;
+      returning = false;
+    });
+  };
+  panels.forEach(panel => {
+    panel.setAttribute('aria-pressed','false');
+    panel.querySelector('img')?.setAttribute('draggable','false');
+    panel.addEventListener('click', () => {
+      if (suppressClick || returning || expanding) return;
+      const id = panel.dataset.set;
+      if (selected === id) { reset(); return; }
+      savedScroll = scroller.scrollLeft;
+      expanding = true;
+      // Capture the clicked panel and its actual collapsed artwork framing.
+      const start = panel.getBoundingClientRect();
+      const originalImage = panel.querySelector('img');
+      const imageStyle = getComputedStyle(originalImage);
+      const startClip = getComputedStyle(panel).clipPath;
+      const startPosition = imageStyle.objectPosition;
+      const startTransform = imageStyle.transform === 'none' ? 'none' : imageStyle.transform;
+      // Clone the rendered panel, not just the image: preserve its initial
+      // artwork, label, tint and mask for a seamless shared-element handoff.
+      const ghost = panel.cloneNode(true);
+      ghost.className = 'set-return-ghost set-expand-ghost';
+      ghost.removeAttribute('id');
+      ghost.removeAttribute('aria-pressed');
+      const ghostImg = ghost.querySelector('img');
+      const ghostLabel = ghost.querySelector('span');
+      if (ghostLabel) ghostLabel.remove();
+      Object.assign(ghost.style, {
+        position:'fixed', left:`${start.left}px`, top:`${start.top}px`,
+        width:`${start.width}px`, height:`${start.height}px`,
+        zIndex:'9999', pointerEvents:'none', overflow:'hidden', clipPath:startClip,
+        display:'block', margin:'0', padding:'0', border:'0', boxSizing:'border-box',
+        opacity:'1', transform:'none', filter:getComputedStyle(panel).filter,
+        transition:'none', isolation:'isolate'
+      });
+      ghostImg.style.position = 'absolute';
+      ghostImg.style.inset = '0';
+      ghostImg.style.width = '100%';
+      ghostImg.style.height = '100%';
+      ghostImg.style.objectFit = imageStyle.objectFit;
+      ghostImg.style.transition = 'none';
+      ghostImg.style.objectPosition = startPosition;
+      ghostImg.style.transform = startTransform;
+      ghostImg.style.transformOrigin = 'center center';
+      document.body.appendChild(ghost);
+      // Keep the original visible until the overlay has been painted.
+      ghost.getBoundingClientRect();
+      selected = id;
+      selectedPanel = panel;
+      const art = panel.querySelector('img');
+      const updateRatio = () => {
+        if (art && art.naturalWidth && art.naturalHeight) {
+          panel.style.setProperty('--selected-art-ratio', `${art.naturalWidth} / ${art.naturalHeight}`);
+        }
+      };
+      updateRatio();
+      if (art && !art.complete) art.addEventListener('load', updateRatio, {once:true});
+      title.textContent = id;
+      links.replaceChildren();
+      actions.forEach(([name,page]) => {
+        const a = document.createElement('a');
+        a.className = 'btn'; a.href = `${page}?set=${encodeURIComponent(id)}`;
+        a.textContent = name; links.appendChild(a);
+      });
+      panels.forEach(p => { p.classList.toggle('is-active',p === panel); p.setAttribute('aria-pressed',String(p === panel)); });
+      explorer.classList.add('is-selected', 'is-expanding-position');
+      options.hidden = true;
+      const oldScrollBehavior = scroller.style.scrollBehavior;
+      scroller.style.scrollBehavior = 'auto';
+      scroller.scrollLeft = 0;
+      // The destination is the visible viewport, NOT the active flex item:
+      // during the layout switch that item can temporarily report its old size.
+      // Using the viewport gives a stable, real large endpoint on every click.
+      const destination = scroller.getBoundingClientRect();
+      const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 480;
+      const easing = 'cubic-bezier(.2,.75,.2,1)';
+      const fullClip = 'polygon(0% 0%,100% 0%,100% 100%,0% 100%)';
+      // Do not allow the original panel's CSS transition to interfere with the
+      // geometry measured for the overlay. The clone alone owns the movement.
+      ghost.style.left = `${start.left}px`;
+      ghost.style.top = `${start.top}px`;
+      ghost.style.width = `${start.width}px`;
+      ghost.style.height = `${start.height}px`;
+      ghost.style.clipPath = startClip;
+      ghostImg.style.objectPosition = startPosition;
+      ghostImg.style.transform = startTransform;
+      const finish = () => {
+        // Reveal the expanded image before removing the moving copy.
+        scroller.style.transition = 'none';
+        explorer.classList.remove('is-expanding-position');
+        scroller.style.opacity = '1';
+        options.hidden = false;
+        void scroller.offsetWidth;
+        requestAnimationFrame(() => {
+          ghost.remove();
+          scroller.style.removeProperty('opacity');
+          scroller.style.removeProperty('transition');
+          scroller.style.scrollBehavior = oldScrollBehavior;
+          expanding = false;
+        });
+      };
+      // Paint the small clone at its source position first. Then run a single
+      // animation whose endpoints are the saved source and the real viewport.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const motion = ghost.animate([
+          {left:`${start.left}px`,top:`${start.top}px`,width:`${start.width}px`,height:`${start.height}px`,clipPath:startClip},
+          {left:`${destination.left}px`,top:`${destination.top}px`,width:`${destination.width}px`,height:`${destination.height}px`,clipPath:fullClip}
+        ],{duration,easing,fill:'forwards'});
+        const imageMotion = ghostImg.animate([
+          {objectPosition:startPosition,transform:startTransform},
+          {objectPosition:'center center',transform:'none'}
+        ],{duration,easing,fill:'forwards'});
+        Promise.allSettled([motion.finished,imageMotion.finished]).then(finish);
+      }));
+    });
+  });
+  let drag = null, suppressClick = false;
+  scroller.addEventListener('pointerdown', e => {
+    if (selected || e.pointerType !== 'mouse' || e.button !== 0) return;
+    drag = {x:e.clientX,scroll:scroller.scrollLeft,moved:false};
+  });
+  window.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (Math.abs(dx) > 5) {
+      if (!drag.moved) { drag.moved = true; scroller.classList.add('is-dragging'); }
+      scroller.scrollLeft = drag.scroll - dx;
+    }
+  });
+  const stopDrag = () => {
+    if (!drag) return;
+    if (drag.moved) { suppressClick = true; setTimeout(() => { suppressClick = false; }, 80); }
+    drag = null; scroller.classList.remove('is-dragging');
+  };
+  window.addEventListener('pointerup',stopDrag);
+  window.addEventListener('pointercancel',stopDrag);
+  scroller.addEventListener('dragstart',e => e.preventDefault());
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && selected) reset(); });
+})();

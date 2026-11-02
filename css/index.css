@@ -210,3 +210,198 @@
 #news-force-refresh { padding:8px 14px; border-radius:9px; border:1px solid #5374c4; background:#306bc1; color:white; font:inherit; cursor:pointer; }
 #news-force-refresh:disabled { opacity:.55; cursor:wait; }
 #news-admin-status { font-size:13px; color:#b9c9e7; }
+
+/* Angled set browser / full-art selected view */
+.set-explorer{position:relative;margin:38px auto 14px;max-width:960px}
+.set-explorer-heading{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.set-explorer-heading .set-title{margin:0 0 15px}
+.set-explorer-hint{color:rgba(255,255,255,.56);font-size:.82rem}
+.set-explorer-scroll{overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:#5f82ff transparent;scroll-behavior:smooth;cursor:grab;touch-action:pan-x}
+.set-explorer-scroll.is-dragging{cursor:grabbing;scroll-behavior:auto;user-select:none}
+.set-explorer-track{display:flex;align-items:stretch;width:max-content;min-width:100%;height:300px;gap:0;padding:0 12px 7px;box-sizing:border-box}
+.set-art-panel{position:relative;display:block;flex:0 0 190px;width:190px;height:285px;padding:0;margin-left:-45px;border:0;background:#252d46;color:white;cursor:pointer;isolation:isolate;clip-path:polygon(23% 0,100% 0,77% 100%,0 100%);transition:clip-path .48s cubic-bezier(.2,.75,.2,1),width .48s,flex-basis .48s,margin .48s,opacity .28s,filter .2s;user-select:none;-webkit-user-drag:none}
+.set-art-panel:first-child{margin-left:0}
+.set-art-panel::before{content:"";position:absolute;inset:0;background:#20283d;pointer-events:none}
+.set-art-panel img{display:block;width:100%;height:100%;object-fit:cover;object-position:88% center;transform:scale(.94);pointer-events:none;user-select:none;-webkit-user-drag:none;transition:transform .48s}
+/* Thin edge highlight follows the angled polygon and leaves a small visible gap. */
+.set-art-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);pointer-events:none;box-shadow:inset 0 0 0 2px rgba(174,200,255,.55)}
+.set-art-panel span{position:absolute;z-index:1;bottom:15px;left:25%;font-weight:800;font-size:1.45rem;text-shadow:0 2px 8px #000}
+.set-art-panel:hover{filter:brightness(1.2)}
+.set-art-panel:focus-visible{outline:3px solid #9bb5ff;outline-offset:-5px}
+.set-explorer.is-selected .set-explorer-scroll{overflow:hidden;cursor:default;touch-action:auto}
+.set-explorer.is-selected .set-explorer-track{width:100%;min-width:0;height:clamp(265px, 42vw, 410px);padding:0}
+.set-explorer.is-selected .set-art-panel{flex-basis:0;width:0;height:0;margin:0;opacity:0;pointer-events:none;overflow:hidden}
+.set-explorer.is-selected .set-art-panel.is-active{flex:0 0 100%;width:100%;height:100%;min-height:0;opacity:1;pointer-events:auto;overflow:visible;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+.set-explorer.is-selected .set-art-panel.is-active img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;transform:none;visibility:visible;opacity:1}
+.set-explorer.is-selected .set-art-panel.is-active span{left:20px;top:16px;bottom:auto}
+.set-explorer.is-selected .set-explorer-nav{display:none}
+.set-explorer.is-selected .set-explorer-hint{visibility:hidden}
+.set-selected-options{position:absolute;left:4%;top:50%;transform:translateY(-35%);width:min(31%,260px);z-index:3;pointer-events:none;animation:setOptionsIn .3s ease both}
+.set-selected-options[hidden]{display:none}
+.set-selected-options h3{font-size:1.55rem;margin:0 0 14px;text-shadow:0 2px 8px #000}
+.set-selected-links{display:flex;flex-direction:column;align-items:stretch;gap:10px;pointer-events:auto}
+.set-selected-links .btn{text-align:center;border-radius:9px;padding:11px 8px;box-shadow:0 2px 12px #0006}
+.set-selected-tip{display:none}
+.set-explorer.is-selected::after{content:"";position:absolute;inset:55px auto 0 0;width:48%;pointer-events:none;background:linear-gradient(90deg,rgba(8,12,27,.65),transparent);z-index:1}
+.set-explorer-nav{display:flex;justify-content:center;gap:12px;margin:10px 0 0}
+.set-explorer-nav button{background:rgba(95,130,255,.2);color:white;border:1px solid rgba(255,255,255,.2);border-radius:50%;width:36px;height:36px;font-size:1.6rem;cursor:pointer}
+.set-explorer-nav button:hover{background:#4a6cff}
+@keyframes setOptionsIn{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
+@media(max-width:600px){.set-explorer-track{height:235px}.set-art-panel{flex-basis:130px;width:130px;height:220px;margin-left:-25px}.set-art-panel span{font-size:1rem}.set-explorer.is-selected .set-explorer-track{height:245px}.set-explorer.is-selected .set-art-panel.is-active{min-height:0}.set-selected-options{left:4%;width:43%;transform:translateY(-30%)}.set-selected-options h3{font-size:1.1rem;margin-bottom:8px}.set-selected-links{gap:7px}.set-selected-links .btn{padding:9px 4px;font-size:.75rem}.set-explorer.is-selected::after{inset:50px auto 0 0;width:65%}}
+@media(prefers-reduced-motion:reduce){.set-art-panel,.set-art-panel img{transition:none}.set-selected-options{animation:none}}
+
+
+/* V3: selected artwork uses its native dimensions, without cropping. */
+.set-explorer { width:100%; min-width:0; box-sizing:border-box; }
+.set-explorer-scroll { width:100%; min-width:0; box-sizing:border-box; position:relative; }
+.set-explorer.is-selected .set-explorer-track {
+  height:auto; min-height:0; width:100%; min-width:0; padding:0; display:block;
+}
+.set-explorer.is-selected .set-art-panel { display:none; }
+.set-explorer.is-selected .set-art-panel.is-active {
+  display:block; width:100%; max-width:100%; height:auto;
+  aspect-ratio:var(--selected-art-ratio, 2.4); box-sizing:border-box;
+  border:1px solid rgba(174,200,255,.55);
+  overflow:hidden; margin:0; flex:none;
+}
+.set-explorer.is-selected .set-art-panel.is-active img {
+  position:absolute; inset:0; width:100%; height:100%; object-fit:contain;
+  object-position:center; transform:none;
+}
+/* Keep only the title above the buttons, not a second label on the image. */
+.set-explorer.is-selected .set-art-panel.is-active span { display:none; }
+/* Options sit over the image itself, not over the entire section. */
+.set-explorer.is-selected .set-selected-options {
+  position:absolute; left:4%; top:50%; transform:translateY(-50%);
+  width:min(31%,260px); max-width:48%; z-index:3;
+}
+.set-explorer.is-selected::after { display:none; }
+.set-explorer.is-selected .set-art-panel.is-active::after {
+  background:linear-gradient(90deg,rgba(8,12,27,.68),rgba(8,12,27,.24) 45%,transparent 70%);
+  box-shadow:none;
+}
+@media(max-width:600px) {
+  .container { width:100%; min-width:0; box-sizing:border-box; }
+  .set-explorer.is-selected .set-explorer-track { height:auto; }
+  .set-explorer.is-selected .set-art-panel.is-active { min-height:0; }
+  .set-explorer.is-selected .set-selected-options {
+    left:4%; top:50%; transform:translateY(-50%); width:43%; max-width:48%;
+  }
+  .set-explorer.is-selected .set-selected-options h3 { margin-bottom:8px; }
+}
+
+/* V4: lock the explorer's vertical footprint in both states.
+   The complete landscape artwork fits inside that footprint without cropping. */
+.set-explorer { --set-explorer-height: 300px; }
+.set-explorer-track,
+.set-explorer.is-selected .set-explorer-track {
+  height: var(--set-explorer-height);
+  min-height: var(--set-explorer-height);
+  max-height: var(--set-explorer-height);
+}
+.set-explorer.is-selected .set-explorer-track { display:block; }
+.set-explorer.is-selected .set-art-panel.is-active {
+  height:100%;
+  max-height:100%;
+  aspect-ratio:auto;
+  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
+}
+.set-explorer.is-selected .set-art-panel.is-active img {
+  object-fit:contain;
+  object-position:center;
+}
+@media (max-width:600px) {
+  .set-explorer { --set-explorer-height:235px; }
+  .set-explorer.is-selected .set-selected-options h3 { font-size:1rem; }
+  .set-explorer.is-selected .set-selected-links { gap:6px; }
+  .set-explorer.is-selected .set-selected-links .btn { padding:7px 4px; }
+}
+
+/* V5: Fill the same fixed-height area when a set is expanded. */
+.set-explorer.is-selected .set-art-panel.is-active img {
+  object-fit:cover;
+  object-position:center center;
+}
+
+/* V6: Keep panels in layout so the browser can animate back to the angled strip.
+   display:none and switching the track to display:block interrupted minimising. */
+.set-explorer.is-selected .set-explorer-track {
+  display:flex;
+  align-items:stretch;
+}
+.set-explorer.is-selected .set-art-panel {
+  display:block;
+  flex:0 0 0px;
+  width:0;
+  height:100%;
+  margin-left:0;
+  opacity:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+.set-explorer.is-selected .set-art-panel.is-active {
+  display:block;
+  flex:0 0 100%;
+  width:100%;
+  height:100%;
+  opacity:1;
+  overflow:hidden;
+  pointer-events:auto;
+}
+
+/* V7: cinematic fade return. The original angled carousel and its saved scroll
+   position are restored while invisible, then gently revealed in place. */
+.set-explorer-scroll { transition: opacity 190ms ease-in-out; }
+.set-explorer.is-returning-out .set-explorer-scroll,
+.set-explorer.is-returning-in .set-explorer-scroll { opacity:0; }
+.set-explorer.is-returning-out .set-art-panel { pointer-events:none; }
+@media (prefers-reduced-motion:reduce) {
+  .set-explorer-scroll { transition:none; }
+}
+
+/* V8: suppress geometry animation while restoring the saved carousel position. */
+.set-explorer.is-restoring .set-art-panel,
+.set-explorer.is-restoring .set-art-panel img,
+.set-explorer.is-restoring .set-explorer-track { transition:none !important; }
+.set-explorer.is-returning-out .set-explorer-scroll { opacity:0; }
+.set-explorer.is-returning-in .set-explorer-scroll { opacity:1; }
+.set-explorer.is-returning-in .set-art-panel { pointer-events:none; }
+
+/* V9: Return selected artwork to its saved position while the strip fades back. */
+.set-return-ghost { background:#252d46; box-shadow:inset 0 0 0 2px rgba(174,200,255,.55); }
+.set-return-ghost img { width:100%;height:100%;display:block;object-fit:cover;object-position:center center; }
+.set-explorer.is-returning-position .set-explorer-scroll {opacity:0;}
+.set-explorer.is-returning-position .set-art-panel {pointer-events:none;}
+
+/* V11: keep the real strip hidden while the selected artwork flies out of its source panel. */
+.set-explorer.is-expanding-position .set-explorer-scroll { opacity:0 !important; }
+.set-explorer.is-expanding-position .set-art-panel { pointer-events:none; }
+
+/* V12: exact source-panel clone for expansion, with matching image framing. */
+.set-expand-ghost { isolation:isolate; background:#252d46; }
+.set-expand-ghost::before { content:""; position:absolute; inset:0; background:#20283d; pointer-events:none; }
+.set-expand-ghost::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%); box-shadow:inset 0 0 0 2px rgba(174,200,255,.55); }
+.set-expand-ghost img { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+
+/* V13: The animation clone must match the actual source image and mask.
+   The old pseudo-element painted an opaque layer OVER the cloned artwork,
+   making the first frames look like a different image. */
+.set-expand-ghost::before { display:none !important; }
+.set-expand-ghost::after {
+  background:linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);
+  box-shadow:inset 0 0 0 2px rgba(174,200,255,.55);
+}
+.set-expand-ghost img {
+  display:block; object-fit:cover; transition:none !important;
+}
+
+/* V14: keep the expanded destination fully painted beneath the moving artwork
+   before the shared-element copy is removed. */
+.set-explorer.is-expanding-position .set-explorer-scroll { transition:none !important; }
+.set-expand-ghost { box-shadow:none !important; }
+.set-expand-ghost::after { box-shadow:none !important; }
+
+/* V15: keep the flying image above the hidden destination until its resize completes. */
+.set-expand-ghost { visibility:visible !important; opacity:1 !important; will-change:left,top,width,height,clip-path; }
+.set-expand-ghost img { will-change:transform,object-position; }
+.set-explorer.is-expanding-position .set-explorer-scroll { opacity:0 !important; }
