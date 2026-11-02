@@ -222,7 +222,7 @@
 .set-art-panel{position:relative;display:block;flex:0 0 190px;width:190px;height:285px;padding:0;margin-left:-45px;border:0;background:#252d46;color:white;cursor:pointer;isolation:isolate;clip-path:polygon(23% 0,100% 0,77% 100%,0 100%);transition:clip-path .48s cubic-bezier(.2,.75,.2,1),width .48s,flex-basis .48s,margin .48s,opacity .28s,filter .2s;user-select:none;-webkit-user-drag:none}
 .set-art-panel:first-child{margin-left:0}
 .set-art-panel::before{content:"";position:absolute;inset:0;background:#20283d;pointer-events:none}
-.set-art-panel img{display:block;width:100%;height:100%;object-fit:cover;object-position:88% center;transform:scale(.94);pointer-events:none;user-select:none;-webkit-user-drag:none;transition:transform .48s}
+.set-art-panel img{display:block;width:100%;height:100%;object-fit:cover;object-position:var(--set-collapsed-position, 88% center);transform:scale(.94);pointer-events:none;user-select:none;-webkit-user-drag:none;transition:transform .48s}
 /* Thin edge highlight follows the angled polygon and leaves a small visible gap. */
 .set-art-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);pointer-events:none;box-shadow:inset 0 0 0 2px rgba(174,200,255,.55)}
 .set-art-panel span{position:absolute;z-index:1;bottom:15px;left:25%;font-weight:800;font-size:1.45rem;text-shadow:0 2px 8px #000}
@@ -405,3 +405,6 @@
 .set-expand-ghost { visibility:visible !important; opacity:1 !important; will-change:left,top,width,height,clip-path; }
 .set-expand-ghost img { will-change:transform,object-position; }
 .set-explorer.is-expanding-position .set-explorer-scroll { opacity:0 !important; }
+
+/* Per-set expanded framing, configured in BOOSTER_SETS. */
+.set-explorer.is-selected .set-art-panel.is-active img { object-position:var(--set-expanded-position, 75% center); }

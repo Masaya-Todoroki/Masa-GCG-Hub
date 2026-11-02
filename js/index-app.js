@@ -1,3 +1,15 @@
+// Set Explorer configuration: add new sets here, newest first.
+// collapsed / expanded are horizontal image positions (0 = left, 50 = centre, 100 = right).
+const BOOSTER_SETS = [
+  { id: 'GD06', collapsed: 88, expanded: 75 },
+  { id: 'GD05', collapsed: 70, expanded: 50 },
+  { id: 'EB01', collapsed: 70, expanded: 75 },
+  { id: 'GD04', collapsed: 75, expanded: 75 },
+  { id: 'GD03', collapsed: 70, expanded: 65 },
+  { id: 'GD02', collapsed: 88, expanded: 75 },
+  { id: 'GD01', collapsed: 88, expanded: 75 }
+];
+
         // Tab switching. To add a tab: add a button with data-tab="your-id"
         // and a matching <div id="your-id" class="tab-content">...</div>.
         const tabButtons = document.querySelectorAll('.tab-btn');
@@ -238,6 +250,28 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
   const options = document.getElementById('set-selected-options');
   const title = document.getElementById('set-selected-title');
   const links = document.getElementById('set-selected-links');
+  // Build the carousel from the configuration before attaching event handlers.
+  track.replaceChildren();
+  BOOSTER_SETS.forEach(set => {
+    const panel = document.createElement('button');
+    panel.type = 'button';
+    panel.className = 'set-art-panel';
+    panel.dataset.set = set.id;
+    panel.setAttribute('aria-label', `View ${set.id} options`);
+    const collapsed = Math.max(0, Math.min(100, Number(set.collapsed) || 0));
+    const expanded = Math.max(0, Math.min(100, Number(set.expanded) || 0));
+    panel.style.setProperty('--set-collapsed-position', `${collapsed}% center`);
+    panel.style.setProperty('--set-expanded-position', `${expanded}% center`);
+    const img = document.createElement('img');
+    img.src = `images/SetThumbnails/${encodeURIComponent(set.id)}.webp`;
+    img.alt = `${set.id} key art`;
+    img.loading = 'lazy';
+    img.draggable = false;
+    const label = document.createElement('span');
+    label.textContent = set.id;
+    panel.append(img, label);
+    track.appendChild(panel);
+  });
   const panels = [...track.querySelectorAll('.set-art-panel')];
   const actions = [['Reveal List', 'gdreveals.html'], ['AA-SP', 'gdaasp.html'], ['AA Pairings', 'GCG-AAPairings.html']];
   let selected = null;
@@ -275,7 +309,7 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
     const finalClip = getComputedStyle(panel).clipPath;
     const finalPosition = finalImageStyle.objectPosition;
     const finalTransform = finalImageStyle.transform === 'none' ? 'none' : finalImageStyle.transform;
-    ghostImg.style.objectPosition = 'center center';
+    ghostImg.style.objectPosition = getComputedStyle(panel).getPropertyValue('--set-expanded-position').trim() || '75% center';
     ghostImg.style.transform = 'none';
     ghostImg.style.transformOrigin = 'center center';
     const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 440;
@@ -284,7 +318,7 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
       {left:`${target.left}px`,top:`${target.top}px`,width:`${target.width}px`,height:`${target.height}px`,clipPath:finalClip,opacity:1}
     ], {duration,easing:'cubic-bezier(.2,.75,.2,1)',fill:'forwards'});
     const imageMotion = ghostImg.animate([
-      {objectPosition:'center center',transform:'none'},
+      {objectPosition:getComputedStyle(panel).getPropertyValue('--set-expanded-position').trim() || '75% center',transform:'none'},
       {objectPosition:finalPosition,transform:finalTransform}
     ], {duration,easing:'cubic-bezier(.2,.75,.2,1)',fill:'forwards'});
     const reveal = scroller.animate([{opacity:0},{opacity:1}],{duration,easing:'ease-out',fill:'forwards'});
@@ -404,7 +438,7 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
         ],{duration,easing,fill:'forwards'});
         const imageMotion = ghostImg.animate([
           {objectPosition:startPosition,transform:startTransform},
-          {objectPosition:'center center',transform:'none'}
+          {objectPosition:getComputedStyle(panel).getPropertyValue('--set-expanded-position').trim() || '75% center',transform:'none'}
         ],{duration,easing,fill:'forwards'});
         Promise.allSettled([motion.finished,imageMotion.finished]).then(finish);
       }));
