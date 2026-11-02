@@ -291,3 +291,19 @@
             }
         }
     
+
+/* V23 — Gundam Card Game homepage-matched colour theme */
+:root { --gcg-metal: linear-gradient(180deg,#8faec9 0%,#7197b9 25%,#507da5 55%,#315d86 80%,#24496e 100%); --gcg-metal-hover: linear-gradient(180deg,#a4bed4 0%,#85a7c3 25%,#6289ac 55%,#3d6b93 80%,#2c567c 100%); --gcg-border: rgba(176,199,216,.34); }
+body { background: linear-gradient(135deg,#171e29 0%,#263445 55%,#1b2735 100%); color:#f5f8fc; }
+
+.page-header { background:rgba(20,30,43,.86); border-bottom-color:var(--gcg-border); }
+.page-description,.category-title { color:#c6d6e5; }
+.nav-button { background:var(--gcg-metal); border-color:rgba(184,210,229,.55); color:#fff; text-shadow:none; }
+.nav-button:hover { background:var(--gcg-metal-hover); border-color:#b7d0e2; }
+.nav-button.active { background:var(--gcg-metal-hover); border-color:#d4e5f1; color:#fff; box-shadow:0 0 0 2px rgba(171,205,231,.18); }
+.promo-card { background:#1c2939; border-color:var(--gcg-border); }
+.promo-card:hover { border-color:#a0bfd8; }
+.bottom-toggle { background:rgba(22,34,49,.96); border-color:var(--gcg-border); }
+.type-button { color:#fff; text-shadow:none; }
+.type-button:hover { background:rgba(135,173,202,.2); }
+.type-button.active { background:var(--gcg-metal); color:#fff; }
