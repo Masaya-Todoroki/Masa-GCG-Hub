@@ -1,6 +1,0 @@
-1. Upload index.html, css/index.css and js/index-app.js to your website, keeping the same folder structure.
-2. Replace the deployed Cloudflare Worker with worker/news-worker.js and deploy.
-3. In Cloudflare Worker Settings > Variables and Secrets, create an encrypted SECRET named ADMIN_REFRESH_TOKEN with a long random value. Do not put it in your website files.
-4. Open the site: X English and Japanese begin loading in the background. Hold the Gundam Card Game News heading for 3 seconds to show Force Refresh. Click it and enter the secret. The secret stays only in page memory and is not saved.
-5. Normal visitors keep the existing 30-minute cache. Force Refresh bypasses the Worker cache for the selected source/language and updates it.
-NOTE: The Worker retains the previously delivered official website parser and Nitter implementation. Live Cloudflare execution was not tested.
