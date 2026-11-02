@@ -110,12 +110,17 @@
         <div id="news" class="tab-content">
             <div class="set-section news-section">
                 <h2 class="set-title">Gundam Card Game News</h2>
-                <p class="news-intro">Latest posts from the official Gundam Card Game X accounts.</p>
-                <div class="news-language-toggle" role="group" aria-label="News language">
-                    <button type="button" class="news-lang-btn active" data-account="ENG" aria-pressed="true">English</button>
-                    <button type="button" class="news-lang-btn" data-account="JP" aria-pressed="false">Japanese</button>
+                <p class="news-intro">Official Gundam Card Game announcements.</p>
+                <div class="news-controls">
+                    <div class="news-segmented" role="group" aria-label="News source">
+                        <button type="button" class="news-source-btn active" data-source="x" aria-pressed="true">X Posts</button>
+                        <button type="button" class="news-source-btn" data-source="website" aria-pressed="false">Website</button>
+                    </div>
+                    <div class="news-segmented" role="group" aria-label="News language">
+                        <button type="button" class="news-lang-btn active" data-account="ENG" aria-pressed="true">English</button>
+                        <button type="button" class="news-lang-btn" data-account="JP" aria-pressed="false">Japanese</button>
+                    </div>
                 </div>
-                <div class="news-actions"><a class="btn" id="news-account-link" href="https://x.com/GUNDAM_GCG_ENG" target="_blank" rel="noopener noreferrer">Open English X account</a></div>
                 <div class="news-feed" id="news-feed">
                     <p class="news-loading" id="news-loading">Open News to load the latest posts.</p>
                     <div id="news-timeline"></div>

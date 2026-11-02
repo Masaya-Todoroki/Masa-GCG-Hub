@@ -183,3 +183,22 @@
 #news-lightbox { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.88); cursor: zoom-out; }
 #news-lightbox[hidden] { display: none; }
 #news-lightbox img { max-width: 92vw; max-height: 92vh; border-radius: 8px; }
+
+/* Multiple images per news post. */
+.news-item { flex-direction: column; align-items: stretch; }
+.news-image-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.news-image-gallery.single-image { grid-template-columns: minmax(0, 1fr); }
+.news-image-gallery .news-thumb-btn { width: 100%; }
+.news-image-gallery .news-thumb { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
+.news-image-gallery.single-image .news-thumb { max-height: 320px; }
+@media (max-width: 480px) { .news-image-gallery { gap: 6px; } }
+
+/* Blue sliding segmented switches */
+.news-controls { display:flex; flex-wrap:wrap; justify-content:center; gap:14px; margin:22px auto; }
+.news-segmented { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); position:relative; padding:4px; border-radius:13px; background:#202b3b; border:1px solid #3a4b63; min-width:220px; isolation:isolate; }
+.news-segmented::before { content:""; position:absolute; z-index:-1; top:4px; bottom:4px; left:4px; width:calc((100% - 8px)/2); border-radius:9px; background:#2868bb; box-shadow:0 2px 10px #0005; transition:transform .22s ease; }
+.news-segmented:has(button:nth-child(2).active)::before { transform:translateX(100%); }
+.news-segmented button.news-lang-btn,.news-segmented button.news-source-btn { position:relative; background:transparent; border:0; color:#b9c7db; border-radius:9px; padding:10px 14px; cursor:pointer; font:inherit; font-size:.9rem; transition:color .2s; }
+.news-segmented button.active { color:white; font-weight:700; }
+.news-segmented button:focus-visible { outline:2px solid #80b8ff; outline-offset:2px; }
+@media(max-width:540px){.news-controls{flex-direction:column;align-items:stretch}.news-segmented{width:100%;box-sizing:border-box;min-width:0}}

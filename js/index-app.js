@@ -23,6 +23,7 @@ const NEWS_MAX_ITEMS = 10;
 
 const newsAccounts = { ENG: 'English', JP: 'Japanese' };
 let activeNewsAccount = 'ENG';
+let activeNewsSource = 'x';
 let newsAttempted = false;
 let newsRenderToken = 0;
 const newsCache = {};
@@ -52,29 +53,31 @@ function renderNewsItems(items) {
     const list = document.createElement('ul');
     list.className = 'news-list';
     items.forEach(item => {
-        const image = item.images && item.images[0];
         const li = document.createElement('li');
         li.className = 'news-item';
-
-        // Thumbnail: opens the image full screen.
-        if (image) {
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'news-thumb-btn';
-            button.setAttribute('aria-label', 'View image full size');
-            const img = document.createElement('img');
-            img.className = 'news-thumb';
-            img.src = image.thumb;
-            img.alt = '';
-            img.loading = 'lazy';
-            img.referrerPolicy = 'no-referrer';
-            img.addEventListener('error', () => button.remove());
-            button.appendChild(img);
-            button.addEventListener('click', () => openLightbox(image.full));
-            li.appendChild(button);
+        const images = Array.isArray(item.images) ? item.images : [];
+        if (images.length) {
+            const gallery = document.createElement('div');
+            gallery.className = 'news-image-gallery';
+            if (images.length === 1) gallery.classList.add('single-image');
+            images.forEach((image, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'news-thumb-btn';
+                button.setAttribute('aria-label', `View image ${index + 1} of ${images.length}`);
+                const img = document.createElement('img');
+                img.className = 'news-thumb';
+                img.src = image.thumb || image.full;
+                img.alt = `Post image ${index + 1}`;
+                img.loading = 'lazy';
+                img.referrerPolicy = 'no-referrer';
+                img.addEventListener('error', () => button.remove());
+                button.appendChild(img);
+                button.addEventListener('click', () => openLightbox(image.full || image.thumb));
+                gallery.appendChild(button);
+            });
+            li.appendChild(gallery);
         }
-
-        // Rest of the card: opens the post on X.
         const link = document.createElement('a');
         link.className = 'news-link';
         link.href = item.url;
@@ -93,32 +96,34 @@ function renderNewsItems(items) {
     holder.appendChild(list);
 }
 
-async function fetchNews(account) {
-    if (!newsCache[account]) {
-        const res = await fetch(`${NEWS_API_URL}?lang=${account}`);
+async function fetchNews(account, source) {
+    const cacheKey = `${source}:${account}`;
+    if (!newsCache[cacheKey]) {
+        const res = await fetch(`${NEWS_API_URL}?lang=${account}&source=${source}`);
         if (!res.ok) throw new Error(`News API returned ${res.status}`);
-        newsCache[account] = (await res.json()).items;
+        newsCache[cacheKey] = (await res.json()).items;
     }
-    return newsCache[account];
+    return newsCache[cacheKey];
 }
 
 async function loadNews() {
     newsAttempted = true;
     const token = ++newsRenderToken;
     const account = activeNewsAccount;
+    const source = activeNewsSource;
     const status = document.getElementById('news-loading');
     document.getElementById('news-timeline').replaceChildren();
     status.hidden = false;
-    status.textContent = `Loading ${newsAccounts[account]} posts…`;
+    status.textContent = `Loading ${newsAccounts[account]} ${source === "x" ? "X posts" : "website news"}…`;
     try {
-        const items = await fetchNews(account);
+        const items = await fetchNews(account, source);
         if (token !== newsRenderToken) return;
         renderNewsItems(items.slice(0, NEWS_MAX_ITEMS));
         status.hidden = true;
     } catch (error) {
         if (token !== newsRenderToken) return;
         status.hidden = false;
-        status.textContent = 'X posts could not be loaded right now. Use the link above to open the official account.';
+        status.textContent = 'News is temporarily unavailable. Please try again later.';
         console.warn('X posts unavailable:', error);
     }
 }
@@ -132,12 +137,22 @@ document.querySelectorAll('.news-lang-btn').forEach(button => {
             btn.classList.toggle('active', selected);
             btn.setAttribute('aria-pressed', String(selected));
         });
-        const link = document.getElementById('news-account-link');
-        link.href = `https://x.com/GUNDAM_GCG_${activeNewsAccount}`;
-        link.textContent = `Open ${newsAccounts[activeNewsAccount]} X account`;
         if (document.getElementById('news').classList.contains('active')) loadNews();
     });
 });
 document.querySelector('[data-tab="news"]')?.addEventListener('click', () => {
     if (!newsAttempted) loadNews();
+});
+
+document.querySelectorAll('.news-source-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        if (button.dataset.source === activeNewsSource) return;
+        activeNewsSource = button.dataset.source;
+        document.querySelectorAll('.news-source-btn').forEach(btn => {
+            const selected = btn === button;
+            btn.classList.toggle('active', selected);
+            btn.setAttribute('aria-pressed', String(selected));
+        });
+        if (document.getElementById('news').classList.contains('active')) loadNews();
+    });
 });
