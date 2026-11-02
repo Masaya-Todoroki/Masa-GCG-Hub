@@ -1,0 +1,14 @@
+/* V22 - Official GCG-inspired colour refresh. Visual only; Set Explorer geometry and animations unchanged. */
+:root { --gcg-metal: linear-gradient(180deg, #8faec9 0%, #7197b9 25%, #507da5 55%, #315d86 80%, #24496e 100%); --gcg-metal-hover: linear-gradient(180deg, #a4bed4 0%, #85a7c3 25%, #6289ac 55%, #3d6b93 80%, #2c567c 100%); --gcg-line: #799bb8; }
+body { background: linear-gradient(135deg,#171e29 0%,#263445 55%,#1b2735 100%); }
+.container { background: rgba(221,233,242,.065); border-color: rgba(176,199,216,.17); }
+.btn, .tab-btn.active { background: var(--gcg-metal); color:#fff; border:1px solid rgba(184,210,229,.55); text-shadow:none; }
+.btn:hover, .tab-btn.active:hover { background:var(--gcg-metal-hover); }
+.tab-btn:not(.active):hover { background:rgba(135,173,202,.15); }
+.tabs { border-bottom-color:rgba(176,199,216,.25); }
+.set-title, .set-section h2 { color:#e9f0f6; }
+.news-segmented::before { background:var(--gcg-metal); }
+#news-force-refresh { background:var(--gcg-metal); border-color:var(--gcg-line); color:white; text-shadow:none; }
+.news-item:hover { background:rgba(98,137,172,.19); border-color:rgba(154,191,219,.55); }
+.news-link:focus-visible::after, .news-thumb-btn:focus-visible { outline-color:#92b5d0; }
+.set-explorer-scroll { scrollbar-color:#648db5 transparent; }

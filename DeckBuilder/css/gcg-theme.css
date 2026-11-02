@@ -1,0 +1,9 @@
+/* V22 - matching official GCG-inspired palette; all controls retain their existing layout/behaviour. */
+:root { --gcg-metal:linear-gradient(180deg, #8faec9 0%, #7197b9 25%, #507da5 55%, #315d86 80%, #24496e 100%); --gcg-metal-hover:linear-gradient(180deg, #a4bed4 0%, #85a7c3 25%, #6289ac 55%, #3d6b93 80%, #2c567c 100%); }
+html,body { background:#141c27; }
+header { background:#1c2938; border-bottom-color:#42576a; }
+.sidebar { background:#192535; border-left-color:#3b5166; }
+.btn.primary, .primary, button.primary { background:var(--gcg-metal); border-color:#9dbbd1; color:#fff; text-shadow:none; }
+.btn.primary:hover, .primary:hover, button.primary:hover { background:var(--gcg-metal-hover); }
+.btn:not(.primary) { border-color:#536b81; }
+.btn:not(.primary):hover { background:#38546e; }

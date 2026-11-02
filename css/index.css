@@ -413,3 +413,16 @@
 .brand-heading { margin: 0 auto 12px; text-align: center; }
 .brand-logo { display: block; width: min(100%, 440px); height: auto; margin: 0 auto; object-fit: contain; }
 @media (max-width: 600px) { .brand-logo { width: min(100%, 320px); } }
+
+/* V21: compact desktop homepage branding (carousel untouched) */
+@media (min-width: 701px) {
+  body { padding: 12px 20px; }
+  .container { padding: 24px 44px 34px; }
+  .brand-heading { margin: 0 auto 10px; }
+  .brand-logo { width: min(100%, 390px); }
+  .subtitle { margin: 6px 0 18px; }
+  .tabs { margin: 0 0 16px; padding-bottom: 10px; }
+  .set-section { margin-top: 14px; }
+  .set-title { margin-bottom: 10px; }
+  .set-explorer { margin-top: 20px; }
+}
