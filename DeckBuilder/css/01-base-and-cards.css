@@ -614,3 +614,8 @@ input[type=search] {
   .set-filter-columns { gap:5px; grid-template-columns:repeat(3,minmax(0,1fr)); }
   .set-filter-options label { padding:7px 2px; gap:4px; }
 }
+
+/* V20 deck builder branding */
+.deck-brand-heading { margin: 0; line-height: 1; }
+.deck-brand-logo { display: block; width: clamp(150px, 24vw, 265px); max-width: 100%; height: auto; object-fit: contain; }
+@media (max-width: 600px) { .deck-brand-logo { width: 175px; } }
