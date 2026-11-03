@@ -294,6 +294,7 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
     Object.assign(ghost.style, {position:'fixed',left:`${start.left}px`,top:`${start.top}px`,width:`${start.width}px`,height:`${start.height}px`,zIndex:'9999',pointerEvents:'none',overflow:'hidden',clipPath:'polygon(0 0,100% 0,100% 100%,0 100%)'});
     document.body.appendChild(ghost);
     options.hidden = true;
+    options.style.removeProperty('opacity');
     explorer.classList.add('is-restoring','is-returning-position');
     explorer.classList.remove('is-selected');
     panels.forEach(p => { p.classList.remove('is-active'); p.setAttribute('aria-pressed','false'); });
@@ -358,7 +359,7 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
       Object.assign(ghost.style, {
         position:'fixed', left:`${start.left}px`, top:`${start.top}px`,
         width:`${start.width}px`, height:`${start.height}px`,
-        zIndex:'9999', pointerEvents:'none', overflow:'hidden', clipPath:startClip,
+        zIndex:'10001', pointerEvents:'none', overflow:'hidden', clipPath:startClip,
         display:'block', margin:'0', padding:'0', border:'0', boxSizing:'border-box',
         opacity:'1', transform:'none', filter:getComputedStyle(panel).filter,
         transition:'none', isolation:'isolate'
@@ -414,24 +415,101 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
       ghost.style.clipPath = startClip;
       ghostImg.style.objectPosition = startPosition;
       ghostImg.style.transform = startTransform;
+      // Read the editable CSS percentages and convert them to WAAPI offsets.
+      const fadeStyle = getComputedStyle(document.documentElement);
+      const asFraction = (value, fallback) => {
+        const n = parseFloat(value);
+        return Number.isFinite(n) ? Math.max(0, Math.min(1, n / 100)) : fallback;
+      };
+      const fadeStart = asFraction(fadeStyle.getPropertyValue('--booster-fade-start'), .25);
+      const fadeFull = Math.max(fadeStart + .001, asFraction(fadeStyle.getPropertyValue('--booster-fade-full'), .75));
+      let optionsMotion;
+      let floatingOptions = null;
       const finish = () => {
-        // Reveal the expanded image before removing the moving copy.
+        // First reveal the real panel and real controls BEHIND the two floating
+        // layers. Keep both floating layers fully visible while the real panel
+        // has a chance to paint; nothing disappears during this step.
         scroller.style.transition = 'none';
         explorer.classList.remove('is-expanding-position');
         scroller.style.opacity = '1';
         options.hidden = false;
-        void scroller.offsetWidth;
-        requestAnimationFrame(() => {
-          ghost.remove();
-          scroller.style.removeProperty('opacity');
-          scroller.style.removeProperty('transition');
-          scroller.style.scrollBehavior = oldScrollBehavior;
-          expanding = false;
-        });
+        options.style.opacity = '1';
+        if (optionsMotion) {
+          optionsMotion.finish();
+          optionsMotion.cancel();
+        }
+        if (floatingOptions) floatingOptions.style.opacity = '1';
+
+        // Two frames allow the real artwork/buttons to be composited beneath
+        // the temporary ones before any overlay starts to disappear.
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const artHandoff = ghost.animate(
+            [{opacity:1}, {opacity:0}],
+            {duration:reduced ? 0 : 110, easing:'ease-in-out', fill:'forwards'}
+          );
+          Promise.resolve(artHandoff.finished).catch(() => {}).then(() => {
+            ghost.remove();
+            // Floating controls stay ABOVE the art during its entire fade.
+            // Now dissolve them onto the already-visible real controls.
+            const controlsHandoff = floatingOptions?.animate(
+              [{opacity:1}, {opacity:0}],
+              {duration:reduced ? 0 : 100, easing:'ease-in-out', fill:'forwards'}
+            );
+            Promise.resolve(controlsHandoff?.finished).catch(() => {}).then(() => {
+              floatingOptions?.remove();
+              scroller.style.removeProperty('opacity');
+              scroller.style.removeProperty('transition');
+              scroller.style.scrollBehavior = oldScrollBehavior;
+              expanding = false;
+            });
+          });
+        }));
       };
       // Paint the small clone at its source position first. Then run a single
       // animation whose endpoints are the saved source and the real viewport.
       requestAnimationFrame(() => requestAnimationFrame(() => {
+        // Animate a viewport-positioned copy ABOVE the moving artwork. The
+        // original controls remain invisible until the handoff completes.
+        options.hidden = false;
+        const optionsRect = options.getBoundingClientRect();
+        floatingOptions = options.cloneNode(true);
+        floatingOptions.removeAttribute('id');
+        floatingOptions.querySelector('[id="set-selected-links"]')?.removeAttribute('id');
+        // Match the final controls' resolved styles, including mobile-only
+        // selectors that no longer match when the clone lives under <body>.
+        // This prevents a font/padding/gap jump at the overlay handoff.
+        const originalNodes = [options, ...options.querySelectorAll('*')];
+        const floatingNodes = [floatingOptions, ...floatingOptions.querySelectorAll('*')];
+        const copyProperties = [
+          'font-family', 'font-size', 'font-weight', 'font-style', 'line-height',
+          'letter-spacing', 'text-transform', 'text-align', 'white-space',
+          'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+          'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+          'gap', 'row-gap', 'column-gap', 'border-radius', 'box-sizing'
+        ];
+        originalNodes.forEach((source, index) => {
+          const target = floatingNodes[index];
+          if (!target) return;
+          const resolved = getComputedStyle(source);
+          copyProperties.forEach(property => {
+            target.style.setProperty(property, resolved.getPropertyValue(property));
+          });
+        });
+        Object.assign(floatingOptions.style, {
+          position:'fixed', left:`${optionsRect.left}px`, top:`${optionsRect.top}px`,
+          width:`${optionsRect.width}px`, height:`${optionsRect.height}px`,
+          transform:'none', margin:'0', zIndex:'10002', opacity:'0',
+          pointerEvents:'none', visibility:'visible'
+        });
+        document.body.appendChild(floatingOptions);
+        options.style.opacity = '0';
+        optionsMotion = floatingOptions.animate([
+          {opacity:0, offset:0},
+          {opacity:0, offset:fadeStart},
+          {opacity:1, offset:Math.min(1,fadeFull)},
+          {opacity:1, offset:1}
+        ], {duration, easing:'linear', fill:'forwards'});
         const motion = ghost.animate([
           {left:`${start.left}px`,top:`${start.top}px`,width:`${start.width}px`,height:`${start.height}px`,clipPath:startClip},
           {left:`${destination.left}px`,top:`${destination.top}px`,width:`${destination.width}px`,height:`${destination.height}px`,clipPath:fullClip}

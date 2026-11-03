@@ -1,3 +1,9 @@
+/* Booster Sets: percentage of the 480ms expansion when content starts / finishes fading. */
+:root {
+  --booster-fade-start: 0%;
+  --booster-fade-full: 75%;
+}
+
 
         body {
             margin: 0;
@@ -236,7 +242,7 @@
 .set-explorer.is-selected .set-art-panel.is-active span{left:20px;top:16px;bottom:auto}
 .set-explorer.is-selected .set-explorer-nav{display:none}
 .set-explorer.is-selected .set-explorer-hint{visibility:hidden}
-.set-selected-options{position:absolute;left:4%;top:50%;transform:translateY(-35%);width:min(31%,260px);z-index:3;pointer-events:none;animation:setOptionsIn .3s ease both}
+.set-selected-options{position:absolute;left:4%;top:50%;transform:translateY(-35%);width:min(31%,260px);z-index:10;pointer-events:none;opacity:1}
 .set-selected-options[hidden]{display:none}
 .set-selected-options h3{font-size:1.55rem;margin:0 0 14px;text-shadow:0 2px 8px #000}
 .set-selected-links{display:flex;flex-direction:column;align-items:stretch;gap:10px;pointer-events:auto}
@@ -402,7 +408,7 @@
 .set-expand-ghost::after { box-shadow:none !important; }
 
 /* V15: keep the flying image above the hidden destination until its resize completes. */
-.set-expand-ghost { visibility:visible !important; opacity:1 !important; will-change:left,top,width,height,clip-path; }
+.set-expand-ghost { visibility:visible; opacity:1; will-change:left,top,width,height,clip-path; }
 .set-expand-ghost img { will-change:transform,object-position; }
 .set-explorer.is-expanding-position .set-explorer-scroll { opacity:0 !important; }
 
@@ -426,3 +432,67 @@
   .set-title { margin-bottom: 10px; }
   .set-explorer { margin-top: 20px; }
 }
+
+/* V24: compact homepage spacing; preserve Set Explorer geometry/animations. */
+body { padding: 10px; }
+.container { padding: 18px 32px 24px; }
+.brand-heading { margin-bottom: 2px; }
+.brand-logo { width: min(100%, 350px); }
+.subtitle { margin: 2px 0 16px; }
+.tabs { margin: 0 0 16px; padding-bottom: 9px; flex-wrap: wrap; row-gap: 3px; }
+.tab-btn { padding: 8px 13px; }
+.set-section { margin-top: 12px; }
+.set-title { margin-bottom: 10px; }
+.button-row { gap: 10px; }
+.button-row .btn { padding: 11px 22px; }
+.set-explorer { margin-top: 18px; }
+.set-explorer-heading .set-title { margin-bottom: 9px; }
+@media (min-width: 701px) {
+  body { padding: 10px 16px; }
+  .container { padding: 18px 36px 26px; }
+  .brand-logo { width: min(100%, 350px); }
+  .subtitle { margin: 2px 0 14px; }
+  .tabs { margin: 0 0 14px; padding-bottom: 8px; }
+  .set-section { margin-top: 10px; }
+  .set-explorer { margin-top: 17px; }
+}
+@media (max-width: 700px) {
+  body { padding: 7px; }
+  .container { padding: 14px 14px 20px; border-radius: 20px; }
+  .brand-logo { width: min(100%, 285px); }
+  .subtitle { margin: 0 0 12px; font-size: .94rem; }
+  .tabs { margin: 0 0 14px; padding-bottom: 8px; gap: 2px; }
+  .tab-btn { padding: 8px 9px; font-size: .82rem; }
+  .set-section { margin-top: 10px; }
+  .set-title { margin-bottom: 10px; }
+  .button-row { gap: 9px; }
+  .button-row .btn { padding: 11px 12px; }
+  .set-explorer { margin-top: 19px; }
+}
+@media (max-width: 390px) {
+  .tab-btn { padding: 8px 6px; font-size: .78rem; }
+}
+
+/* Keep the expanded controls above the moving artwork during the reveal. */
+.set-explorer{z-index:5}
+
+/* V31: ensure controls are above the flying artwork throughout expansion.
+   The original carousel motion and artwork framing remain unchanged. */
+.set-explorer.is-expanding-position { position:relative; z-index:10000; }
+.set-explorer.is-expanding-position .set-selected-options {
+  z-index:10001; visibility:visible;
+}
+
+/* V32: controls are siblings of the hidden scroller, not descendants. */
+.set-explorer.is-selected .set-selected-options { z-index: 10; }
+
+/* V34: Match the expanded panel's tint during the shared-element animation.
+   Prevents a colour jump when the animated copy hands off to the real panel. */
+.set-expand-ghost::after {
+  background: linear-gradient(90deg, rgba(8,12,27,.68), rgba(8,12,27,.24) 45%, transparent 70%) !important;
+  box-shadow: none !important;
+}
+
+/* V37: allow the expansion artwork to dissolve into the finished panel.
+   The previous !important opacity prevented any fade-out animation. */
+.set-expand-ghost { opacity:1; visibility:visible; }

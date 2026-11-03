@@ -307,3 +307,31 @@ body { background: linear-gradient(135deg,#171e29 0%,#263445 55%,#1b2735 100%); 
 .type-button { color:#fff; text-shadow:none; }
 .type-button:hover { background:rgba(135,173,202,.2); }
 .type-button.active { background:var(--gcg-metal); color:#fff; }
+
+/* V25: persistent, cached card image layers (no source swaps or grid rebuilds) */
+.card-image-button.persistent-promo-image { position: relative; }
+.card-image-button.persistent-promo-image .promo-image-layer[hidden] { display: none !important; }
+
+/* V26: permanent, non-collapsing image slots. All cached images overlay each other. */
+.card-image-button.persistent-promo-image {
+    position: relative;
+    aspect-ratio: 63 / 88;
+    overflow: hidden;
+}
+.card-image-button.persistent-promo-image .promo-image-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.card-image-button.persistent-promo-image .promo-image-layer[hidden] {
+    display: none !important;
+}
+
+/* V27: stable double-buffered card images; no hidden/display:none or grid rebuild. */
+.card-image-button.swap-promo-image { position: relative; aspect-ratio: 63 / 88; overflow: hidden; }
+.card-image-button.swap-promo-image .swap-promo-layer {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+    display: block; opacity: 1; transition: none;
+}
