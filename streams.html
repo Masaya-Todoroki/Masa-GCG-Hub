@@ -1,8 +1,192 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Streams | Masa's GCG Hub</title><link rel="icon" href="images/Branding/favicon.png"><link rel="stylesheet" href="css/streams.css"></head>
-<body><header class="top"><a class="home" href="index.html">← GCG Hub</a><span class="wordmark">GCG <b>STREAMS</b></span><a id="admin-link" href="admin.html" hidden>● Admin Mode</a></header>
-<main class="shell"><div class="heading"><div><p class="eyebrow">COMMUNITY WATCH PARTY</p><h1>Gundam Card Game Streams</h1><p class="sub">Watch together, discuss reveals, and catch the latest featured video.</p></div><span class="status" id="stream-status">FEATURED VIDEO</span></div>
-<div class="layout"><section class="video-column"><div class="video-frame" id="video-frame"><iframe id="video" title="Featured YouTube stream" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe><div class="empty-video" id="empty-video"><span class="play">▶</span><h2>No featured stream yet</h2><p>An admin can add a YouTube livestream or replay.</p></div></div><div class="view-toolbar"><button id="theatre-toggle" type="button" aria-pressed="false">▣ Theatre Mode</button><button id="player-lock-toggle" type="button" aria-pressed="false" title="Prevent mouse interaction with the YouTube player" hidden>🔓 Lock Player</button><button id="capture-start" type="button" hidden>◉ Start Capture</button><button id="screenshot-button" type="button" hidden disabled>▢ Copy video frame</button><button id="capture-stop" type="button" hidden>■ Stop Capture</button><span id="capture-feedback" role="status" aria-live="polite"></span><a id="youtube-link" target="_blank" rel="noopener noreferrer" hidden>Open on YouTube ↗</a></div>
-<section class="admin-panel" id="admin-panel" hidden><div class="admin-head"><h3>Admin · Featured video</h3><span>Only visible to authorised admins</span></div><form id="stream-form"><label for="stream-url">YouTube URL (livestream, replay or video)</label><input id="stream-url" type="url" placeholder="https://www.youtube.com/watch?v=..." required><label class="check"><input id="stream-live" type="checkbox"> Mark as LIVE (manual)</label><div class="actions"><button type="submit">Save featured video</button><button type="button" id="clear-stream" class="secondary">Clear video</button><button type="button" id="clear-chat" class="secondary" style="border-color:#b95656;color:#e89a9a">Clear Chat</button></div><p id="admin-feedback" role="status"></p></form></section></section>
-<aside class="chat"><div class="chat-header"><div><h2>Community Chat</h2><p>Open even when the stream is offline</p></div><span class="chat-dot" title="Community chat"></span></div><div class="messages" id="messages" aria-live="polite"><p class="notice">Connecting to chat…</p></div><div class="chat-bottom"><div class="identity"><span id="nickname-display">Choose a nickname</span><button id="edit-nickname" type="button" aria-label="Change nickname" title="Change nickname">✎</button></div><form id="message-form"><input id="message-input" maxlength="300" placeholder="Send a message…" aria-label="Chat message" autocomplete="off" required disabled><button id="send-button" type="submit" disabled>➤</button></form><p class="hint" id="chat-feedback">Messages are public. Be respectful.</p></div></aside></div><p class="footer">Fan-made community hub. Not affiliated with Bandai Namco.</p></main>
-<dialog id="nickname-dialog"><form id="nickname-form" method="dialog"><div class="avatar">✦</div><h2>Welcome to the chat!</h2><p>Pick a nickname to join the conversation. No sign-up needed.</p><label for="nickname-input">YOUR NICKNAME</label><input id="nickname-input" maxlength="24" minlength="2" required autocomplete="nickname" placeholder="e.g. GundamFan"><p id="nickname-error" class="error"></p><button type="submit">Join chat</button><p class="hint">You can change your nickname later.</p></form></dialog>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="js/admin-config.js"></script><script defer src="js/streams.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Streams | Masa's GCG Hub
+  </title>
+  <link href="images/Branding/favicon.png" rel="icon"/>
+  <link href="css/streams.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <header class="top">
+   <a class="home" href="index.html">
+    ← Masa's GCG Hub
+   </a>
+   <span class="wordmark">
+    Masa's GCG Hub
+    <b>
+     STREAMS
+    </b>
+   </span>
+   <a hidden="" href="admin.html" id="admin-link">
+    ● Admin Mode
+   </a>
+  </header>
+  <main class="shell">
+   <div class="heading">
+    <div>
+     <p class="eyebrow">
+      COMMUNITY WATCH PARTY
+     </p>
+     <h1>
+      Gundam Card Game Streams
+     </h1>
+     <p class="sub">
+      Watch together, discuss reveals, and catch the latest featured video.
+     </p>
+    </div>
+    <span class="status" id="stream-status">
+     FEATURED VIDEO
+    </span>
+   </div>
+   <div class="layout">
+    <section class="video-column">
+     <div class="video-frame" id="video-frame">
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" hidden="" id="video" referrerpolicy="strict-origin-when-cross-origin" title="Featured YouTube stream">
+      </iframe>
+      <div class="empty-video" id="empty-video">
+       <span class="play">
+        ▶
+       </span>
+       <h2>
+        No featured stream yet
+       </h2>
+       <p>
+        An admin can add a YouTube livestream or replay.
+       </p>
+      </div>
+     </div>
+     <div class="view-toolbar">
+      <button aria-pressed="false" id="theatre-toggle" type="button">
+       ▣ Theatre Mode
+      </button>
+      <button aria-pressed="false" hidden="" id="player-lock-toggle" title="Prevent mouse interaction with the YouTube player" type="button">
+       🔓 Lock Player
+      </button>
+      <button hidden="" id="capture-start" type="button">
+       ◉ Start Capture
+      </button>
+      <button disabled="" hidden="" id="screenshot-button" type="button">
+       ▢ Copy video frame
+      </button>
+      <button hidden="" id="capture-stop" type="button">
+       ■ Stop Capture
+      </button>
+      <span aria-live="polite" id="capture-feedback" role="status">
+      </span>
+      <a hidden="" id="youtube-link" rel="noopener noreferrer" target="_blank">
+       Open on YouTube ↗
+      </a>
+     </div>
+     <section class="admin-panel" hidden="" id="admin-panel">
+      <div class="admin-head">
+       <h3>
+        Admin · Featured video
+       </h3>
+       <span>
+        Only visible to authorised admins
+       </span>
+      </div>
+      <form id="stream-form">
+       <label for="stream-url">
+        YouTube URL (livestream, replay or video)
+       </label>
+       <input id="stream-url" placeholder="https://www.youtube.com/watch?v=..." required="" type="url"/>
+       <label class="check">
+        <input id="stream-live" type="checkbox"/>
+        Mark as LIVE (manual)
+       </label>
+       <div class="actions">
+        <button type="submit">
+         Save featured video
+        </button>
+        <button class="secondary" id="clear-stream" type="button">
+         Clear video
+        </button>
+        <button class="secondary" id="clear-chat" style="border-color:#b95656;color:#e89a9a" type="button">
+         Clear Chat
+        </button>
+       </div>
+       <p id="admin-feedback" role="status">
+       </p>
+      </form>
+     </section>
+    </section>
+    <aside class="chat">
+     <div class="chat-header">
+      <div>
+       <h2>
+        Community Chat
+       </h2>
+       <p>
+        Open even when the stream is offline
+       </p>
+      </div>
+      <span class="chat-dot" title="Community chat">
+      </span>
+     </div>
+     <div aria-live="polite" class="messages" id="messages">
+      <p class="notice">
+       Connecting to chat…
+      </p>
+     </div>
+     <div class="chat-bottom">
+      <div class="identity">
+       <span id="nickname-display">
+        Choose a nickname
+       </span>
+       <button aria-label="Change nickname" id="edit-nickname" title="Change nickname" type="button">
+        ✎
+       </button>
+      </div>
+      <form id="message-form">
+       <input aria-label="Chat message" autocomplete="off" disabled="" id="message-input" maxlength="300" placeholder="Send a message…" required=""/>
+       <button disabled="" id="send-button" type="submit">
+        ➤
+       </button>
+      </form>
+      <p class="hint" id="chat-feedback">
+       Messages are public. Be respectful.
+      </p>
+     </div>
+    </aside>
+   </div>
+   <p class="footer">
+    Hi xD
+   </p>
+  </main>
+  <dialog id="nickname-dialog">
+   <form id="nickname-form" method="dialog">
+    <div class="avatar">
+     ✦
+    </div>
+    <h2>
+     Welcome to the chat!
+    </h2>
+    <p>
+     Pick a nickname to join the conversation. No sign-up needed.
+    </p>
+    <label for="nickname-input">
+     YOUR NICKNAME
+    </label>
+    <input autocomplete="nickname" id="nickname-input" maxlength="24" minlength="2" placeholder="e.g. GundamFan" required=""/>
+    <p class="error" id="nickname-error">
+    </p>
+    <button type="submit">
+     Join chat
+    </button>
+    <p class="hint">
+     You can change your nickname later.
+    </p>
+   </form>
+  </dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+  </script>
+  <script src="js/admin-config.js">
+  </script>
+  <script defer="" src="js/streams.js">
+  </script>
+ </body>
+</html>
