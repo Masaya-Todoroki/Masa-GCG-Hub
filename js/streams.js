@@ -103,7 +103,7 @@
         for (const name of ['emoji', 'gifs', 'custom']) $(name + '-panel').hidden = name !== tab;
         if (tab === 'gifs' && !$('gif-results').childElementCount && !gifBlocked) searchGifs('');
     }
-    $('open-picker').addEventListener('click', () => { picker.hidden = !picker.hidden; if (!picker.hidden) setPickerTab('emoji'); });
+    $('open-picker').addEventListener('click', () => { picker.hidden = !picker.hidden; if (!picker.hidden && $('emoji-panel').hidden) setPickerTab('emoji'); });
     $('close-picker').addEventListener('click', () => picker.hidden = true);
     // Dismiss the chat picker when clicking outside it (but not when toggling it).
     document.addEventListener('pointerdown', event => {
@@ -115,11 +115,46 @@
         if (event.key === 'Escape' && !picker.hidden) picker.hidden = true;
     });
     picker.querySelectorAll('[data-picker-tab]').forEach(b => b.addEventListener('click', () => setPickerTab(b.dataset.pickerTab)));
-    picker.querySelector('emoji-picker').addEventListener('emoji-click', event => {
-        const input = $('message-input'); const emoji = event.detail.unicode;
-        if (!emoji) return;
-        input.setRangeText(emoji, input.selectionStart, input.selectionEnd, 'end'); input.focus();
+    // Lightweight native emoji picker: no third-party web component, database, or layout work on open.
+    const emojiGroups = [
+      ['Faces', '😀 😃 😄 😁 😆 😅 😂 🤣 🥲 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🥸 🤩 🥳 😏 😒 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🫣 🤭 🫢 🤫 🤥 😶 😐 😑 😬 🙄 😯 😮 😲 🥱 😴 🤤 😪 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👻 💀 ☠️ 👽 🤖 💩'],
+      ['Hands', '👍 👎 👊 ✊ 🤛 🤜 👏 🙌 👐 🤲 🤝 🙏 ✌️ 🤞 🫰 🤟 🤘 👌 🤌 🤏 👈 👉 👆 👇 ☝️ ✋ 🤚 🖐️ 🖖 👋 🤙 💪 🦾 🖕 🫶 ❤️'],
+      ['Hearts', '❤️ 🧡 💛 💚 💙 💜 🖤 🤍 🤎 💔 ❤️‍🔥 ❤️‍🩹 💕 💞 💓 💗 💖 💘 💝 💟 ❣️ 💯 🔥 ✨ ⭐ 🌟 💫 🎉 🎊 💥 💢 💦 💨 💬 💤'],
+      ['Animals', '🐶 🐱 🐭 🐹 🐰 🦊 🐻 🐼 🐨 🐯 🦁 🐮 🐷 🐸 🐵 🐔 🐧 🐦 🦆 🦅 🦉 🦇 🐺 🐗 🐴 🦄 🐝 🦋 🐌 🐞 🐢 🐍 🦎 🐙 🦑 🦀 🐠 🐟 🐬 🦈 🐳 🐊 🦖 🦕'],
+      ['Food', '🍎 🍏 🍊 🍋 🍌 🍉 🍇 🍓 🫐 🍒 🍑 🥭 🍍 🥥 🥝 🍅 🥑 🍆 🥦 🥬 🥒 🌶️ 🌽 🥕 🥔 🍞 🥐 🥨 🧀 🍖 🍗 🥩 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🍜 🍣 🍙 🍚 🍛 🍰 🎂 🍪 🍩 🍫 🍬 🍭 ☕ 🍵 🧋 🍺'],
+      ['Activities', '⚽ 🏀 🏈 ⚾ 🎾 🏐 🎱 🏓 🏸 🥊 🥋 🎮 🕹️ 🎲 ♟️ 🎯 🎨 🎭 🎬 🎤 🎧 🎼 🎹 🥁 🎸 🎺 🎻 🏆 🥇 🥈 🥉 🚀 🛸 🚗 🏎️ ✈️ 🌍 🌙 ☀️ 🌈 ⚡ ☄️'],
+      ['Symbols', '✅ ❌ ❗ ❓ ‼️ ⁉️ ⭕ ❎ ✔️ ✖️ ➕ ➖ ➗ ♻️ ⚠️ 🚫 🔞 💢 💯 🆗 🆒 🆕 🆙 🆓 🔴 🟠 🟡 🟢 🔵 🟣 ⚫ ⚪ 🟤 🏳️ 🏴 🏁']
+    ].map(([name, values]) => ({name, emojis: values.split(' ')}));
+    let emojiCategory = 'Faces';
+    const emojiGrid = $('emoji-grid'), emojiSearch = $('emoji-search');
+    const categoryBar = $('emoji-categories');
+    for (const group of emojiGroups) {
+        const button = document.createElement('button'); button.type = 'button';
+        button.textContent = group.name; button.dataset.category = group.name;
+        button.addEventListener('click', () => { emojiCategory = group.name; emojiSearch.value = ''; renderEmojiGrid(); });
+        categoryBar.append(button);
+    }
+    function renderEmojiGrid() {
+        const term = emojiSearch.value.trim().toLowerCase();
+        const selected = term ? emojiGroups : emojiGroups.filter(group => group.name === emojiCategory);
+        const fragment = document.createDocumentFragment();
+        for (const group of selected) {
+            if (term && !group.name.toLowerCase().includes(term)) continue;
+            for (const emoji of group.emojis) {
+                const button = document.createElement('button'); button.type = 'button';
+                button.className = 'emoji-choice'; button.textContent = emoji;
+                button.setAttribute('aria-label', emoji); fragment.append(button);
+            }
+        }
+        emojiGrid.replaceChildren(fragment);
+        for (const button of categoryBar.children) button.classList.toggle('active', !term && button.dataset.category === emojiCategory);
+    }
+    emojiSearch.addEventListener('input', renderEmojiGrid);
+    emojiGrid.addEventListener('click', event => {
+        const button = event.target.closest('.emoji-choice'); if (!button) return;
+        const input = $('message-input'); input.setRangeText(button.textContent, input.selectionStart, input.selectionEnd, 'end'); input.focus();
     });
+    renderEmojiGrid();
     fetch('custom-emojis.json').then(r => r.ok ? r.json() : { emojis: [] }).then(data => {
         customEmojis = Array.isArray(data.emojis) ? data.emojis.filter(e => e && /^:[a-z0-9_-]+:$/i.test(e.shortcode) && /^images\/emojis\/[a-zA-Z0-9_.-]+$/.test(e.image)) : [];
         const grid = $('custom-results'); grid.replaceChildren();
@@ -188,13 +223,13 @@
         me=user;const {
             data:allowed
         }
-        =await client.rpc('gcg_is_admin');admin=allowed===true;playerLockButton.hidden=!admin;if(!admin)setPlayerLock(false);$('admin-link').hidden=!admin;$('admin-panel').hidden=!admin;captureUi();setNickname();await Promise.all([loadStream(),loadMessages()]);if(!nickname)promptNickname();channel=client.channel('gcg-streams-updates').on('postgres_changes',{
+        =await client.rpc('gcg_is_admin');admin=allowed===true;playerLockButton.hidden=!admin;if(!admin)setPlayerLock(false);$('admin-link').hidden=!admin;$('admin-panel').hidden=!admin;captureUi();setNickname();await Promise.all([loadStream(),loadMessages()]);lastRefreshCommand = await readRefreshCommand();refreshBaselineLoaded = true;if(!nickname)promptNickname();channel=client.channel('gcg-streams-updates').on('postgres_changes',{
             event:'*',schema:'public',table:'gcg_chat_messages'
         }
         ,()=>loadMessages()).on('postgres_changes',{
             event:'*',schema:'public',table:'gcg_stream_settings'
         }
-        ,()=>loadStream()).on('broadcast', {event:'chat-reaction'}, ({payload})=>{
+        ,payload=>{loadStream();receiveRefreshUpdate(payload);}).on('broadcast', {event:'chat-reaction'}, ({payload})=>{
             if(payload && REACTIONS.includes(payload.emoji)) spawnReaction(payload.emoji);
         }).subscribe();setInterval(()=>{
             if(!document.hidden){
@@ -355,28 +390,100 @@
         if (event.key === 'Escape') fingerPicker.hidden = true;
     });
 
-    // Poll a tiny cache-busted deployment manifest for future site updates.
-    // This feature only works for viewers after they've loaded this release once.
-    const PAGE_VERSION = '20261106-r7';
-    let refreshScheduled = false;
+    // Automatic deployment updates. The manifest and the loaded JS share this release ID.
+    const PAGE_VERSION = '20261106-r12';
+    const AUTO_REFRESH_ATTEMPT_KEY = 'gcg-streams-auto-refresh-attempt';
+    let automaticRefreshPending = false;
+    let automaticRefreshChecking = false;
     async function checkPageVersion() {
-        if (refreshScheduled) return;
+        if (automaticRefreshChecking || automaticRefreshPending || viewerRefreshPending) return;
+        automaticRefreshChecking = true;
         try {
-            const response = await fetch(`version.json?check=${Date.now()}`, {cache:'no-store'});
-            if (!response.ok) return;
+            const response = await fetch(`version.json?check=${Date.now()}`, { cache: 'no-store' });
+            if (!response.ok) return; // Missing manifest: do not reload.
             const manifest = await response.json();
-            if (!manifest || typeof manifest.streams !== 'string' || manifest.streams === PAGE_VERSION) return;
-            refreshScheduled = true;
+            const latest = typeof manifest?.streams === 'string' ? manifest.streams.trim() : '';
+            if (!latest || latest === PAGE_VERSION) {
+                if (latest === PAGE_VERSION) sessionStorage.removeItem(AUTO_REFRESH_ATTEMPT_KEY);
+                return;
+            }
+            // A deploy can publish version.json before the new JS. Try once per target
+            // version per tab; never loop if GitHub Pages still serves the older JS.
+            if (sessionStorage.getItem(AUTO_REFRESH_ATTEMPT_KEY) === latest) return;
+            automaticRefreshPending = true;
+            sessionStorage.setItem(AUTO_REFRESH_ATTEMPT_KEY, latest);
             const notice = document.createElement('div');
             notice.className = 'update-notice';
-            notice.setAttribute('role','status');
-            notice.textContent = '🔄 Masa has deployed an update! Refreshing in 5 seconds…';
-            document.body.appendChild(notice);
-            setTimeout(() => window.location.reload(), 5000);
-        } catch (error) { console.warn('Version check unavailable:', error); }
+            notice.setAttribute('role', 'status');
+            document.body.append(notice);
+            let seconds = 5;
+            notice.textContent = `🔄 New Streams update available. Refreshing in ${seconds} seconds…`;
+            const countdown = setInterval(() => {
+                seconds -= 1;
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    const next = new URL(window.location.href);
+                    next.searchParams.set('gcg_update', latest);
+                    window.location.replace(next.href);
+                    return;
+                }
+                notice.textContent = `🔄 New Streams update available. Refreshing in ${seconds} seconds…`;
+            }, 1000);
+        } catch (error) {
+            console.warn('Stream update check unavailable:', error);
+        } finally {
+            automaticRefreshChecking = false;
+        }
     }
     setInterval(checkPageVersion, 60000);
     setTimeout(checkPageVersion, 10000);
+
+    // Admin-triggered refresh is independent of automatic deployment checks.
+    let lastRefreshCommand = null;
+    let refreshBaselineLoaded = false;
+    let viewerRefreshPending = false;
+    async function readRefreshCommand() {
+        const {data, error} = await client.from('gcg_stream_settings')
+            .select('refresh_command').eq('id', 1).maybeSingle();
+        if (error) { console.warn('Refresh command unavailable:', error.message); return; }
+        return data?.refresh_command || null;
+    }
+    function handleRefreshCommand(command) {
+        if (!refreshBaselineLoaded || !command || viewerRefreshPending || automaticRefreshPending || command === lastRefreshCommand) return;
+        lastRefreshCommand = command;
+        viewerRefreshPending = true;
+        const notice = document.createElement('div');
+        notice.className = 'update-notice';
+        notice.setAttribute('role', 'status');
+        document.body.append(notice);
+        let seconds = 5;
+        notice.textContent = `🔄 Admin requested a page refresh. Reloading in ${seconds} seconds…`;
+        const countdown = setInterval(() => {
+            seconds -= 1;
+            if (seconds <= 0) { clearInterval(countdown); window.location.reload(); return; }
+            notice.textContent = `🔄 Admin requested a page refresh. Reloading in ${seconds} seconds…`;
+        }, 1000);
+    }
+    async function receiveRefreshUpdate(payload) {
+        // Supabase Realtime sends the updated settings row to existing subscribers.
+        const command = payload?.new?.refresh_command;
+        if (typeof command === 'string') handleRefreshCommand(command);
+    }
+    $('refresh-all-viewers').addEventListener('click', async () => {
+        if (!admin || !client || viewerRefreshPending) return;
+        if (!confirm('Refresh the Streams page for everyone currently connected?')) return;
+        const button = $('refresh-all-viewers');
+        button.disabled = true;
+        $('admin-feedback').textContent = 'Sending refresh command…';
+        try {
+            const {error} = await client.rpc('gcg_request_stream_refresh');
+            if (error) throw error;
+            $('admin-feedback').textContent = 'Refresh requested. Connected viewers will reload in 5 seconds.';
+        } catch (error) {
+            $('admin-feedback').textContent = 'Refresh failed: ' + error.message + ' (Run STREAMS_MANUAL_REFRESH_SETUP.sql first.)';
+            button.disabled = false;
+        }
+    });
 
     /* Lock only the embedded player's mouse interactions, without reloading it. */
     const playerLockButton=$('player-lock-toggle');

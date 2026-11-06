@@ -7,7 +7,7 @@
    Streams | Masa's GCG Hub
   </title>
   <link href="images/Branding/favicon.png" rel="icon"/>
-  <link href="css/streams.css?v=20261106-r4" rel="stylesheet"/>
+  <link href="css/streams.css?v=20261106-r12" rel="stylesheet"/>
  </head>
  <body>
   <header class="top">
@@ -105,6 +105,9 @@
         <button class="secondary" id="clear-stream" type="button">
          Clear video
         </button>
+        <button class="secondary" id="refresh-all-viewers" type="button" title="Ask everyone currently connected to reload their Streams page">
+         🔄 Refresh All Viewers
+        </button>
         <button class="secondary" id="clear-chat" style="border-color:#b95656;color:#e89a9a" type="button">
          Clear Chat
         </button>
@@ -170,7 +173,7 @@
          <button type="button" data-picker-tab="custom">Custom</button>
          <button type="button" id="close-picker" aria-label="Close picker">✕</button>
         </div>
-        <section id="emoji-panel" class="picker-panel"><emoji-picker></emoji-picker></section>
+        <section id="emoji-panel" class="picker-panel"><div class="light-emoji"><input id="emoji-search" type="search" placeholder="Search emojis…" aria-label="Search emojis" autocomplete="off"><div id="emoji-categories" class="emoji-categories"></div><div id="emoji-grid" class="emoji-grid"></div></div></section>
         <section id="gifs-panel" class="picker-panel" hidden>
          <input id="gif-search" type="search" placeholder="Search GIFs…" aria-label="Search GIFs" />
          <div class="gif-results" id="gif-results"></div>
@@ -227,8 +230,7 @@
   <script src="js/admin-config.js">
   </script>
   <script src="js/giphy-config.js"></script>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.26.0/index.js"></script>
-  <script defer="" src="js/streams.js?v=20261106-r7">
+  <script defer="" src="js/streams.js?v=20261106-r12">
   </script>
  </body>
 </html>
