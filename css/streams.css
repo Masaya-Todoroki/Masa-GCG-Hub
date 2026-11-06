@@ -90,3 +90,62 @@ body.theatre-mode #player-lock-toggle:not([hidden]){display:inline-flex;align-it
 
 /* Highlight the tone underneath the held pointer. */
 .finger-tone-picker button.finger-tone-hover{background:#547fa3;outline:2px solid #b8e0ff;transform:scale(1.1)}
+
+/* Custom Gundam finger reactions: same emoji footprint, transparent WebP artwork. */
+.custom-finger-image{display:block;width:1.35em;height:1.35em;object-fit:contain;pointer-events:none}
+#finger-reaction .custom-finger-image{width:22px;height:22px;margin:-2px auto}
+.finger-tone-picker button .custom-finger-image{width:26px;height:26px;margin:auto}
+.reaction-float .custom-finger-image{width:40px;height:40px}
+/* Eight choices must remain usable on narrow mobile screens. */
+.finger-tone-picker{max-width:min(96vw,440px);overflow-x:auto;overscroll-behavior-x:contain}
+.finger-tone-picker button{flex:0 0 auto}
+@media(max-width:440px){.finger-tone-picker{right:-65px;max-width:calc(100vw - 16px)}.finger-tone-picker button .custom-finger-image{width:23px;height:23px}}
+
+/* v8: Constrain custom WebP images embedded directly in finger-tone buttons.
+   The original HTML images do not have the custom-finger-image class. */
+.finger-tone-picker button {
+  box-sizing: border-box;
+  width: 40px;
+  min-width: 40px;
+  height: 44px;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.finger-tone-picker button img,
+.finger-tone-picker button .custom-finger-image {
+  display: block;
+  width: 30px;
+  height: 30px;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  flex: none;
+  margin: 0;
+  pointer-events: none;
+}
+#finger-reaction img,
+#finger-reaction .custom-finger-image {
+  width: 24px;
+  height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.reaction-float img,
+.reaction-float .custom-finger-image {
+  display: block;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  max-height: 40px;
+  object-fit: contain;
+  pointer-events: none;
+}
+@media (max-width: 440px) {
+  .finger-tone-picker button { width: 36px; min-width: 36px; height: 40px; }
+  .finger-tone-picker button img { width: 27px; height: 27px; }
+}

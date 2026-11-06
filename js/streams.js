@@ -105,6 +105,15 @@
     }
     $('open-picker').addEventListener('click', () => { picker.hidden = !picker.hidden; if (!picker.hidden) setPickerTab('emoji'); });
     $('close-picker').addEventListener('click', () => picker.hidden = true);
+    // Dismiss the chat picker when clicking outside it (but not when toggling it).
+    document.addEventListener('pointerdown', event => {
+        if (!picker.hidden && !picker.contains(event.target) && !$('open-picker').contains(event.target)) {
+            picker.hidden = true;
+        }
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !picker.hidden) picker.hidden = true;
+    });
     picker.querySelectorAll('[data-picker-tab]').forEach(b => b.addEventListener('click', () => setPickerTab(b.dataset.pickerTab)));
     picker.querySelector('emoji-picker').addEventListener('emoji-click', event => {
         const input = $('message-input'); const emoji = event.detail.unicode;
@@ -195,7 +204,23 @@
         ,15000)
     }
     // Broadcast transient reactions; they are not saved to the chat database.
-    const FINGER_TONES = ['☝️', '☝🏻', '☝🏼', '☝🏽', '☝🏾', '☝🏿'];
+    const FINGER_TONES = ['☝️', '☝🏻', '☝🏼', '☝🏽', '☝🏾', '☝🏿', 'shining-finger', 'darkness-finger'];
+    const CUSTOM_FINGERS = {
+        'shining-finger': 'images/emojis/ShiningFinger.webp',
+        'darkness-finger': 'images/emojis/DarknessFinger.webp'
+    };
+    function setFingerContent(element, tone) {
+        element.replaceChildren();
+        if (CUSTOM_FINGERS[tone]) {
+            const image = document.createElement('img');
+            image.src = CUSTOM_FINGERS[tone];
+            image.alt = tone === 'shining-finger' ? 'Shining Finger' : 'Darkness Finger';
+            image.className = 'custom-finger-image';
+            element.appendChild(image);
+        } else {
+            element.textContent = tone;
+        }
+    }
     const REACTIONS = ['🔥', '❤️', '😂', '💯', ...FINGER_TONES];
     const fingerButton = $('finger-reaction');
     const fingerPicker = $('finger-tone-picker');
@@ -205,7 +230,7 @@
         const stored = localStorage.getItem(fingerStorageKey);
         if (FINGER_TONES.includes(stored)) selectedFinger = stored;
     } catch (_) { /* Local storage may be unavailable. */ }
-    fingerButton.textContent = selectedFinger;
+    setFingerContent(fingerButton, selectedFinger);
     fingerButton.dataset.reaction = selectedFinger;
 
     let lastReactionAt = 0;
@@ -214,7 +239,7 @@
         const layer = $('reaction-float-layer');
         const item = document.createElement('span');
         item.className = 'reaction-float';
-        item.textContent = emoji;
+        setFingerContent(item, emoji);
         item.style.setProperty('--reaction-x', `${12 + Math.random() * 72}%`);
         item.style.setProperty('--reaction-drift', `${Math.round(Math.random() * 90 - 45)}px`);
         layer.appendChild(item);
@@ -265,7 +290,7 @@
     function chooseFingerTone(tone) {
         if (!FINGER_TONES.includes(tone)) return;
         selectedFinger = tone;
-        fingerButton.textContent = tone;
+        setFingerContent(fingerButton, tone);
         fingerButton.dataset.reaction = tone;
         try { localStorage.setItem(fingerStorageKey, tone); } catch (_) {}
         fingerPicker.hidden = true;
@@ -332,7 +357,7 @@
 
     // Poll a tiny cache-busted deployment manifest for future site updates.
     // This feature only works for viewers after they've loaded this release once.
-    const PAGE_VERSION = '20261106-r4';
+    const PAGE_VERSION = '20261106-r7';
     let refreshScheduled = false;
     async function checkPageVersion() {
         if (refreshScheduled) return;
