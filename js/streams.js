@@ -61,7 +61,7 @@
                 }
                 );top.append(del)
             }
-            const body=document.createElement('div');body.className='msg-body';body.textContent=m.message;outer.append(top,body);box.append(outer)
+            const body=document.createElement('div');body.className='msg-body';renderChatBody(body,m.message);outer.append(top,body);box.append(outer)
         }
         box.scrollTop=box.scrollHeight
     }
@@ -77,6 +77,90 @@
         }
         renderMessages((data||[]).reverse())
     }
+
+    // Emoji / GIF / custom emote picker. Never inject user text as HTML.
+    let customEmojis = [], gifTimer = null, gifAbort = null, gifBlocked = false;
+    const picker = $('chat-picker');
+    function renderChatBody(target, message) {
+        const gifMatch = /^:gif:([a-zA-Z0-9_-]{4,100}):$/.exec(message || '');
+        if (gifMatch) {
+            const img = document.createElement('img');
+            img.className = 'msg-gif'; img.loading = 'lazy'; img.alt = 'GIF';
+            img.src = 'https://media.giphy.com/media/' + encodeURIComponent(gifMatch[1]) + '/giphy.gif';
+            target.append(img); return;
+        }
+        const codes = customEmojis.filter(e => /^:[a-z0-9_-]+:$/i.test(e.shortcode) && /^images\/emojis\/[a-zA-Z0-9_.-]+$/.test(e.image));
+        if (!codes.length) { target.textContent = message; return; }
+        const pattern = new RegExp('(' + codes.map(e => e.shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'g');
+        for (const part of String(message).split(pattern)) {
+            const found = codes.find(e => e.shortcode === part);
+            if (found) { const img = document.createElement('img'); img.className = 'inline-emote'; img.alt = found.name || part; img.title = part; img.src = found.image; target.append(img); }
+            else target.append(document.createTextNode(part));
+        }
+    }
+    function setPickerTab(tab) {
+        for (const button of picker.querySelectorAll('[data-picker-tab]')) button.classList.toggle('active', button.dataset.pickerTab === tab);
+        for (const name of ['emoji', 'gifs', 'custom']) $(name + '-panel').hidden = name !== tab;
+        if (tab === 'gifs' && !$('gif-results').childElementCount && !gifBlocked) searchGifs('');
+    }
+    $('open-picker').addEventListener('click', () => { picker.hidden = !picker.hidden; if (!picker.hidden) setPickerTab('emoji'); });
+    $('close-picker').addEventListener('click', () => picker.hidden = true);
+    picker.querySelectorAll('[data-picker-tab]').forEach(b => b.addEventListener('click', () => setPickerTab(b.dataset.pickerTab)));
+    picker.querySelector('emoji-picker').addEventListener('emoji-click', event => {
+        const input = $('message-input'); const emoji = event.detail.unicode;
+        if (!emoji) return;
+        input.setRangeText(emoji, input.selectionStart, input.selectionEnd, 'end'); input.focus();
+    });
+    fetch('custom-emojis.json').then(r => r.ok ? r.json() : { emojis: [] }).then(data => {
+        customEmojis = Array.isArray(data.emojis) ? data.emojis.filter(e => e && /^:[a-z0-9_-]+:$/i.test(e.shortcode) && /^images\/emojis\/[a-zA-Z0-9_.-]+$/.test(e.image)) : [];
+        const grid = $('custom-results'); grid.replaceChildren();
+        if (!customEmojis.length) { grid.textContent = 'Custom Gundam emotes coming soon!'; return; }
+        for (const e of customEmojis) {
+            const b = document.createElement('button'); b.type = 'button'; b.title = e.shortcode;
+            const img = document.createElement('img'); img.src = e.image; img.alt = e.name || e.shortcode;
+            b.append(img, document.createTextNode(e.name || e.shortcode));
+            b.addEventListener('click', () => { const input = $('message-input'); input.setRangeText(e.shortcode, input.selectionStart, input.selectionEnd, 'end'); input.focus(); });
+            grid.append(b);
+        }
+    }).catch(() => { $('custom-results').textContent = 'Custom emotes unavailable.'; });
+    async function sendGif(id) {
+        if (!/^[a-zA-Z0-9_-]{4,100}$/.test(id)) return;
+        if (!client || !me || !nickname) { feedback('Join the chat first.'); return; }
+        if (Date.now() - lastSend < 4000) { feedback('Please wait a few seconds between messages.'); return; }
+        const { error } = await client.rpc('gcg_send_chat_message', { p_nickname: nickname, p_message: ':gif:' + id + ':' });
+        if (error) { feedback(error.message); return; }
+        lastSend = Date.now(); picker.hidden = true; await loadMessages();
+    }
+    async function searchGifs(term) {
+        if (gifBlocked) return;
+        const apiKey = window.GCG_GIPHY_API_KEY;
+        if (!apiKey || apiKey.startsWith('PASTE_')) { $('gif-status').textContent = 'Add your GIPHY beta key in js/giphy-config.js to enable GIF search.'; return; }
+        if (gifAbort) gifAbort.abort(); gifAbort = new AbortController();
+        $('gif-status').textContent = 'Loading GIFs…';
+        const endpoint = term ? 'search' : 'trending';
+        const params = new URLSearchParams({ api_key: apiKey, limit: '16', rating: 'pg-13' });
+        if (term) params.set('q', term);
+        try {
+            const response = await fetch('https://api.giphy.com/v1/gifs/' + endpoint + '?' + params, { signal: gifAbort.signal });
+            if (response.status === 429) { gifBlocked = true; $('gif-limit').hidden = false; $('gif-results').replaceChildren(); $('gif-status').textContent = ''; return; }
+            if (!response.ok) throw new Error('GIF search unavailable (' + response.status + ')');
+            const json = await response.json(); const grid = $('gif-results'); grid.replaceChildren();
+            for (const gif of (json.data || [])) {
+                if (!/^[a-zA-Z0-9_-]{4,100}$/.test(gif.id || '')) continue;
+                const preview = gif.images?.fixed_width?.url || gif.images?.downsized?.url;
+                if (!preview || !/^https:\/\//.test(preview)) continue;
+                const button = document.createElement('button'); button.type = 'button'; button.title = gif.title || 'Send GIF';
+                const img = document.createElement('img'); img.src = preview; img.alt = gif.title || 'GIF'; img.loading = 'lazy';
+                button.append(img); button.addEventListener('click', () => sendGif(gif.id)); grid.append(button);
+            }
+            $('gif-status').textContent = grid.childElementCount ? '' : 'No GIFs found.';
+        } catch (error) { if (error.name !== 'AbortError') $('gif-status').textContent = error.message; }
+    }
+    $('gif-search').addEventListener('input', event => {
+        clearTimeout(gifTimer); gifTimer = setTimeout(() => searchGifs(event.target.value.trim()), 450);
+    });
+    $('gif-retry').addEventListener('click', () => { gifBlocked = false; $('gif-limit').hidden = true; searchGifs($('gif-search').value.trim()); });
+
     async function start(){
         if(!valid){
             $('messages').textContent='Supabase connection not configured. Keep your existing js/admin-config.js.';return
@@ -101,13 +185,70 @@
         ,()=>loadMessages()).on('postgres_changes',{
             event:'*',schema:'public',table:'gcg_stream_settings'
         }
-        ,()=>loadStream()).subscribe();setInterval(()=>{
+        ,()=>loadStream()).on('broadcast', {event:'chat-reaction'}, ({payload})=>{
+            if(payload && REACTIONS.includes(payload.emoji)) spawnReaction(payload.emoji);
+        }).subscribe();setInterval(()=>{
             if(!document.hidden){
                 loadMessages();loadStream()
             }
         }
         ,15000)
     }
+    // Broadcast transient reactions; they are not saved to the chat database.
+    const REACTIONS = ['🔥','❤️','😂','☝️','💯'];
+    let lastReactionAt = 0;
+    function spawnReaction(emoji) {
+        if (!REACTIONS.includes(emoji)) return;
+        const layer = $('reaction-float-layer');
+        const item = document.createElement('span');
+        item.className = 'reaction-float';
+        item.textContent = emoji;
+        item.style.setProperty('--reaction-x', `${12 + Math.random() * 72}%`);
+        item.style.setProperty('--reaction-drift', `${Math.round(Math.random() * 90 - 45)}px`);
+        layer.appendChild(item);
+        item.addEventListener('animationend', () => item.remove(), {once:true});
+        // Clean up if the animation is interrupted.
+        setTimeout(() => item.remove(), 4000);
+    }
+    document.querySelectorAll('[data-reaction]').forEach(button => {
+        button.addEventListener('click', async () => {
+            if (!channel || !me) return;
+            const now = Date.now();
+            if (now - lastReactionAt < 300) return;
+            lastReactionAt = now;
+            const emoji = button.dataset.reaction;
+            spawnReaction(emoji);
+            try {
+                await channel.send({type:'broadcast', event:'chat-reaction', payload:{emoji}});
+            } catch (error) {
+                console.warn('Reaction broadcast failed:', error);
+            }
+        });
+    });
+
+    // Poll a tiny cache-busted deployment manifest for future site updates.
+    // This feature only works for viewers after they've loaded this release once.
+    const PAGE_VERSION = '20261106-r1';
+    let refreshScheduled = false;
+    async function checkPageVersion() {
+        if (refreshScheduled) return;
+        try {
+            const response = await fetch(`version.json?check=${Date.now()}`, {cache:'no-store'});
+            if (!response.ok) return;
+            const manifest = await response.json();
+            if (!manifest || typeof manifest.streams !== 'string' || manifest.streams === PAGE_VERSION) return;
+            refreshScheduled = true;
+            const notice = document.createElement('div');
+            notice.className = 'update-notice';
+            notice.setAttribute('role','status');
+            notice.textContent = '🔄 Masa has deployed an update! Refreshing in 5 seconds…';
+            document.body.appendChild(notice);
+            setTimeout(() => window.location.reload(), 5000);
+        } catch (error) { console.warn('Version check unavailable:', error); }
+    }
+    setInterval(checkPageVersion, 60000);
+    setTimeout(checkPageVersion, 10000);
+
     /* Lock only the embedded player's mouse interactions, without reloading it. */
     const playerLockButton=$('player-lock-toggle');
     let playerLocked=false;

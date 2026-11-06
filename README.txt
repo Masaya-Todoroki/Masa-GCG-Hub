@@ -1,1 +1,0 @@
-Replace streams.html and js/streams.js. Keep your existing css/streams.css and js/admin-config.js. Run CLEAR_CHAT_SETUP.sql in Supabase SQL Editor. Hard-refresh the page. The JS is formatted for readability.

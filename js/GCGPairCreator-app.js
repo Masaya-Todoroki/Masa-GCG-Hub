@@ -3,6 +3,9 @@ let cards = [];
 let jsonCardIds = new Set();
 let extraCardIds = new Set();
 let verifiedPassword = "";
+let pairAdminClient = null;
+let pairAdminSession = null;
+let pairAdminMode = false;
 let refreshTimer = null;
 let cardMap = {};
 
@@ -71,6 +74,37 @@ const statusModalMessage = document.getElementById("status-modal-message");
 const statusModalOk = document.getElementById("status-modal-ok");
 const statusSpinner = document.getElementById("status-spinner");
 
+/* Authenticated admins may enter without the shared password. */
+async function tryAdminAccess() {
+    try {
+        if (!window.supabase || !window.GCG_SUPABASE_URL || !window.GCG_SUPABASE_PUBLISHABLE_KEY) return;
+        pairAdminClient = window.supabase.createClient(window.GCG_SUPABASE_URL, window.GCG_SUPABASE_PUBLISHABLE_KEY);
+        const { data: { session } } = await pairAdminClient.auth.getSession();
+        if (!session) return;
+        const { data: allowed, error } = await pairAdminClient.rpc('gcg_is_admin');
+        if (error || allowed !== true) return;
+        pairAdminSession = session;
+        pairAdminMode = true;
+        passwordScreen.classList.add('hidden');
+        versionBadge.classList.add('hidden');
+        app.classList.remove('hidden');
+        await initializeApp();
+    } catch (error) {
+        console.warn('Admin access check failed; shared password remains available.', error);
+    }
+}
+
+async function pairAuthHeaders() {
+    if (pairAdminMode && pairAdminClient) {
+        const { data: { session } } = await pairAdminClient.auth.getSession();
+        if (!session) throw new Error('Admin session expired. Please sign in again.');
+        return { 'Content-Type': 'application/json', apikey: SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${session.access_token}` };
+    }
+    return { 'Content-Type': 'application/json', apikey: SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}` };
+}
+
 /* Password */
 async function validatePassword() {
     const password = passwordInput.value;
@@ -121,6 +155,7 @@ async function validatePassword() {
     }
 }
 
+tryAdminAccess();
 passwordButton.addEventListener("click", validatePassword);
 passwordInput.addEventListener("keydown", event => {
     if (event.key === "Enter") validatePassword();
@@ -926,9 +961,8 @@ addCardConfirm.addEventListener("click", async () => {
     try {
         const response = await fetch(`${SUPABASE_URL}/functions/v1/add-pairing-card`, {
             method:"POST",
-            headers:{"Content-Type":"application/json",apikey:SUPABASE_PUBLISHABLE_KEY,
-                Authorization:`Bearer ${SUPABASE_PUBLISHABLE_KEY}`},
-            body:JSON.stringify({password:verifiedPassword, card_id:pendingCardId})
+            headers:await pairAuthHeaders(),
+            body:JSON.stringify({...(pairAdminMode ? {} : {password:verifiedPassword}), card_id:pendingCardId})
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
@@ -999,9 +1033,8 @@ manageCardDelete.addEventListener("click", async () => {
     try {
         const response = await fetch(`${SUPABASE_URL}/functions/v1/delete-pairing-card`, {
             method:"POST",
-            headers:{"Content-Type":"application/json", apikey:SUPABASE_PUBLISHABLE_KEY,
-                Authorization:`Bearer ${SUPABASE_PUBLISHABLE_KEY}`},
-            body:JSON.stringify({password:verifiedPassword, card_id:id})
+            headers:await pairAuthHeaders(),
+            body:JSON.stringify({...(pairAdminMode ? {} : {password:verifiedPassword}), card_id:id})
         });
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);

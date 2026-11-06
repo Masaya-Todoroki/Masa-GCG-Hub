@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="icon" type="image/png" href="images/Branding/favicon.png">
     <link rel="stylesheet" href="css/gcg-theme.css">
-    <style>.streams-nav{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}</style>
+    <style>.tabs [hidden]{display:none!important}.streams-nav{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}</style>
     <link rel="stylesheet" href="css/admin-indicator.css">
 </head>
 
@@ -29,6 +29,7 @@
             <button class="tab-btn" data-tab="tools">Tools</button>
             <button class="tab-btn" data-tab="news">News</button>
             <a class="tab-btn streams-nav" href="streams.html">Streams</a>
+            <a id="gcg-admin-pair-tab" class="tab-btn streams-nav" href="GCGPairCreator.html" hidden>Pair Creator</a>
         </nav>
 
         <div id="cards" class="tab-content active">

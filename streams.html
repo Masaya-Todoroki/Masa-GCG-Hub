@@ -7,7 +7,7 @@
    Streams | Masa's GCG Hub
   </title>
   <link href="images/Branding/favicon.png" rel="icon"/>
-  <link href="css/streams.css" rel="stylesheet"/>
+  <link href="css/streams.css?v=20261106-r1" rel="stylesheet"/>
  </head>
  <body>
   <header class="top">
@@ -127,10 +127,13 @@
       <span class="chat-dot" title="Community chat">
       </span>
      </div>
-     <div aria-live="polite" class="messages" id="messages">
+     <div class="messages-wrap">
+      <div aria-live="polite" class="messages" id="messages">
       <p class="notice">
        Connecting to chat…
       </p>
+     </div>
+      <div class="reaction-float-layer" id="reaction-float-layer" aria-hidden="true"></div>
      </div>
      <div class="chat-bottom">
       <div class="identity">
@@ -140,8 +143,33 @@
        <button aria-label="Change nickname" id="edit-nickname" title="Change nickname" type="button">
         ✎
        </button>
+        <div class="quick-reactions" aria-label="Live floating reactions">
+          <button type="button" data-reaction="🔥" aria-label="Send fire reaction" title="Hype">🔥</button>
+          <button type="button" data-reaction="❤️" aria-label="Send heart reaction" title="Love">❤️</button>
+          <button type="button" data-reaction="😂" aria-label="Send laughing reaction" title="Laugh">😂</button>
+          <button type="button" data-reaction="☝️" aria-label="Send Shining Finger reaction" title="Shining Finger">☝️</button>
+          <button type="button" data-reaction="💯" aria-label="Send 100 reaction" title="100">💯</button>
+        </div>
       </div>
+      <div class="chat-picker" id="chat-picker" hidden>
+        <div class="picker-tabs">
+         <button type="button" class="active" data-picker-tab="emoji">😀 Emoji</button>
+         <button type="button" data-picker-tab="gifs">GIFs</button>
+         <button type="button" data-picker-tab="custom">Custom</button>
+         <button type="button" id="close-picker" aria-label="Close picker">✕</button>
+        </div>
+        <section id="emoji-panel" class="picker-panel"><emoji-picker></emoji-picker></section>
+        <section id="gifs-panel" class="picker-panel" hidden>
+         <input id="gif-search" type="search" placeholder="Search GIFs…" aria-label="Search GIFs" />
+         <div class="gif-results" id="gif-results"></div>
+         <p class="gif-status" id="gif-status"></p>
+         <div id="gif-limit" hidden><strong>☝️ NO MORE FINGERING!</strong><p>Masa has reached his daily limit. Please try again later.</p><button type="button" id="gif-retry">🔥 Recharge Finger</button></div>
+         <small>Powered by <a href="https://giphy.com/" target="_blank" rel="noopener noreferrer">GIPHY</a></small>
+        </section>
+        <section id="custom-panel" class="picker-panel" hidden><div id="custom-results" class="custom-results"></div></section>
+       </div>
       <form id="message-form">
+       <button id="open-picker" type="button" aria-label="Open emoji and GIF picker" title="Emojis and GIFs">😀</button>
        <input aria-label="Chat message" autocomplete="off" disabled="" id="message-input" maxlength="300" placeholder="Send a message…" required=""/>
        <button disabled="" id="send-button" type="submit">
         ➤
@@ -186,7 +214,9 @@
   </script>
   <script src="js/admin-config.js">
   </script>
-  <script defer="" src="js/streams.js">
+  <script src="js/giphy-config.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.26.0/index.js"></script>
+  <script defer="" src="js/streams.js?v=20261106-r1">
   </script>
  </body>
 </html>

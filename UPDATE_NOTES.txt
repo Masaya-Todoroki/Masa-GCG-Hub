@@ -1,0 +1,5 @@
+Floating reactions: 🔥 ❤️ 😂 ☝️ 💯 (Supabase Realtime broadcast, not stored).
+Version checker: checks version.json every 60 seconds, warns for 5 seconds before reload.
+IMPORTANT: For future deployments, update version.json streams value AND bump ?v= on streams.css and streams.js to the same new version.
+Existing open tabs must manually refresh once to receive this checker.
+GIPHY: Paste your existing key into js/giphy-config.js.

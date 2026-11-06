@@ -38,3 +38,44 @@ body.theatre-mode .chat-bottom{flex-shrink:0}
 body.theatre-mode #player-lock-toggle:not([hidden]){display:inline-flex;align-items:center}
 #player-lock-toggle[aria-pressed="true"]{border-color:#89c4e9;background:#315d78}
 .video-frame.player-locked iframe{pointer-events:none!important}
+
+/* Emoji, custom emote and GIPHY picker */
+.chat-bottom{position:relative}
+#open-picker{border:1px solid #526d86;background:#243c51;color:white;border-radius:7px;font-size:20px;padding:7px 10px}
+.chat-picker{position:absolute;bottom:calc(100% - 2px);left:10px;right:10px;height:min(390px,55vh);background:#1b2c3e;border:1px solid #6589a6;border-radius:12px;z-index:15;box-shadow:0 10px 35px #0009;display:flex;flex-direction:column;overflow:hidden}
+.chat-picker[hidden],.picker-panel[hidden],#gif-limit[hidden]{display:none!important}
+.picker-tabs{display:flex;gap:3px;padding:7px;border-bottom:1px solid #ffffff22}
+.picker-tabs button{flex:1;background:#283d51;border:0;border-radius:6px;color:#dce8f4;padding:8px 3px;cursor:pointer;font-size:12px}
+.picker-tabs button.active{background:#426b89;color:white}
+.picker-tabs #close-picker{flex:0 0 35px}
+.picker-panel{flex:1;min-height:0;overflow:auto;padding:8px}
+.picker-panel emoji-picker{width:100%;height:100%;--background:#1b2c3e;--border-color:transparent;--input-border-color:#5d7990;--input-font-color:#e7f1fa;--input-placeholder-color:#b5c6d4;--category-font-color:#e7f1fa;--emoji-size:1.5rem}
+#gif-search{width:100%;margin-bottom:8px;padding:9px}
+.gif-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.gif-results button{background:#263b4d;border:0;padding:0;border-radius:7px;overflow:hidden;cursor:pointer;min-height:90px}
+.gif-results img{display:block;width:100%;height:110px;object-fit:cover}
+.gif-status{font-size:12px;color:#afc6d8;margin:8px 0}
+#gif-limit{text-align:center;padding:22px 8px;color:#f4d7a1}
+#gif-limit p{margin:10px 0}
+#gif-retry{padding:9px 14px;background:#426b89;border:0;border-radius:7px;color:white}
+#custom-results{display:flex;gap:8px;flex-wrap:wrap}
+#custom-results button{border:1px solid #59748a;border-radius:7px;background:#253a4d;color:white;padding:7px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px}
+#custom-results img,.inline-emote{width:32px;height:32px;object-fit:contain;vertical-align:middle}
+.msg-gif{max-width:min(100%,260px);max-height:210px;border-radius:8px;display:block;object-fit:contain}
+.picker-panel small{display:block;text-align:center;margin:10px 0;color:#a9bac8}
+
+/* Ephemeral live chat reactions */
+.messages-wrap{position:relative;flex:1;min-height:0;display:flex;overflow:hidden}
+.messages-wrap>.messages{width:100%;min-height:0}
+.reaction-float-layer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+.quick-reactions{margin-left:auto;display:flex;gap:4px;align-items:center;flex-wrap:nowrap}
+.quick-reactions button{border:1px solid #526d86;background:#293f53;color:white;border-radius:7px;font-size:19px;line-height:1.1;padding:5px 6px;cursor:pointer;transition:background .15s,transform .15s}
+.quick-reactions button:hover{background:#3b5e78;transform:translateY(-2px)}
+.quick-reactions button:disabled{opacity:.45}
+.identity{min-width:0;flex-wrap:wrap}
+.reaction-float{position:absolute;bottom:0;font-size:32px;line-height:1;left:var(--reaction-x);filter:drop-shadow(0 2px 4px #0009);animation:gcg-reaction-rise 2.6s ease-out forwards;will-change:transform,opacity}
+@keyframes gcg-reaction-rise{0%{transform:translate3d(0,12px,0) scale(.6);opacity:0}12%{opacity:1}75%{opacity:1}100%{transform:translate3d(var(--reaction-drift),-240px,0) scale(1.3);opacity:0}}
+@media(max-width:440px){.quick-reactions{width:100%;justify-content:space-between}.quick-reactions button{flex:1}}
+@media(prefers-reduced-motion:reduce){.reaction-float{animation-duration:.6s}}
+
+.update-notice{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:99999;background:#274b65;border:1px solid #9dc8e4;border-radius:10px;color:white;padding:13px 20px;box-shadow:0 8px 30px #0009;text-align:center;max-width:calc(100vw - 30px)}
