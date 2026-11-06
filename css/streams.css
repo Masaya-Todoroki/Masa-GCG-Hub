@@ -182,3 +182,65 @@ body.theatre-mode .view-toolbar{width:100%;margin-top:0!important}
 .emoji-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(39px,1fr));align-content:start;gap:3px;overflow:auto;flex:1;min-height:0}
 .emoji-choice{font-size:24px;line-height:1.5;background:transparent;border:0;border-radius:6px;cursor:pointer;padding:3px}
 .emoji-choice:hover{background:#3c5870}
+
+/* Profile customiser v13 */
+.identity-avatar{width:29px;height:29px;object-fit:contain;image-rendering:pixelated;flex:none}
+#nickname-dialog{max-width:min(480px,calc(100vw - 24px));padding:22px;max-height:calc(100dvh - 24px);overflow-y:auto}
+.profile-preview{display:flex;align-items:center;justify-content:center;gap:12px;background:#172638;border:1px solid #45617a;border-radius:10px;padding:10px;min-height:68px}
+.profile-preview img{width:54px;height:54px;object-fit:contain;image-rendering:pixelated}
+#profile-preview-name{font-weight:800;font-size:20px}
+.avatar-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#nickname-form .avatar-tabs button{background:#243b51;border:1px solid #56748c;color:#d9eafa;padding:9px;border-radius:8px}
+#nickname-form .avatar-tabs button.active{background:#4c7799;border-color:#a7d9ff}
+.avatar-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;max-height:220px;overflow-y:auto;padding:3px}
+#nickname-form .avatar-option{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;padding:7px 3px;background:#203448;border:2px solid #435d75;border-radius:9px;color:#d9eafa}
+#nickname-form .avatar-option.selected{border-color:#9bd6ff;background:#315574}
+.avatar-option img{width:56px;height:56px;object-fit:contain;image-rendering:pixelated}
+.avatar-option span{font-size:10px;line-height:1.25;overflow-wrap:anywhere}
+.avatar-empty{grid-column:1/-1;margin:12px!important}
+.avatar-feedback{font-size:11px!important;margin:0!important;color:#ffb4aa!important}
+.profile-colors{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#nickname-form .profile-color{width:32px;height:32px;border-radius:50%;padding:0;border:2px solid #233447;box-shadow:0 0 0 1px #7790a3}
+#nickname-form .profile-color.selected{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:430px){.avatar-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Swatch colours must override the global button gradient */
+#nickname-form button.profile-color { background-image:none !important; }
+
+/* r16 stream avatar overlay */
+.video-frame{position:relative}
+.stream-avatar-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:4}
+.stream-avatar-layer[hidden]{display:none!important}
+.stream-walker{position:absolute;left:0;bottom:7%;width:64px;display:flex;flex-direction:column;align-items:center;gap:2px;will-change:transform;pointer-events:none}
+.stream-walker-name{max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;line-height:16px;font-weight:800;text-align:center;text-shadow:-1px -1px #000,1px -1px #000,-1px 1px #000,1px 1px #000,0 2px 3px #000;filter:drop-shadow(0 1px 1px #000)}
+.stream-walker-image{height:57px;width:57px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 2px 2px #0009)}
+#avatars-toggle[aria-pressed="false"]{opacity:.7}
+@media(max-width:550px){.stream-walker{width:46px}.stream-walker-image{width:43px;height:43px}.stream-walker-name{font-size:10px}}
+
+/* r17: responsive bottom-aligned avatars */
+.stream-walker{bottom:0;width:clamp(32px,7.5%,72px);gap:0}
+.stream-walker-image{width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;object-position:center bottom;image-rendering:auto;filter:drop-shadow(0 2px 2px #0009)}
+.stream-walker-name{font-size:clamp(9px,1.3vw,13px);line-height:1.2;max-width:130px;min-height:1.2em;overflow:visible;text-overflow:clip}
+@media(max-width:550px){.stream-walker{width:clamp(28px,9%,48px)}.stream-walker-image{width:100%;height:auto}.stream-walker-name{font-size:9px}}
+
+/* r18: avatar proportions follow actual video container height at every size */
+.stream-walker{width:var(--walker-size,56px);bottom:0;gap:0}
+.stream-walker-image{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain}
+.stream-walker-name{font-size:var(--walker-font,12px);line-height:1.15;max-width:none;min-height:0;white-space:nowrap}
+@media(max-width:550px){.stream-walker{width:var(--walker-size,56px)}.stream-walker-name{font-size:var(--walker-font,12px)}}
+
+/* Configurable video-relative avatar baseline. */
+.stream-walker{bottom:var(--walker-bottom,0px)}
+
+/* Live connected viewer count, driven by Supabase Presence. */
+.chat-viewers{display:inline-flex;align-items:center;gap:7px;color:#a7d7ef;font-size:14px;font-weight:800;white-space:nowrap;padding-left:12px;font-variant-numeric:tabular-nums}
+
+/* Dice rolls use the same simple message styling as regular chat. */
+.msg-body .msg-name{font-size:inherit}
+
+/* Chat games are separate from floating reactions, beside the nickname. */
+.chat-actions{display:flex;align-items:center;gap:5px;margin-left:18px;flex-shrink:0}
+.chat-actions button{border:1px solid #526d86;background:#293f53;color:white;border-radius:7px;font-size:19px;line-height:1.1;padding:5px 6px;cursor:pointer;transition:background .15s,transform .15s}
+.chat-actions button:hover{background:#3b5e78;transform:translateY(-2px)}
+.chat-actions button:disabled{opacity:.45}
+@media(max-width:440px){.chat-actions{margin-left:0}.quick-reactions{width:100%;justify-content:space-between}}

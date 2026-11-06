@@ -7,7 +7,7 @@
    Streams | Masa's GCG Hub
   </title>
   <link href="images/Branding/favicon.png" rel="icon"/>
-  <link href="css/streams.css?v=20261106-r12" rel="stylesheet"/>
+  <link href="css/streams.css?v=20261107-r18" rel="stylesheet"/>
  </head>
  <body>
   <header class="top">
@@ -57,8 +57,12 @@
         An admin can add a YouTube livestream or replay.
        </p>
       </div>
+      <div id="stream-avatar-layer" class="stream-avatar-layer" aria-hidden="true"></div>
      </div>
      <div class="view-toolbar">
+      <button aria-pressed="true" id="avatars-toggle" type="button" title="Show or hide viewer avatars">
+       👾 Avatars: On
+      </button>
       <button aria-pressed="false" id="theatre-toggle" type="button">
        ▣ Theatre Mode
       </button>
@@ -127,8 +131,7 @@
         Open even when the stream is offline
        </p>
       </div>
-      <span class="chat-dot" title="Community chat">
-      </span>
+      <span class="chat-viewers" id="chat-viewer-count" title="Connected viewers (including you)" aria-label="Connected viewers" role="status"><span aria-hidden="true">👥</span> <span id="viewer-count-number">0</span></span>
      </div>
      <div class="messages-wrap">
       <div aria-live="polite" class="messages" id="messages">
@@ -140,12 +143,16 @@
      </div>
      <div class="chat-bottom">
       <div class="identity">
-       <span id="nickname-display">
+       <img id="identity-avatar" class="identity-avatar" alt="" hidden/><span id="nickname-display">
         Choose a nickname
        </span>
-       <button aria-label="Change nickname" id="edit-nickname" title="Change nickname" type="button">
+       <button aria-label="Edit profile" id="edit-nickname" title="Edit profile" type="button">
         ✎
        </button>
+        <div class="chat-actions" aria-label="Chat games">
+          <button type="button" id="roll-dice" aria-label="Roll a six-sided die" title="Roll D6">🎲</button>
+          <button type="button" id="draw-card" aria-label="Draw a random Gundam card" title="Draw random card">🃏</button>
+        </div>
         <div class="quick-reactions" aria-label="Live floating reactions">
           <button type="button" data-reaction="🔥" aria-label="Send fire reaction" title="Hype">🔥</button>
           <button type="button" data-reaction="❤️" aria-label="Send heart reaction" title="Love">❤️</button>
@@ -202,26 +209,27 @@
   </main>
   <dialog id="nickname-dialog">
    <form id="nickname-form" method="dialog">
-    <div class="avatar">
-     ✦
-    </div>
-    <h2>
-     Welcome to the chat!
-    </h2>
-    <p>
-     Pick a nickname to join the conversation. No sign-up needed.
-    </p>
-    <label for="nickname-input">
-     YOUR NICKNAME
-    </label>
+    <div class="profile-preview"><img id="profile-preview-avatar" alt="" hidden/><span id="profile-preview-name">Your name</span></div>
+    <h2>Edit your chat profile</h2>
+    <p>Choose your name, avatar and name colour.</p>
+    <label for="nickname-input">YOUR NICKNAME</label>
     <input autocomplete="nickname" id="nickname-input" maxlength="24" minlength="2" placeholder="e.g. GundamFan" required=""/>
+    <label>CHOOSE YOUR AVATAR</label>
+    <div class="avatar-tabs" role="group" aria-label="Avatar category">
+      <button type="button" class="active" data-avatar-category="Pilots" aria-pressed="true">Pilots</button>
+      <button type="button" data-avatar-category="Units" aria-pressed="false">Mobile Suits</button>
+    </div>
+    <div id="avatar-grid" class="avatar-grid" aria-label="Available avatars"></div>
+    <p id="avatar-feedback" class="avatar-feedback" aria-live="polite"></p>
+    <label>NAME COLOUR</label>
+    <div id="profile-colors" class="profile-colors" aria-label="Choose name colour"></div>
     <p class="error" id="nickname-error">
     </p>
     <button type="submit">
-     Join chat
+     Save profile
     </button>
     <p class="hint">
-     You can change your nickname later.
+     You can change your profile later.
     </p>
    </form>
   </dialog>
@@ -230,7 +238,7 @@
   <script src="js/admin-config.js">
   </script>
   <script src="js/giphy-config.js"></script>
-  <script defer="" src="js/streams.js?v=20261106-r12">
+  <script defer="" src="js/streams.js?v=20261107-r18">
   </script>
  </body>
 </html>

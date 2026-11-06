@@ -30,12 +30,256 @@
         }
         showStream(data)
     }
+    // Avatar profile v13: CSV-backed local customiser; no database migration required.
+    const PROFILE_VERSION = 'gcg_chat_profile_v1';
+    const PROFILE_COLORS = ['#FFFFFF','#FFCE70','#FF8B9B','#BDA4FF','#72E6CB','#8BCBFF','#FFE681','#FFA775'];
+    let avatarList = {Pilots:[],Units:[]};
+    let avatarCategory = 'Pilots';
+    let selectedAvatar = '';
+    let nameColor = '#FFFFFF';
+    let draftAvatar = '';
+    let draftColor = '#FFFFFF';
+    const profileKey = () => me?.id ? PROFILE_VERSION + ':' + me.id : PROFILE_VERSION;
+    function avatarUrl(id) {
+        const [category,filename] = (id||'').split('/');
+        if (!['Pilots','Units'].includes(category) || !/^[a-z0-9_-]+$/i.test(filename||'')) return '';
+        return 'images/Avatars/'+category+'/'+encodeURIComponent(filename);
+    }
+    function imageWithFallback(img,id) {
+        const base = avatarUrl(id);
+        if (!base) {img.hidden=true;img.removeAttribute('src');return;}
+        img.hidden=false;
+        let ext=0;
+        img.onerror=()=>{if(ext===0){ext++;img.src=base+'.webp';}else{img.hidden=true;}};
+        img.src=base+'.png';
+    }
+    function applyProfile() {
+        const identity=$('identity-avatar');
+        imageWithFallback(identity,selectedAvatar);
+        $('nickname-display').style.color=nameColor;
+    }
+    function restoreProfile() {
+        try {
+            const p=JSON.parse(localStorage.getItem(profileKey())||'{}');
+            if (typeof p.avatar==='string') selectedAvatar=p.avatar;
+            if (PROFILE_COLORS.includes(p.color)) nameColor=p.color;
+        } catch(_) {}
+        applyProfile();
+    }
+    async function loadAvatars() {
+        try {
+            const response=await fetch('data/Avatars.csv',{cache:'no-cache'});
+            if(!response.ok) throw new Error('HTTP '+response.status);
+            const csv=(await response.text()).replace(/^\uFEFF/,'').trim().split(/\r?\n/);
+            const headers=csv.shift().split(',').map(x=>x.trim());
+            const columns={Units:headers.indexOf('Units'),Pilots:headers.indexOf('Pilots')};
+            avatarList={Pilots:[],Units:[]};
+            for(const row of csv) {
+                const values=row.split(',');
+                for(const category of ['Pilots','Units']){
+                    const value=values[columns[category]]?.trim();
+                    if(value && /^[a-z0-9_-]+$/i.test(value)) avatarList[category].push(value);
+                }
+            }
+            $('avatar-feedback').textContent='';
+        } catch(e) {
+            $('avatar-feedback').textContent='Avatar list unavailable. Upload data/Avatars.csv to your site.';
+        }
+        renderAvatarGrid();
+    }
+    function avatarDisplayName(id) {
+        return id; // Display the exact value supplied in Avatars.csv.
+    }
+    function renderAvatarGrid(){
+        const grid=$('avatar-grid');
+        grid.replaceChildren();
+        for(const filename of avatarList[avatarCategory]){
+            const id=avatarCategory+'/'+filename;
+            const btn=document.createElement('button');
+            btn.type='button';btn.className='avatar-option';
+            btn.classList.toggle('selected',draftAvatar===id);
+            btn.setAttribute('aria-pressed',String(draftAvatar===id));
+            const img=document.createElement('img');
+            img.alt='';img.loading='lazy';
+            imageWithFallback(img,id);
+            const label=document.createElement('span');label.textContent=avatarDisplayName(filename);
+            btn.append(img,label);
+            btn.addEventListener('click',()=>{
+                draftAvatar=id;
+                renderAvatarGrid();
+                updateProfilePreview();
+            });
+            grid.append(btn);
+        }
+        if(!grid.children.length){
+            const empty=document.createElement('p');
+            empty.className='avatar-empty';empty.textContent='No avatars in this category yet.';
+            grid.append(empty);
+        }
+    }
+    function updateProfilePreview(){
+        $('profile-preview-name').textContent=$('nickname-input').value.trim()||'Your name';
+        $('profile-preview-name').style.color=draftColor;
+        imageWithFallback($('profile-preview-avatar'),draftAvatar);
+        for(const button of $('profile-colors').children){
+            button.classList.toggle('selected',button.dataset.color===draftColor);
+            button.setAttribute('aria-pressed',String(button.dataset.color===draftColor));
+        }
+    }
+    function initProfileEditor(){
+        for(const color of PROFILE_COLORS){
+            const button=document.createElement('button');
+            button.type='button';button.className='profile-color';
+            button.style.setProperty('background-color',color,'important');button.dataset.color=color;
+            button.setAttribute('aria-label','Select '+color+' name colour');
+            button.addEventListener('click',()=>{draftColor=color;updateProfilePreview();});
+            $('profile-colors').append(button);
+        }
+        document.querySelectorAll('[data-avatar-category]').forEach(button=>{
+            button.addEventListener('click',()=>{
+                avatarCategory=button.dataset.avatarCategory;
+                document.querySelectorAll('[data-avatar-category]').forEach(b=>{
+                    b.classList.toggle('active',b===button);
+                    b.setAttribute('aria-pressed',String(b===button));
+                });
+                renderAvatarGrid();
+            });
+        });
+        $('nickname-input').addEventListener('input',updateProfilePreview);
+        loadAvatars();
+    }
+    initProfileEditor();
+    // AVATAR SETTINGS — edit these values to customise the overlay.
+    const AVATAR_SETTINGS = {
+        size: 0.125,       // Avatar width as a fraction of video height (0.125 = 12.5%).
+        bottomOffset: 0,   // Pixels above the bottom of the video, at 450px video height.
+        moveSpeed: 1,      // Multiplier for walking speed (1 = default).
+        nameScale: 1       // Multiplier for name text size (1 = default).
+    };
+    // Viewer avatars: Presence synchronises profiles, but movement stays browser-local.
+    const avatarLayer=$('stream-avatar-layer');
+    const avatarToggle=$('avatars-toggle');
+    let avatarPresence=null;
+    const viewerSessionId = (window.crypto?.randomUUID?.() || ('viewer-'+Date.now()+'-'+Math.random().toString(36).slice(2)));
+    const walkers=new Map();
+    const activeNameColors=new Map();
+    // All avatar dimensions and movement are based on the rendered video size.
+    let avatarScale=1;
+    let previousOverlayWidth=0;
+    function resizeAvatarOverlay(){
+        const h=avatarLayer.clientHeight;
+        const w=avatarLayer.clientWidth;
+        if(!h||!w)return;
+        avatarScale=h/450;
+        avatarLayer.style.setProperty('--walker-size',Math.round(h*AVATAR_SETTINGS.size*100)/100+'px');
+        avatarLayer.style.setProperty('--walker-bottom',Math.round(AVATAR_SETTINGS.bottomOffset*avatarScale*100)/100+'px');
+        avatarLayer.style.setProperty('--walker-font',Math.round(h*.027*AVATAR_SETTINGS.nameScale*100)/100+'px');
+        for(const walker of walkers.values()){
+            const limit=Math.max(0,w-walker.element.offsetWidth);
+            // Preserve horizontal progress across normal/theatre/mobile resizing.
+            // Normalised position is relative to the available walking range.
+            if(previousOverlayWidth){
+                const previousLimit=Math.max(0,previousOverlayWidth-(walker.previousElementWidth || walker.element.offsetWidth));
+                const fraction=previousLimit>0?walker.x/previousLimit:0.5;
+                walker.x=Math.max(0,Math.min(limit,fraction*limit));
+            } else walker.x=Math.max(0,Math.min(limit,walker.x));
+            walker.previousElementWidth=walker.element.offsetWidth;
+            walker.element.style.transform='translate3d('+walker.x+'px,0,0)';
+        }
+        previousOverlayWidth=w;
+    }
+    if(window.ResizeObserver){new ResizeObserver(resizeAvatarOverlay).observe(avatarLayer.parentElement);}
+    window.addEventListener('resize',resizeAvatarOverlay);
+    requestAnimationFrame(resizeAvatarOverlay);
+
+    let overlayEnabled=localStorage.getItem('gcg_overlay_visible')!=='false';
+    const safeColor=c=>PROFILE_COLORS.includes(c)?c:'#FFFFFF';
+    function setOverlayVisible(value){
+        overlayEnabled=!!value;
+        avatarLayer.hidden=!overlayEnabled;
+        avatarToggle.setAttribute('aria-pressed',String(overlayEnabled));
+        avatarToggle.textContent=overlayEnabled?'👾 Avatars: On':'👾 Avatars: Off';
+        try{localStorage.setItem('gcg_overlay_visible',String(overlayEnabled));}catch(_){}
+    }
+    avatarToggle.addEventListener('click',()=>setOverlayVisible(!overlayEnabled));
+    setOverlayVisible(overlayEnabled);
+    function ownPresence(){return {nickname:nickname||'',avatar:selectedAvatar||'',color:safeColor(nameColor),updated_at:Date.now()};}
+    function broadcastProfile(){
+        if(avatarPresence && me) avatarPresence.track(ownPresence()).catch(()=>{});
+    }
+    function refreshChatNameColors(){
+        document.querySelectorAll('.msg-name').forEach(el=>{
+            const color=activeNameColors.get(el.textContent.trim().toLowerCase());
+            el.style.color=color || '';
+        });
+    }
+    function syncAvatarPresence(){
+        if(!avatarPresence)return;
+        const state=avatarPresence.presenceState();
+        // Count unique connected browser sessions, including viewers without an avatar.
+        const viewerCount=Object.values(state).filter(entries=>Array.isArray(entries)&&entries.length>0).length;
+        const countElement=$('viewer-count-number');
+        if(countElement)countElement.textContent=String(viewerCount);
+        const seen=new Set();
+        activeNameColors.clear();
+        for(const [id,entries] of Object.entries(state)){
+            const profile=entries?.[entries.length-1];
+            if(!profile || !profile.nickname)continue;
+            activeNameColors.set(String(profile.nickname).trim().toLowerCase(),safeColor(profile.color));
+            if(!avatarUrl(profile.avatar))continue;
+            seen.add(id);
+            let walker=walkers.get(id);
+            if(!walker){
+                const element=document.createElement('div');element.className='stream-walker';
+                const label=document.createElement('span');label.className='stream-walker-name';
+                const img=document.createElement('img');img.className='stream-walker-image';img.alt='';
+                element.append(label,img);avatarLayer.append(element);
+                walker={element,label,img,x:Math.random()*Math.max(0,avatarLayer.clientWidth-avatarLayer.clientHeight*AVATAR_SETTINGS.size),velocity:0,pauseUntil:0,last:performance.now(),avatar:''};
+                walkers.set(id,walker);
+                resizeAvatarOverlay();
+            }
+            walker.label.textContent=String(profile.nickname).slice(0,24);
+            walker.label.style.color=safeColor(profile.color);
+            if(walker.avatar!==profile.avatar){walker.avatar=profile.avatar;imageWithFallback(walker.img,profile.avatar);}
+        }
+        for(const [id,walker] of walkers){if(!seen.has(id)){walker.element.remove();walkers.delete(id);}}
+        refreshChatNameColors();
+    }
+    function animateWalkers(now){
+        if(overlayEnabled && !document.hidden && walkers.size){
+            const width=avatarLayer.clientWidth;
+            for(const walker of walkers.values()){
+                const dt=Math.min((now-walker.last)/1000,.08);walker.last=now;
+                const limit=Math.max(0,width-walker.element.offsetWidth);
+                if(now>walker.pauseUntil && Math.random()<dt*.35){
+                    walker.velocity=Math.random()<.2?0:(Math.random()<.5?-1:1)*(12+Math.random()*25)*avatarScale*AVATAR_SETTINGS.moveSpeed;
+                    walker.pauseUntil=now+600+Math.random()*3000;
+                }
+                walker.x=Math.max(0,Math.min(limit,walker.x+walker.velocity*dt));
+                if(walker.x===0 && walker.velocity<0)walker.velocity=Math.abs(walker.velocity);
+                if(walker.x===limit && walker.velocity>0)walker.velocity=-Math.abs(walker.velocity);
+                walker.element.style.transform='translate3d('+Math.round(walker.x)+'px,0,0)';
+                walker.img.style.transform=walker.velocity>0?'scaleX(-1)':'scaleX(1)';
+            }
+        } else for(const walker of walkers.values())walker.last=now;
+        requestAnimationFrame(animateWalkers);
+    }
+    requestAnimationFrame(animateWalkers);
+    function startAvatarPresence(){
+        if(!client||!me)return;
+        avatarPresence=client.channel('gcg-stream-avatar-presence',{config:{presence:{key:viewerSessionId}}});
+        avatarPresence.on('presence',{event:'sync'},syncAvatarPresence)
+          .on('presence',{event:'join'},syncAvatarPresence)
+          .on('presence',{event:'leave'},syncAvatarPresence)
+          .subscribe(status=>{if(status==='SUBSCRIBED')broadcastProfile();});
+        window.addEventListener('pagehide',()=>{avatarPresence?.untrack();});
+    }
     function setNickname(){
-        nickname=nickname.trim();$('nickname-display').textContent=nickname||'Choose a nickname';$('message-input').disabled=!nickname||!me;$('send-button').disabled=!nickname||!me
+        nickname=nickname.trim();$('nickname-display').textContent=nickname||'Choose a nickname';applyProfile();$('message-input').disabled=!nickname||!me;$('send-button').disabled=!nickname||!me
     }
     function promptNickname(){
         if(!$('nickname-dialog').open){
-            $('nickname-input').value=nickname;$('nickname-error').textContent='';$('nickname-dialog').showModal()
+            $('nickname-input').value=nickname;draftAvatar=selectedAvatar;draftColor=nameColor;avatarCategory=selectedAvatar.startsWith('Units/')?'Units':'Pilots';document.querySelectorAll('[data-avatar-category]').forEach(b=>{const active=b.dataset.avatarCategory===avatarCategory;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});renderAvatarGrid();updateProfilePreview();$('nickname-error').textContent='';$('nickname-dialog').showModal()
         }
     }
     function renderMessages(rows){
@@ -61,8 +305,28 @@
                 }
                 );top.append(del)
             }
-            const body=document.createElement('div');body.className='msg-body';renderChatBody(body,m.message);outer.append(top,body);box.append(outer)
+            const body=document.createElement('div');body.className='msg-body';
+            const diceMatch=/^\[gcg-dice:d6:([1-6])\]$/.exec(m.message||'');
+            const cardMatch=/^\[gcg-card:([A-Z0-9]+-\d{3})\]$/.exec(m.message||'');
+            if(diceMatch){
+                // Show a dice roll as one plain chat line, with the player's live name colour.
+                // Keep timestamp and admin delete controls in the standard message header.
+                name.remove();
+                const die=document.createElement('span');die.textContent='🎲 ';
+                const roller=document.createElement('span');roller.className='msg-name';roller.textContent=m.nickname;
+                const result=document.createElement('span');result.textContent=` rolled a ${diceMatch[1]}!`;
+                body.append(die,roller,result);
+            }else if(cardMatch){
+                name.remove();
+                const card=cardById.get(cardMatch[1]);
+                const prefix=document.createElement('span');prefix.textContent='🃏 ';
+                const drawer=document.createElement('span');drawer.className='msg-name';drawer.textContent=m.nickname;
+                const detail=document.createElement('span');detail.textContent=card?` drew ${card.name} (${card.id})!`:` drew ${cardMatch[1]}!`;
+                body.append(prefix,drawer,detail);
+            }else{renderChatBody(body,m.message)}
+            outer.append(top,body);box.append(outer)
         }
+        refreshChatNameColors();
         box.scrollTop=box.scrollHeight
     }
     async function loadMessages(){
@@ -220,7 +484,7 @@
             }
             user=result.data.user
         }
-        me=user;const {
+        me=user;restoreProfile();startAvatarPresence();const {
             data:allowed
         }
         =await client.rpc('gcg_is_admin');admin=allowed===true;playerLockButton.hidden=!admin;if(!admin)setPlayerLock(false);$('admin-link').hidden=!admin;$('admin-panel').hidden=!admin;captureUi();setNickname();await Promise.all([loadStream(),loadMessages()]);lastRefreshCommand = await readRefreshCommand();refreshBaselineLoaded = true;if(!nickname)promptNickname();channel=client.channel('gcg-streams-updates').on('postgres_changes',{
@@ -391,7 +655,7 @@
     });
 
     // Automatic deployment updates. The manifest and the loaded JS share this release ID.
-    const PAGE_VERSION = '20261106-r12';
+    const PAGE_VERSION = '20261107-r16';
     const AUTO_REFRESH_ATTEMPT_KEY = 'gcg-streams-auto-refresh-attempt';
     let automaticRefreshPending = false;
     let automaticRefreshChecking = false;
@@ -571,9 +835,71 @@
         e.preventDefault();const name=$('nickname-input').value.trim();if(name.length<2||name.length>24||/[<>\r\n]/.test(name)){
             $('nickname-error').textContent='Use 2–24 characters; no angle brackets.';return
         }
-        nickname=name;localStorage.setItem('gcg_chat_nickname',name);setNickname();$('nickname-dialog').close();$('message-input').focus()
+        nickname=name;selectedAvatar=draftAvatar;nameColor=draftColor;localStorage.setItem('gcg_chat_nickname',name);try{localStorage.setItem(profileKey(),JSON.stringify({avatar:selectedAvatar,color:nameColor}));}catch(_){}setNickname();broadcastProfile();activeNameColors.set(name.toLowerCase(),safeColor(nameColor));refreshChatNameColors();$('nickname-dialog').close();$('message-input').focus()
     }
-    );$('edit-nickname').addEventListener('click',promptNickname);$('message-form').addEventListener('submit',async e=>{
+    );
+    // Cards are loaded from the DeckBuilder's existing JSON set files (not duplicated).
+    // To add a newly released set, add its filename to CARD_SET_FILES.
+    const CARD_SET_FILES=[...Array.from({length:6},(_,i)=>`GD${String(i+1).padStart(2,'0')}.json`),
+        ...Array.from({length:14},(_,i)=>`ST${String(i+1).padStart(2,'0')}.json`),'EB01.json'];
+    const cardById=new Map();let cardPoolPromise=null;
+    async function loadCardPool(){
+        if(!cardPoolPromise)cardPoolPromise=(async()=>{
+            const responses=await Promise.allSettled(CARD_SET_FILES.map(async file=>{
+                const response=await fetch(`DeckBuilder/Data/${file}`);
+                if(!response.ok)throw new Error(`${file}: HTTP ${response.status}`);
+                const data=await response.json();return Array.isArray(data.cards)?data.cards:[];
+            }));
+            cardById.clear();
+            for(const result of responses){
+                if(result.status!=='fulfilled')continue;
+                for(const card of result.value){
+                    if(typeof card.id==='string'&&typeof card.name==='string'&&/^[A-Z0-9]+-\d{3}$/.test(card.id))
+                        cardById.set(card.id,{id:card.id,name:card.name});
+                }
+            }
+            if(!cardById.size)throw new Error('No cards found in DeckBuilder/Data');
+            return Array.from(cardById.values());
+        })().catch(error=>{cardPoolPromise=null;throw error});
+        return cardPoolPromise;
+    }
+    // Preload for chat history and immediate draws. Retry if files were temporarily unavailable.
+    loadCardPool().then(()=>{if(typeof loadMessages==='function')loadMessages()}).catch(()=>{});
+    $('draw-card').addEventListener('click',async()=>{
+        if(!nickname||!me){promptNickname();return}
+        if(Date.now()-lastSend<4000){feedback('Please wait a few seconds between messages or draws.');return}
+        const button=$('draw-card');button.disabled=true;
+        try{
+            const cards=await loadCardPool();
+            const random=new Uint32Array(1);crypto.getRandomValues(random);
+            const card=cards[random[0]%cards.length];
+            lastSend=Date.now();
+            const {error}=await client.rpc('gcg_send_chat_message',{
+                p_nickname:nickname,p_message:`[gcg-card:${card.id}]`
+            });
+            if(error)throw error;
+            feedback('Messages are public. Be respectful.');await loadMessages();
+        }catch(error){feedback('Card draw failed: '+error.message)}
+        finally{button.disabled=false}
+    });
+    // A dice roll is generated once by the sender and saved as a chat message.
+    // Every viewer renders the same stored result; no additional database schema is needed.
+    $('roll-dice').addEventListener('click',async()=>{
+        if(!nickname||!me){promptNickname();return}
+        if(Date.now()-lastSend<4000){feedback('Please wait a few seconds between messages or rolls.');return}
+        const button=$('roll-dice');button.disabled=true;
+        const result=crypto.getRandomValues(new Uint32Array(1))[0]%6+1;
+        lastSend=Date.now();
+        try{
+            const {error}=await client.rpc('gcg_send_chat_message',{
+                p_nickname:nickname,p_message:`[gcg-dice:d6:${result}]`
+            });
+            if(error)feedback(error.message);
+            else{feedback('Messages are public. Be respectful.');await loadMessages()}
+        }catch(error){feedback('Dice roll failed: '+error.message)}
+        finally{button.disabled=false}
+    });
+    $('edit-nickname').addEventListener('click',promptNickname);$('message-form').addEventListener('submit',async e=>{
         e.preventDefault();const msg=$('message-input').value.trim();if(!msg||!nickname||!me)return;if(Date.now()-lastSend<4000){
             feedback('Please wait a few seconds between messages.');return
         }
