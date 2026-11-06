@@ -1,5 +1,3 @@
-Floating reactions: 🔥 ❤️ 😂 ☝️ 💯 (Supabase Realtime broadcast, not stored).
-Version checker: checks version.json every 60 seconds, warns for 5 seconds before reload.
-IMPORTANT: For future deployments, update version.json streams value AND bump ?v= on streams.css and streams.js to the same new version.
-Existing open tabs must manually refresh once to receive this checker.
-GIPHY: Paste your existing key into js/giphy-config.js.
+v4: Holding and dragging on the finger reaction selects a skin tone ONLY; it does not send a reaction. Quick-click the finger afterwards to send the selected tone.
+GIPHY configuration is excluded to preserve your existing API key.
+Auto-refresh: version.json bumped to 20261106-r4; streams asset query versions updated.

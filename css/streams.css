@@ -87,3 +87,6 @@ body.theatre-mode #player-lock-toggle:not([hidden]){display:inline-flex;align-it
 .finger-tone-picker button{font-size:23px;padding:6px;border-radius:7px;min-width:37px;touch-action:manipulation}
 #finger-reaction{touch-action:manipulation;user-select:none;-webkit-user-select:none}
 @media(max-width:440px){.finger-reaction-wrap{flex:1}.finger-reaction-wrap>#finger-reaction{width:100%}.finger-tone-picker{right:-65px;gap:1px;padding:4px}.finger-tone-picker button{min-width:33px;font-size:20px;padding:5px}}
+
+/* Highlight the tone underneath the held pointer. */
+.finger-tone-picker button.finger-tone-hover{background:#547fa3;outline:2px solid #b8e0ff;transform:scale(1.1)}

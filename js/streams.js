@@ -240,32 +240,74 @@
         button.addEventListener('click', () => sendReaction(button.dataset.reaction));
     });
 
-    // Holding the finger for 500 ms opens a skin-tone picker without sending.
-    // A short mouse click sends the currently selected tone.
+    // Hold, drag over a tone, and release to select only (mouse or touch).
+    // Pointer capture keeps the gesture active after leaving the original button.
     let holdTimer = null;
+    let activePointer = null;
     let holdTriggered = false;
     let suppressFingerClick = false;
     function cancelFingerHold() {
         if (holdTimer !== null) clearTimeout(holdTimer);
         holdTimer = null;
     }
-    function openFingerPicker() {
-        fingerPicker.hidden = false;
-        holdTriggered = true;
-        suppressFingerClick = true;
+    function toneAtPoint(x, y) {
+        const target = document.elementFromPoint(x, y);
+        return target?.closest('[data-finger-tone]')?.closest('#finger-tone-picker')
+            ? target.closest('[data-finger-tone]') : null;
+    }
+    function highlightFingerTone(x, y) {
+        const hovered = toneAtPoint(x, y);
+        fingerPicker.querySelectorAll('[data-finger-tone]').forEach(button => {
+            button.classList.toggle('finger-tone-hover', button === hovered);
+        });
+        return hovered;
+    }
+    function chooseFingerTone(tone) {
+        if (!FINGER_TONES.includes(tone)) return;
+        selectedFinger = tone;
+        fingerButton.textContent = tone;
+        fingerButton.dataset.reaction = tone;
+        try { localStorage.setItem(fingerStorageKey, tone); } catch (_) {}
+        fingerPicker.hidden = true;
     }
     fingerButton.addEventListener('pointerdown', event => {
-        if (event.button !== 0) return;
+        if (event.button !== 0 || activePointer !== null) return;
         cancelFingerHold();
+        activePointer = event.pointerId;
         holdTriggered = false;
+        fingerButton.setPointerCapture(event.pointerId);
         holdTimer = setTimeout(() => {
             holdTimer = null;
-            openFingerPicker();
+            fingerPicker.hidden = false;
+            holdTriggered = true;
+            suppressFingerClick = true;
         }, 500);
     });
-    fingerButton.addEventListener('pointerup', cancelFingerHold);
-    fingerButton.addEventListener('pointercancel', cancelFingerHold);
-    fingerButton.addEventListener('pointerleave', cancelFingerHold);
+    fingerButton.addEventListener('pointermove', event => {
+        if (event.pointerId === activePointer && holdTriggered) {
+            highlightFingerTone(event.clientX, event.clientY);
+        }
+    });
+    fingerButton.addEventListener('pointerup', event => {
+        if (event.pointerId !== activePointer) return;
+        cancelFingerHold();
+        activePointer = null;
+        if (holdTriggered) {
+            const tone = highlightFingerTone(event.clientX, event.clientY);
+            if (tone) chooseFingerTone(tone.dataset.fingerTone);
+            // Releasing outside the picker leaves it open for a normal click.
+        }
+        if (fingerButton.hasPointerCapture(event.pointerId))
+            fingerButton.releasePointerCapture(event.pointerId);
+    });
+    fingerButton.addEventListener('pointercancel', event => {
+        if (event.pointerId !== activePointer) return;
+        cancelFingerHold();
+        activePointer = null;
+        holdTriggered = false;
+        suppressFingerClick = true;
+        fingerPicker.hidden = true;
+    });
     fingerButton.addEventListener('contextmenu', event => event.preventDefault());
     fingerButton.addEventListener('click', event => {
         if (holdTriggered || suppressFingerClick) {
@@ -278,15 +320,8 @@
         sendReaction(selectedFinger);
     });
     fingerPicker.querySelectorAll('[data-finger-tone]').forEach(button => {
-        button.addEventListener('click', () => {
-            selectedFinger = button.dataset.fingerTone;
-            fingerButton.textContent = selectedFinger;
-            fingerButton.dataset.reaction = selectedFinger;
-            try { localStorage.setItem(fingerStorageKey, selectedFinger); } catch (_) {}
-            fingerPicker.hidden = true;
-            holdTriggered = false;
-            suppressFingerClick = false;
-        });
+        // Fallback: picker can also be used by clicking after releasing.
+        button.addEventListener('click', () => chooseFingerTone(button.dataset.fingerTone));
     });
     document.addEventListener('pointerdown', event => {
         if (!event.target.closest('.finger-reaction-wrap')) fingerPicker.hidden = true;
@@ -297,7 +332,7 @@
 
     // Poll a tiny cache-busted deployment manifest for future site updates.
     // This feature only works for viewers after they've loaded this release once.
-    const PAGE_VERSION = '20261106-r2';
+    const PAGE_VERSION = '20261106-r4';
     let refreshScheduled = false;
     async function checkPageVersion() {
         if (refreshScheduled) return;
