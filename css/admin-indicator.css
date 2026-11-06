@@ -1,0 +1,13 @@
+/* Only shown after a server-verified admin role check. */
+.gcg-admin-indicator[hidden] { display: none !important; }
+.gcg-admin-indicator {
+  position: fixed; top: 12px; right: 14px; z-index: 10000;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 11px; border: 1px solid rgba(125, 211, 252, .4);
+  border-radius: 999px; background: rgba(12, 22, 36, .92);
+  color: #bae6fd; font: 600 12px/1.2 system-ui, sans-serif;
+  letter-spacing: .03em; text-decoration: none;
+  box-shadow: 0 3px 12px rgba(0,0,0,.2);
+}
+.gcg-admin-indicator::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #38bdf8; }
+.gcg-admin-indicator:hover { background: #1b354d; color: white; }

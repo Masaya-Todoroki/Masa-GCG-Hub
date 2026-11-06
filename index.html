@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="icon" type="image/png" href="images/Branding/favicon.png">
     <link rel="stylesheet" href="css/gcg-theme.css">
+    <style>.streams-nav{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}</style>
+    <link rel="stylesheet" href="css/admin-indicator.css">
 </head>
 
 <body>
+    <a id="gcg-admin-indicator" class="gcg-admin-indicator" href="admin.html" hidden aria-label="Admin Mode — open admin dashboard">Admin Mode</a>
 
     <div class="container">
         <h1 class="brand-heading"><img class="brand-logo" src="images/Branding/logo.png" alt="Masa's GCG Hub"></h1>
@@ -25,6 +28,7 @@
             <button class="tab-btn" data-tab="simulators">Simulators</button>
             <button class="tab-btn" data-tab="tools">Tools</button>
             <button class="tab-btn" data-tab="news">News</button>
+            <a class="tab-btn streams-nav" href="streams.html">Streams</a>
         </nav>
 
         <div id="cards" class="tab-content active">
@@ -116,6 +120,9 @@
     <script src="js/image-extension-fallback.js"></script>
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "21db3789c68b42d09f9d4f6ec60400cf"}'></script>
     <!-- End Cloudflare Web Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="js/admin-config.js"></script>
+    <script defer src="js/admin-indicator.js"></script>
     <script defer src="js/index-app.js"></script>
 </body>
 </html>
