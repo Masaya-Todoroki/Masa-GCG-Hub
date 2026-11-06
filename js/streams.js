@@ -95,7 +95,7 @@
         me=user;const {
             data:allowed
         }
-        =await client.rpc('gcg_is_admin');admin=allowed===true;$('admin-link').hidden=!admin;$('admin-panel').hidden=!admin;captureUi();setNickname();await Promise.all([loadStream(),loadMessages()]);if(!nickname)promptNickname();channel=client.channel('gcg-streams-updates').on('postgres_changes',{
+        =await client.rpc('gcg_is_admin');admin=allowed===true;playerLockButton.hidden=!admin;if(!admin)setPlayerLock(false);$('admin-link').hidden=!admin;$('admin-panel').hidden=!admin;captureUi();setNickname();await Promise.all([loadStream(),loadMessages()]);if(!nickname)promptNickname();channel=client.channel('gcg-streams-updates').on('postgres_changes',{
             event:'*',schema:'public',table:'gcg_chat_messages'
         }
         ,()=>loadMessages()).on('postgres_changes',{
@@ -108,6 +108,19 @@
         }
         ,15000)
     }
+    /* Lock only the embedded player's mouse interactions, without reloading it. */
+    const playerLockButton=$('player-lock-toggle');
+    let playerLocked=false;
+    function setPlayerLock(locked){
+        playerLocked=!!locked;
+        $('video-frame').classList.toggle('player-locked',playerLocked);
+        playerLockButton.setAttribute('aria-pressed',String(playerLocked));
+        playerLockButton.textContent=playerLocked?'🔒 Unlock Player':'🔓 Lock Player';
+    }
+    playerLockButton.addEventListener('click',()=>{
+        if(!admin)return;
+        setPlayerLock(!playerLocked);
+    });
     /* Theatre mode enlarges the player while preserving the chat. */ function setTheatre(enabled){
         document.body.classList.toggle('theatre-mode',enabled); $('theatre-toggle').setAttribute('aria-pressed',String(enabled)); $('theatre-toggle').textContent=enabled?'▣ Exit Theatre':'▣ Theatre Mode';
     }

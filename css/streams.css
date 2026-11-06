@@ -32,3 +32,9 @@ body.theatre-mode .chat-bottom{flex-shrink:0}
 /* Featured video link now sits in the video toolbar. */
 .view-toolbar #youtube-link{margin-left:auto;font-size:13px;white-space:nowrap;color:#a9d4f6;text-decoration:none}
 .view-toolbar #youtube-link:hover{text-decoration:underline}
+
+/* Admin-only player interaction lock, displayed in Theatre Mode. */
+#player-lock-toggle{display:none}
+body.theatre-mode #player-lock-toggle:not([hidden]){display:inline-flex;align-items:center}
+#player-lock-toggle[aria-pressed="true"]{border-color:#89c4e9;background:#315d78}
+.video-frame.player-locked iframe{pointer-events:none!important}
