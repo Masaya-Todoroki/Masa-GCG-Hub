@@ -42,7 +42,7 @@
     const profileKey = () => me?.id ? PROFILE_VERSION + ':' + me.id : PROFILE_VERSION;
     function avatarUrl(id) {
         const [category,filename] = (id||'').split('/');
-        if (!['Pilots','Units'].includes(category) || !/^[a-z0-9_-]+$/i.test(filename||'')) return '';
+        if (!['Pilots','Units'].includes(category) || !/^[a-z0-9_ ()-]+$/i.test(filename||'')) return '';
         return 'images/Avatars/'+category+'/'+encodeURIComponent(filename);
     }
     function imageWithFallback(img,id) {
@@ -78,7 +78,7 @@
                 const values=row.split(',');
                 for(const category of ['Pilots','Units']){
                     const value=values[columns[category]]?.trim();
-                    if(value && /^[a-z0-9_-]+$/i.test(value)) avatarList[category].push(value);
+                    if(value && /^[a-z0-9_ ()-]+$/i.test(value)) avatarList[category].push(value);
                 }
             }
             $('avatar-feedback').textContent='';
