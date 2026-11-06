@@ -195,7 +195,19 @@
         ,15000)
     }
     // Broadcast transient reactions; they are not saved to the chat database.
-    const REACTIONS = ['🔥','❤️','😂','☝️','💯'];
+    const FINGER_TONES = ['☝️', '☝🏻', '☝🏼', '☝🏽', '☝🏾', '☝🏿'];
+    const REACTIONS = ['🔥', '❤️', '😂', '💯', ...FINGER_TONES];
+    const fingerButton = $('finger-reaction');
+    const fingerPicker = $('finger-tone-picker');
+    const fingerStorageKey = 'gcg-finger-tone';
+    let selectedFinger = '☝️';
+    try {
+        const stored = localStorage.getItem(fingerStorageKey);
+        if (FINGER_TONES.includes(stored)) selectedFinger = stored;
+    } catch (_) { /* Local storage may be unavailable. */ }
+    fingerButton.textContent = selectedFinger;
+    fingerButton.dataset.reaction = selectedFinger;
+
     let lastReactionAt = 0;
     function spawnReaction(emoji) {
         if (!REACTIONS.includes(emoji)) return;
@@ -206,29 +218,86 @@
         item.style.setProperty('--reaction-x', `${12 + Math.random() * 72}%`);
         item.style.setProperty('--reaction-drift', `${Math.round(Math.random() * 90 - 45)}px`);
         layer.appendChild(item);
-        item.addEventListener('animationend', () => item.remove(), {once:true});
-        // Clean up if the animation is interrupted.
+        item.addEventListener('animationend', () => item.remove(), {once: true});
         setTimeout(() => item.remove(), 4000);
     }
+
+    async function sendReaction(emoji) {
+        if (!channel || !me || !REACTIONS.includes(emoji)) return;
+        const now = Date.now();
+        if (now - lastReactionAt < 300) return;
+        lastReactionAt = now;
+        spawnReaction(emoji);
+        try {
+            await channel.send({type: 'broadcast', event: 'chat-reaction', payload: {emoji}});
+        } catch (error) {
+            console.warn('Reaction broadcast failed:', error);
+        }
+    }
+
     document.querySelectorAll('[data-reaction]').forEach(button => {
-        button.addEventListener('click', async () => {
-            if (!channel || !me) return;
-            const now = Date.now();
-            if (now - lastReactionAt < 300) return;
-            lastReactionAt = now;
-            const emoji = button.dataset.reaction;
-            spawnReaction(emoji);
-            try {
-                await channel.send({type:'broadcast', event:'chat-reaction', payload:{emoji}});
-            } catch (error) {
-                console.warn('Reaction broadcast failed:', error);
-            }
+        if (button === fingerButton) return;
+        button.addEventListener('click', () => sendReaction(button.dataset.reaction));
+    });
+
+    // Holding the finger for 500 ms opens a skin-tone picker without sending.
+    // A short mouse click sends the currently selected tone.
+    let holdTimer = null;
+    let holdTriggered = false;
+    let suppressFingerClick = false;
+    function cancelFingerHold() {
+        if (holdTimer !== null) clearTimeout(holdTimer);
+        holdTimer = null;
+    }
+    function openFingerPicker() {
+        fingerPicker.hidden = false;
+        holdTriggered = true;
+        suppressFingerClick = true;
+    }
+    fingerButton.addEventListener('pointerdown', event => {
+        if (event.button !== 0) return;
+        cancelFingerHold();
+        holdTriggered = false;
+        holdTimer = setTimeout(() => {
+            holdTimer = null;
+            openFingerPicker();
+        }, 500);
+    });
+    fingerButton.addEventListener('pointerup', cancelFingerHold);
+    fingerButton.addEventListener('pointercancel', cancelFingerHold);
+    fingerButton.addEventListener('pointerleave', cancelFingerHold);
+    fingerButton.addEventListener('contextmenu', event => event.preventDefault());
+    fingerButton.addEventListener('click', event => {
+        if (holdTriggered || suppressFingerClick) {
+            event.preventDefault();
+            holdTriggered = false;
+            suppressFingerClick = false;
+            return;
+        }
+        fingerPicker.hidden = true;
+        sendReaction(selectedFinger);
+    });
+    fingerPicker.querySelectorAll('[data-finger-tone]').forEach(button => {
+        button.addEventListener('click', () => {
+            selectedFinger = button.dataset.fingerTone;
+            fingerButton.textContent = selectedFinger;
+            fingerButton.dataset.reaction = selectedFinger;
+            try { localStorage.setItem(fingerStorageKey, selectedFinger); } catch (_) {}
+            fingerPicker.hidden = true;
+            holdTriggered = false;
+            suppressFingerClick = false;
         });
+    });
+    document.addEventListener('pointerdown', event => {
+        if (!event.target.closest('.finger-reaction-wrap')) fingerPicker.hidden = true;
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') fingerPicker.hidden = true;
     });
 
     // Poll a tiny cache-busted deployment manifest for future site updates.
     // This feature only works for viewers after they've loaded this release once.
-    const PAGE_VERSION = '20261106-r1';
+    const PAGE_VERSION = '20261106-r2';
     let refreshScheduled = false;
     async function checkPageVersion() {
         if (refreshScheduled) return;
