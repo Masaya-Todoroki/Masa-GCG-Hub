@@ -244,31 +244,44 @@
     }
     avatarToggle.addEventListener('click',()=>setOverlayVisible(!overlayEnabled));
     setOverlayVisible(overlayEnabled);
-    function ownPresence(){return {nickname:nickname||'',avatar:selectedAvatar||'',color:safeColor(nameColor),updated_at:Date.now()};}
-    // Apply the selected profile locally immediately. Presence echoes can lag or
-    // be rate-limited when switching avatars repeatedly.
+    // Presence represents a connected browser session only. Profile changes are
+    // broadcast independently so rapid avatar swaps never untrack the viewer.
+    function ownPresence(){return {session_id:viewerSessionId,connected_at:sessionStartedAt};}
+    const sessionStartedAt=Date.now();
+    const remoteProfiles=new Map();
     let profileBroadcastTimer=null;
     let profileBroadcastPending=false;
-    let profileBroadcastBusy=false;
     function broadcastProfile(immediate=false){
         if(!avatarPresence || !me)return;
         profileBroadcastPending=true;
         clearTimeout(profileBroadcastTimer);
-        profileBroadcastTimer=setTimeout(flushProfileBroadcast,immediate?0:350);
+        profileBroadcastTimer=setTimeout(flushProfileBroadcast,immediate?0:250);
+        updateOwnWalkerImmediately();
     }
     async function flushProfileBroadcast(){
-        if(profileBroadcastBusy || !profileBroadcastPending || !avatarPresence || !me)return;
+        if(!profileBroadcastPending || !avatarPresence || !me)return;
         profileBroadcastPending=false;
-        profileBroadcastBusy=true;
-        try { await avatarPresence.track(ownPresence()); }
-        catch(err){ console.warn('Avatar presence update failed:',err); }
-        finally {
-            profileBroadcastBusy=false;
-            if(profileBroadcastPending){
-                clearTimeout(profileBroadcastTimer);
-                profileBroadcastTimer=setTimeout(flushProfileBroadcast,500);
-            }
+        const profile={nickname:nickname||'',avatar:selectedAvatar||'',color:safeColor(nameColor),updated_at:Date.now()};
+        try{
+            const result=await avatarPresence.send({type:'broadcast',event:'profile-change',payload:{session_id:viewerSessionId,profile}});
+            if(result && result!=='ok')throw new Error('Broadcast returned '+JSON.stringify(result));
+        }catch(err){
+            console.warn('Profile broadcast failed:',err);
+            profileBroadcastPending=true;
+            clearTimeout(profileBroadcastTimer);
+            profileBroadcastTimer=setTimeout(flushProfileBroadcast,1200);
         }
+    }
+    function receiveRemoteProfile(payload){
+        if(!payload || !payload.session_id || payload.session_id===viewerSessionId || !payload.profile)return;
+        const previous=remoteProfiles.get(payload.session_id);
+        if(previous && Number(previous.updated_at)>Number(payload.profile.updated_at))return;
+        remoteProfiles.set(payload.session_id,payload.profile);
+        syncAvatarPresence();
+    }
+    function requestRemoteProfiles(){
+        if(!avatarPresence)return;
+        avatarPresence.send({type:'broadcast',event:'profile-request',payload:{session_id:viewerSessionId}}).catch(err=>console.warn('Profile request:',err));
     }
     function refreshChatNameColors(){
         document.querySelectorAll('.msg-name').forEach(el=>{
@@ -279,19 +292,21 @@
     function syncAvatarPresence(){
         if(!avatarPresence)return;
         const state=avatarPresence.presenceState();
-        if(me && nickname && !state[viewerSessionId]) state[viewerSessionId]=[ownPresence()];
-        // Count unique connected browser sessions, including viewers without an avatar.
-        const viewerCount=Object.values(state).filter(entries=>Array.isArray(entries)&&entries.length>0).length;
+        // Only actual Supabase presence entries count; never fabricate a local
+        // presence entry (which previously caused a misleading extra viewer).
+        const connected=new Set(Object.entries(state)
+            .filter(([,entries])=>Array.isArray(entries)&&entries.length)
+            .map(([id])=>id));
         const countElement=$('viewer-count-number');
-        if(countElement)countElement.textContent=String(viewerCount);
+        if(countElement)countElement.textContent=String(connected.size);
         const seen=new Set();
         activeNameColors.clear();
-        for(const [id,entries] of Object.entries(state)){
-            // Never allow an old network echo to overwrite this browser's latest choice.
-            const profile=id===viewerSessionId?ownPresence():entries?.[entries.length-1];
-            if(!profile || !profile.nickname)continue;
+        for(const id of connected){
+            const profile=id===viewerSessionId
+                ? {nickname:nickname||'',avatar:selectedAvatar||'',color:safeColor(nameColor)}
+                : remoteProfiles.get(id);
+            if(!profile || !profile.nickname || !avatarUrl(profile.avatar))continue;
             activeNameColors.set(String(profile.nickname).trim().toLowerCase(),safeColor(profile.color));
-            if(!avatarUrl(profile.avatar))continue;
             seen.add(id);
             let walker=walkers.get(id);
             if(!walker){
@@ -301,19 +316,21 @@
                 const sprite=document.createElement('span');sprite.className='stream-walker-sprite';sprite.setAttribute('aria-hidden','true');
                 element.append(label,img,sprite);avatarLayer.append(element);
                 walker={element,label,img,sprite,spriteReady:false,spriteFrame:-1,x:Math.random()*Math.max(0,avatarLayer.clientWidth-avatarLayer.clientHeight*AVATAR_SETTINGS.size),velocity:0,pauseUntil:0,last:performance.now(),avatar:''};
-                walkers.set(id,walker);
-                resizeAvatarOverlay();
+                walkers.set(id,walker);resizeAvatarOverlay();
             }
             walker.label.textContent=String(profile.nickname).slice(0,24);
             walker.label.style.color=safeColor(profile.color);
             if(walker.avatar!==profile.avatar){walker.avatar=profile.avatar;imageWithFallback(walker.img,profile.avatar);loadWalkerSpritesheet(walker,profile.avatar);}
         }
-        for(const [id,walker] of walkers){if(!seen.has(id)){walker.element.remove();walkers.delete(id);}}
+        for(const [id,walker] of walkers){
+            if(seen.has(id))continue;
+            walker.element.remove();walkers.delete(id);
+        }
+        for(const id of remoteProfiles.keys())if(!connected.has(id))remoteProfiles.delete(id);
         refreshChatNameColors();
     }
     function updateOwnWalkerImmediately(){
-        // Render the current local selection without waiting for Supabase presence.
-        // Keep the current session in the normal overlay rendering path.
+        // Local selection is independent of the network echo.
         syncAvatarPresence();
     }
     function animateWalkers(now){
@@ -338,11 +355,23 @@
     requestAnimationFrame(animateWalkers);
     function startAvatarPresence(){
         if(!client||!me)return;
-        avatarPresence=client.channel('gcg-stream-avatar-presence',{config:{presence:{key:viewerSessionId}}});
+        avatarPresence=client.channel('gcg-stream-avatar-presence',{config:{
+            presence:{key:viewerSessionId},broadcast:{ack:true,self:false}
+        }});
         avatarPresence.on('presence',{event:'sync'},syncAvatarPresence)
-          .on('presence',{event:'join'},syncAvatarPresence)
+          .on('presence',{event:'join'},()=>{syncAvatarPresence();requestRemoteProfiles();})
           .on('presence',{event:'leave'},syncAvatarPresence)
-          .subscribe(status=>{if(status==='SUBSCRIBED')broadcastProfile(true);});
+          .on('broadcast',{event:'profile-change'},({payload})=>receiveRemoteProfile(payload))
+          .on('broadcast',{event:'profile-request'},({payload})=>{
+              if(payload?.session_id!==viewerSessionId)broadcastProfile(true);
+          })
+          .subscribe(async status=>{
+              if(status==='SUBSCRIBED'){
+                  try{await avatarPresence.track(ownPresence());}
+                  catch(err){console.warn('Initial presence tracking failed:',err);}
+                  syncAvatarPresence();broadcastProfile(true);requestRemoteProfiles();
+              }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('Avatar presence connection:',status);
+          });
         window.addEventListener('pagehide',()=>{avatarPresence?.untrack();});
     }
     function setNickname(){
