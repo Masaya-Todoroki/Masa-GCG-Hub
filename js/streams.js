@@ -53,6 +53,47 @@
         img.onerror=()=>{if(ext===0){ext++;img.src=base+'.webp';}else{img.hidden=true;}};
         img.src=base+'.png';
     }
+    // Optional horizontal walking sheet of 128x128 frames: <avatar>_Spritesheet.webp.
+    // Sheets are only shown while walking; the normal portrait remains the idle image.
+    function loadWalkerSpritesheet(walker,id){
+        const base=avatarUrl(id);
+        walker.spriteReady=false;
+        walker.spriteFrameCount=0;
+        walker.spriteFrame=-1;
+        walker.sprite.style.display='none';
+        walker.img.style.visibility='visible';
+        walker.spriteToken=(walker.spriteToken||0)+1;
+        const token=walker.spriteToken;
+        if(!base)return;
+        const probe=new Image();
+        probe.onload=()=>{
+            if(token!==walker.spriteToken)return;
+            // Each frame is 128x128. Reject malformed sheets and use the idle image.
+            if(probe.naturalHeight!==128 || probe.naturalWidth<128 || probe.naturalWidth%128!==0)return;
+            walker.spriteFrameCount=probe.naturalWidth/128;
+            walker.sprite.style.backgroundSize=(walker.spriteFrameCount*100)+'% 100%';
+            walker.sprite.style.backgroundImage='url("'+probe.src.replace(/"/g,'%22')+'")';
+            walker.spriteReady=true;
+        };
+        probe.onerror=()=>{if(token===walker.spriteToken)walker.spriteReady=false;};
+        probe.src=base+'_Spritesheet.webp';
+    }
+    function updateWalkerVisual(walker,now){
+        const walking=walker.spriteReady && Math.abs(walker.velocity)>0.01;
+        walker.sprite.style.display=walking?'block':'none';
+        walker.img.style.visibility=walking?'hidden':'visible';
+        if(walking){
+            // At 8 fps, loop through however many 128px frames the image contains.
+            const frame=Math.floor(now/125)%walker.spriteFrameCount;
+            if(walker.spriteFrame!==frame){
+                walker.sprite.style.backgroundPosition=(walker.spriteFrameCount>1?frame/(walker.spriteFrameCount-1)*100:0)+'% 0';
+                walker.spriteFrame=frame;
+            }
+        }
+        const flip=walker.velocity>0?'scaleX(-1)':'scaleX(1)';
+        walker.img.style.transform=flip;
+        walker.sprite.style.transform=flip;
+    }
     function applyProfile() {
         const identity=$('identity-avatar');
         imageWithFallback(identity,selectedAvatar);
@@ -204,8 +245,30 @@
     avatarToggle.addEventListener('click',()=>setOverlayVisible(!overlayEnabled));
     setOverlayVisible(overlayEnabled);
     function ownPresence(){return {nickname:nickname||'',avatar:selectedAvatar||'',color:safeColor(nameColor),updated_at:Date.now()};}
-    function broadcastProfile(){
-        if(avatarPresence && me) avatarPresence.track(ownPresence()).catch(()=>{});
+    // Apply the selected profile locally immediately. Presence echoes can lag or
+    // be rate-limited when switching avatars repeatedly.
+    let profileBroadcastTimer=null;
+    let profileBroadcastPending=false;
+    let profileBroadcastBusy=false;
+    function broadcastProfile(immediate=false){
+        if(!avatarPresence || !me)return;
+        profileBroadcastPending=true;
+        clearTimeout(profileBroadcastTimer);
+        profileBroadcastTimer=setTimeout(flushProfileBroadcast,immediate?0:350);
+    }
+    async function flushProfileBroadcast(){
+        if(profileBroadcastBusy || !profileBroadcastPending || !avatarPresence || !me)return;
+        profileBroadcastPending=false;
+        profileBroadcastBusy=true;
+        try { await avatarPresence.track(ownPresence()); }
+        catch(err){ console.warn('Avatar presence update failed:',err); }
+        finally {
+            profileBroadcastBusy=false;
+            if(profileBroadcastPending){
+                clearTimeout(profileBroadcastTimer);
+                profileBroadcastTimer=setTimeout(flushProfileBroadcast,500);
+            }
+        }
     }
     function refreshChatNameColors(){
         document.querySelectorAll('.msg-name').forEach(el=>{
@@ -216,6 +279,7 @@
     function syncAvatarPresence(){
         if(!avatarPresence)return;
         const state=avatarPresence.presenceState();
+        if(me && nickname && !state[viewerSessionId]) state[viewerSessionId]=[ownPresence()];
         // Count unique connected browser sessions, including viewers without an avatar.
         const viewerCount=Object.values(state).filter(entries=>Array.isArray(entries)&&entries.length>0).length;
         const countElement=$('viewer-count-number');
@@ -223,7 +287,8 @@
         const seen=new Set();
         activeNameColors.clear();
         for(const [id,entries] of Object.entries(state)){
-            const profile=entries?.[entries.length-1];
+            // Never allow an old network echo to overwrite this browser's latest choice.
+            const profile=id===viewerSessionId?ownPresence():entries?.[entries.length-1];
             if(!profile || !profile.nickname)continue;
             activeNameColors.set(String(profile.nickname).trim().toLowerCase(),safeColor(profile.color));
             if(!avatarUrl(profile.avatar))continue;
@@ -233,17 +298,23 @@
                 const element=document.createElement('div');element.className='stream-walker';
                 const label=document.createElement('span');label.className='stream-walker-name';
                 const img=document.createElement('img');img.className='stream-walker-image';img.alt='';
-                element.append(label,img);avatarLayer.append(element);
-                walker={element,label,img,x:Math.random()*Math.max(0,avatarLayer.clientWidth-avatarLayer.clientHeight*AVATAR_SETTINGS.size),velocity:0,pauseUntil:0,last:performance.now(),avatar:''};
+                const sprite=document.createElement('span');sprite.className='stream-walker-sprite';sprite.setAttribute('aria-hidden','true');
+                element.append(label,img,sprite);avatarLayer.append(element);
+                walker={element,label,img,sprite,spriteReady:false,spriteFrame:-1,x:Math.random()*Math.max(0,avatarLayer.clientWidth-avatarLayer.clientHeight*AVATAR_SETTINGS.size),velocity:0,pauseUntil:0,last:performance.now(),avatar:''};
                 walkers.set(id,walker);
                 resizeAvatarOverlay();
             }
             walker.label.textContent=String(profile.nickname).slice(0,24);
             walker.label.style.color=safeColor(profile.color);
-            if(walker.avatar!==profile.avatar){walker.avatar=profile.avatar;imageWithFallback(walker.img,profile.avatar);}
+            if(walker.avatar!==profile.avatar){walker.avatar=profile.avatar;imageWithFallback(walker.img,profile.avatar);loadWalkerSpritesheet(walker,profile.avatar);}
         }
         for(const [id,walker] of walkers){if(!seen.has(id)){walker.element.remove();walkers.delete(id);}}
         refreshChatNameColors();
+    }
+    function updateOwnWalkerImmediately(){
+        // Render the current local selection without waiting for Supabase presence.
+        // Keep the current session in the normal overlay rendering path.
+        syncAvatarPresence();
     }
     function animateWalkers(now){
         if(overlayEnabled && !document.hidden && walkers.size){
@@ -259,7 +330,7 @@
                 if(walker.x===0 && walker.velocity<0)walker.velocity=Math.abs(walker.velocity);
                 if(walker.x===limit && walker.velocity>0)walker.velocity=-Math.abs(walker.velocity);
                 walker.element.style.transform='translate3d('+Math.round(walker.x)+'px,0,0)';
-                walker.img.style.transform=walker.velocity>0?'scaleX(-1)':'scaleX(1)';
+                updateWalkerVisual(walker,now);
             }
         } else for(const walker of walkers.values())walker.last=now;
         requestAnimationFrame(animateWalkers);
@@ -271,7 +342,7 @@
         avatarPresence.on('presence',{event:'sync'},syncAvatarPresence)
           .on('presence',{event:'join'},syncAvatarPresence)
           .on('presence',{event:'leave'},syncAvatarPresence)
-          .subscribe(status=>{if(status==='SUBSCRIBED')broadcastProfile();});
+          .subscribe(status=>{if(status==='SUBSCRIBED')broadcastProfile(true);});
         window.addEventListener('pagehide',()=>{avatarPresence?.untrack();});
     }
     function setNickname(){
@@ -835,7 +906,7 @@
         e.preventDefault();const name=$('nickname-input').value.trim();if(name.length<2||name.length>24||/[<>\r\n]/.test(name)){
             $('nickname-error').textContent='Use 2–24 characters; no angle brackets.';return
         }
-        nickname=name;selectedAvatar=draftAvatar;nameColor=draftColor;localStorage.setItem('gcg_chat_nickname',name);try{localStorage.setItem(profileKey(),JSON.stringify({avatar:selectedAvatar,color:nameColor}));}catch(_){}setNickname();broadcastProfile();activeNameColors.set(name.toLowerCase(),safeColor(nameColor));refreshChatNameColors();$('nickname-dialog').close();$('message-input').focus()
+        nickname=name;selectedAvatar=draftAvatar;nameColor=draftColor;localStorage.setItem('gcg_chat_nickname',name);try{localStorage.setItem(profileKey(),JSON.stringify({avatar:selectedAvatar,color:nameColor}));}catch(_){}setNickname();updateOwnWalkerImmediately();broadcastProfile();activeNameColors.set(name.toLowerCase(),safeColor(nameColor));refreshChatNameColors();$('nickname-dialog').close();$('message-input').focus()
     }
     );
     // Cards are loaded from the DeckBuilder's existing JSON set files (not duplicated).

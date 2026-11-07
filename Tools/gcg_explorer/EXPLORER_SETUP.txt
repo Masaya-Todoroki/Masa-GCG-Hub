@@ -1,0 +1,22 @@
+GCG Tools — Windows Explorer Quick WebP
+=======================================
+
+1. Extract the entire ZIP to a PERMANENT folder (for example C:\Tools\GCG Tools).
+2. Double-click Install_Explorer_Menu.bat once.
+3. Right-click any PNG file -> Show more options (Windows 11) -> Convert to WebP (GCG).
+   Or right-click a folder -> Convert PNGs to WebP (GCG).
+4. WebP files are created beside the original PNG files at quality 90.
+   Originals are untouched. Existing WebP files are skipped (never overwritten).
+5. The command window shows results and waits for Enter before closing.
+6. To remove the menu items, double-click Remove_Explorer_Menu.bat.
+
+IMPORTANT: Keep the extracted folder in place after installing, since the menu
+points to quick_webp.py in that folder. Re-run the installer if you move it.
+No administrator privileges are required; installation is for your Windows user.
+
+The original GCG Tools GUI and all existing features are unchanged.
+The folder action converts PNGs in that folder only, not subfolders.
+For recursive conversion use: python quick_webp.py --recursive "C:\path\to\folder"
+
+If the installer says Python is not found, install Python with Add to PATH,
+then retry. If Pillow installation fails, run: python -m pip install pillow

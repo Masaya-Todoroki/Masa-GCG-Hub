@@ -244,3 +244,7 @@ body.theatre-mode .view-toolbar{width:100%;margin-top:0!important}
 .chat-actions button:hover{background:#3b5e78;transform:translateY(-2px)}
 .chat-actions button:disabled{opacity:.45}
 @media(max-width:440px){.chat-actions{margin-left:0}.quick-reactions{width:100%;justify-content:space-between}}
+
+/* r26: optional seven-frame walking spritesheets, same footprint as the idle image. */
+.stream-walker{position:absolute}
+.stream-walker-sprite{display:none;position:absolute;left:0;bottom:0;width:100%;aspect-ratio:1/1;background-repeat:no-repeat;background-size:700% 100%;background-position:0 0;image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 2px 2px #0009)}

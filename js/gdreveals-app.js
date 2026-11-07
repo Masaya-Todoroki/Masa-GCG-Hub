@@ -5,8 +5,8 @@
 /* ============================================
    SET CONFIGURATION — edit this list for new sets
    ============================================ */
-const SET_CODES = ["GD04", "GD05", "GD06", "EB01"];
-const DEFAULT_SET = "GD06";
+const SET_CODES = ["GD04", "GD05", "GD06", "GD07", "EB01"];
+const DEFAULT_SET = "GD07";
 
 /* ============================================
    Set Selection & Automatic Navigation Buttons

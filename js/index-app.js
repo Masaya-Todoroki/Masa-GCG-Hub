@@ -1,6 +1,7 @@
 // Set Explorer configuration: add new sets here, newest first.
 // collapsed / expanded are horizontal image positions (0 = left, 50 = centre, 100 = right).
 const BOOSTER_SETS = [
+  { id: 'GD07', collapsed: 78, expanded: 75 },
   { id: 'GD06', collapsed: 88, expanded: 75 },
   { id: 'GD05', collapsed: 70, expanded: 50 },
   { id: 'EB01', collapsed: 70, expanded: 75 },
