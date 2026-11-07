@@ -726,7 +726,7 @@
     });
 
     // Automatic deployment updates. The manifest and the loaded JS share this release ID.
-    const PAGE_VERSION = '20261107-r16';
+    const PAGE_VERSION = '20261107-r18';
     const AUTO_REFRESH_ATTEMPT_KEY = 'gcg-streams-auto-refresh-attempt';
     let automaticRefreshPending = false;
     let automaticRefreshChecking = false;
