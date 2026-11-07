@@ -67,26 +67,12 @@
         */
 
         function getSeasonDetails(folder) {
-            const match = folder.match(
-                /^(?:\(\d+\)\s*)?(\d{4})-season-(\d+)$/
-            );
-
-            if (!match) {
-                return {
-                    buttonName: folder,
-                    fullName: folder
-                };
-            }
-
-            const year = match[1];
-            const season = match[2];
-
             return {
-                buttonName: `${year} S${season}`,
-                fullName:
-                    `Store Tournament ${year} Season ${season}`
+                buttonName: folder,
+                fullName: folder
             };
         }
+
 
         /*
         ============================================
