@@ -379,7 +379,7 @@
     }
     function promptNickname(){
         if(!$('nickname-dialog').open){
-            $('nickname-input').value=nickname;draftAvatar=selectedAvatar;draftColor=nameColor;avatarCategory=selectedAvatar.startsWith('Units/')?'Units':'Pilots';document.querySelectorAll('[data-avatar-category]').forEach(b=>{const active=b.dataset.avatarCategory===avatarCategory;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});renderAvatarGrid();updateProfilePreview();$('nickname-error').textContent='';$('nickname-dialog').showModal()
+            $('nickname-input').value=nickname;draftAvatar=selectedAvatar;draftColor=nameColor;avatarCategory=selectedAvatar.startsWith('Units/')?'Units':'Pilots';document.querySelectorAll('[data-avatar-category]').forEach(b=>{const active=b.dataset.avatarCategory===avatarCategory;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});renderAvatarGrid();updateProfilePreview();$('nickname-error').textContent='';(()=>{const dialog=$('nickname-dialog');dialog.setAttribute('tabindex','-1');dialog.setAttribute('autofocus','');dialog.showModal();dialog.focus({preventScroll:true});})()
         }
     }
     function renderMessages(rows){
@@ -755,7 +755,7 @@
     });
 
     // Automatic deployment updates. The manifest and the loaded JS share this release ID.
-    const PAGE_VERSION = '20261107-r18';
+    const PAGE_VERSION = '20261107-r16';
     const AUTO_REFRESH_ATTEMPT_KEY = 'gcg-streams-auto-refresh-attempt';
     let automaticRefreshPending = false;
     let automaticRefreshChecking = false;
@@ -935,7 +935,7 @@
         e.preventDefault();const name=$('nickname-input').value.trim();if(name.length<2||name.length>24||/[<>\r\n]/.test(name)){
             $('nickname-error').textContent='Use 2–24 characters; no angle brackets.';return
         }
-        nickname=name;selectedAvatar=draftAvatar;nameColor=draftColor;localStorage.setItem('gcg_chat_nickname',name);try{localStorage.setItem(profileKey(),JSON.stringify({avatar:selectedAvatar,color:nameColor}));}catch(_){}setNickname();updateOwnWalkerImmediately();broadcastProfile();activeNameColors.set(name.toLowerCase(),safeColor(nameColor));refreshChatNameColors();$('nickname-dialog').close();$('message-input').focus()
+        nickname=name;selectedAvatar=draftAvatar;nameColor=draftColor;localStorage.setItem('gcg_chat_nickname',name);try{localStorage.setItem(profileKey(),JSON.stringify({avatar:selectedAvatar,color:nameColor}));}catch(_){}setNickname();updateOwnWalkerImmediately();broadcastProfile();activeNameColors.set(name.toLowerCase(),safeColor(nameColor));refreshChatNameColors();$('nickname-dialog').close()
     }
     );
     // Cards are loaded from the DeckBuilder's existing JSON set files (not duplicated).
