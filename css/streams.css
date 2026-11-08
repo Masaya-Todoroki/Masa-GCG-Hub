@@ -1783,6 +1783,8 @@ body > .shell { flex: 1 0 auto; }
     font-weight: 900;
     line-height: 1.45;
     letter-spacing: 1.6px;
+    height: 48px;
+    box-sizing: border-box;
 }
 .streams-home-nav { margin-left: auto; }
 .streams-home-button {

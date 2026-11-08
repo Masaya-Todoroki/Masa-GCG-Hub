@@ -186,15 +186,7 @@ body {
     object-fit: contain;
 }
 
-.showcase-tagline {
-    white-space: pre-line;
-    line-height: 1.35;
-    font-size: 12px;
-    letter-spacing: .14em;
-    font-weight: 900;
-    padding-left: 19px;
-    border-left: 1px solid #a2c2db;
-}
+
 
 .showcase-home {
     margin-left: auto;
@@ -364,11 +356,7 @@ body {
         width: 115px;
     }
 
-    .showcase-tagline {
-        font-size: 9px;
-        letter-spacing: .04em;
-        padding-left: 8px;
-    }
+    
 
     .showcase-home {
         min-width: 78px;

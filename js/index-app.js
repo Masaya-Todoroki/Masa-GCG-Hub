@@ -6,16 +6,17 @@
    order; this cleanup preserves existing runtime behaviour.
    ===================================================================== */
 // Set Explorer configuration: add new sets here, newest first.
-// collapsed / expanded are horizontal image positions (0 = left, 50 = centre, 100 = right).
+// collapsed / expanded control horizontal position (0 = left, 50 = centre, 100 = right).
+// collapsedY / expandedY control vertical position (0 = top, 50 = centre, 100 = bottom).
 const BOOSTER_SETS = [
-    { id: 'GD07', collapsed: 78, expanded: 75 },
-    { id: 'GD06', collapsed: 88, expanded: 75 },
-    { id: 'GD05', collapsed: 70, expanded: 50 },
-    { id: 'EB01', collapsed: 70, expanded: 75 },
-    { id: 'GD04', collapsed: 75, expanded: 75 },
-    { id: 'GD03', collapsed: 70, expanded: 65 },
-    { id: 'GD02', collapsed: 88, expanded: 75 },
-    { id: 'GD01', collapsed: 88, expanded: 75 }
+    { id: 'GD07', collapsed: 78, expanded: 75, collapsedY: 50, expandedY: 10 },
+    { id: 'GD06', collapsed: 88, expanded: 75, collapsedY: 50, expandedY: 50 },
+    { id: 'GD05', collapsed: 70, expanded: 50, collapsedY: 50, expandedY: 50 },
+    { id: 'EB01', collapsed: 70, expanded: 75, collapsedY: 50, expandedY: 50 },
+    { id: 'GD04', collapsed: 75, expanded: 75, collapsedY: 50, expandedY: 50 },
+    { id: 'GD03', collapsed: 70, expanded: 65, collapsedY: 50, expandedY: 50 },
+    { id: 'GD02', collapsed: 88, expanded: 75, collapsedY: 50, expandedY: 50 },
+    { id: 'GD01', collapsed: 88, expanded: 75, collapsedY: 50, expandedY: 50 }
 ];
 // Tab switching. To add a tab: add a button with data-tab="your-id"
 // and a matching <div id="your-id" class="tab-content">...</div>.
@@ -268,10 +269,13 @@ document.querySelectorAll('.news-source-btn').forEach(button => {
         panel.className = 'set-art-panel';
         panel.dataset.set = set.id;
         panel.setAttribute('aria-label', `View ${set.id} options`);
-        const collapsed = Math.max(0, Math.min(100, Number(set.collapsed) || 0));
-        const expanded = Math.max(0, Math.min(100, Number(set.expanded) || 0));
-        panel.style.setProperty('--set-collapsed-position', `${collapsed}% center`);
-        panel.style.setProperty('--set-expanded-position', `${expanded}% center`);
+        const clampPercent = value => Math.max(0, Math.min(100, Number(value) || 0));
+        const collapsed = clampPercent(set.collapsed);
+        const expanded = clampPercent(set.expanded);
+        const collapsedY = clampPercent(set.collapsedY ?? 50);
+        const expandedY = clampPercent(set.expandedY ?? 50);
+        panel.style.setProperty('--set-collapsed-position', `${collapsed}% ${collapsedY}%`);
+        panel.style.setProperty('--set-expanded-position', `${expanded}% ${expandedY}%`);
         const img = document.createElement('img');
         img.src = `images/SetThumbnails/${encodeURIComponent(set.id)}.webp`;
         img.alt = `${set.id} key art`;

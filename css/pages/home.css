@@ -1658,17 +1658,7 @@ body {
     object-fit: contain!important;
 }
 
-.header-descriptor {
-    flex: 0 0 auto;
-    border-left: 1px solid #6687a6;
-    padding-left: 18px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .14em;
-    line-height: 1.55;
-    color: #234a72;
-    white-space: nowrap;
-}
+.header-descriptor { display: none; }
 
 .tabs {
     display: flex!important;
@@ -2295,10 +2285,7 @@ body {
         padding: 0 25px;
     }
 
-    .header-descriptor {
-        font-size: 9px;
-        padding-left: 10px;
-    }
+    .header-descriptor { display: none; }
 
     .tab-btn,.streams-nav {
         padding: 14px 9px!important;
@@ -2361,10 +2348,7 @@ body {
         width: 180px!important;
     }
 
-    .header-descriptor {
-        font-size: 8px;
-        letter-spacing: .04em;
-    }
+    .header-descriptor { display: none; }
 
     .header-menu {
         display: block;
@@ -2501,9 +2485,7 @@ body {
 
 @media(max-width:380px) {
 
-    .header-descriptor {
-        display: none;
-    }
+    .header-descriptor { display: none; }
 
     .quick-grid {
         grid-template-columns: 1fr 1fr;
