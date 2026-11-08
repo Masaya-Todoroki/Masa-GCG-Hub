@@ -15,6 +15,31 @@
     const VERSION_INITIAL_CHECK_DELAY_MS = 10000;
     const VERSION_REFRESH_COUNTDOWN_SECONDS = 5;
     const LOADED_VERSION_KEY = 'gcg-streams-loaded-version';
+
+    // CARD DRAW — USER-EDITABLE SETTINGS (all card preview controls live here).
+    const CARD_DRAW_SETTINGS = {
+        backImage: 'images/basic/Card_White.png',
+        imageFolder: 'DeckBuilder/Cards', // e.g. DeckBuilder/Cards/GD01/GD01-001.webp
+        imageExtension: '.webp',
+        // Alternate locations tried only if the main card image fails to load.
+        fallbackImageFolders: ['DeckBuilder/Cards'],
+        logMissingImages: true,
+        cardWidthPx: 62, // Width at the 450px reference video height; scales with avatars.
+        scaleCardWithAvatar: true,
+        minCardWidthPx: 12, // Prevent an unreadably tiny card on very small viewports.
+        avatarOffsetPx: 8, // Gap above the avatar's name label.
+        revealDurationMs: 4500,
+        flipDurationMs: 650,
+        popupWidthPx: 330,
+        popupMaxHeightVh: 82,
+        showAvatarAnimation: true,
+        showChatPreview: true,
+        linkTypedCardCodes: true, // Clickable card IDs in normal chat; never trigger draws.
+        typedCardCodePattern: "\\b(?:GD|ST|EB)\\d{2}-\\d{3}\\b",
+        setFiles: [...Array.from({ length: 6 }, (_, i) => `GD${String(i + 1).padStart(2, '0')}.json`),
+            ...Array.from({ length: 14 }, (_, i) => `ST${String(i + 1).padStart(2, '0')}.json`), 'EB01.json']
+    };
+
     const $ = id => document.getElementById(id), url = window.GCG_SUPABASE_URL, key = window.GCG_SUPABASE_PUBLISHABLE_KEY;
     const valid = window.supabase && /^https:\/\/.+\.supabase\.co\/?$/.test(url || '') && key && !key.startsWith('PASTE_');
     let client, admin = false, me = null, nickname = localStorage.getItem('gcg_chat_nickname') || '', lastSend = 0, channel = null;
@@ -509,6 +534,89 @@
             (() => { const dialog = $('nickname-dialog'); dialog.setAttribute('tabindex', '-1'); dialog.setAttribute('autofocus', ''); dialog.showModal(); dialog.focus({ preventScroll: true }); })();
         }
     }
+    // Use the card's set prefix as the image folder; only card IDs from the draw token are accepted.
+    function drawnCardImage(cardId) {
+        if (!/^[A-Z0-9]+-\d{3}$/.test(cardId)) return '';
+        return `${CARD_DRAW_SETTINGS.imageFolder}/${cardId.split('-')[0]}/${cardId}${CARD_DRAW_SETTINGS.imageExtension}`;
+    }
+    // Resolve paths against the HTML page, not the JS file or published domain.
+    function siteAssetUrl(path) {
+        return new URL(String(path).replace(/^\/+/, ''), document.baseURI).href;
+    }
+    function setDrawCardImage(img, cardId) {
+        const primary = drawnCardImage(cardId);
+        const folders = [CARD_DRAW_SETTINGS.imageFolder, ...CARD_DRAW_SETTINGS.fallbackImageFolders];
+        const candidates = [...new Set(folders.map(folder =>
+            siteAssetUrl(`${folder.replace(/\/$/, '')}/${cardId.split('-')[0]}/${cardId}${CARD_DRAW_SETTINGS.imageExtension}`)
+        ))];
+        let index = 0;
+        img.onerror = () => {
+            if (++index < candidates.length) { img.src = candidates[index]; return; }
+            if (CARD_DRAW_SETTINGS.logMissingImages)
+                console.warn('[Streams] Card image not found:', cardId, candidates);
+            img.onerror = null;
+            img.src = siteAssetUrl(CARD_DRAW_SETTINGS.backImage);
+        };
+        img.src = candidates[0] || siteAssetUrl(CARD_DRAW_SETTINGS.backImage);
+    }
+    let cardPreviewDialog = null;
+    function openDrawnCard(cardId) {
+        if (!CARD_DRAW_SETTINGS.showChatPreview || !drawnCardImage(cardId)) return;
+        if (!cardPreviewDialog) {
+            cardPreviewDialog = document.createElement('dialog');
+            cardPreviewDialog.className = 'stream-card-preview-dialog';
+            cardPreviewDialog.innerHTML = '<button class="stream-card-preview-close" type="button" aria-label="Close card preview">✕</button><img alt="Drawn Gundam card"><div class="stream-card-preview-caption"></div>';
+            document.body.append(cardPreviewDialog);
+            cardPreviewDialog.querySelector('button').addEventListener('click', () => cardPreviewDialog.close());
+            cardPreviewDialog.addEventListener('click', event => { if (event.target === cardPreviewDialog) cardPreviewDialog.close(); });
+        }
+        const img = cardPreviewDialog.querySelector('img');
+        setDrawCardImage(img, cardId);
+        img.alt = `${cardById.get(cardId)?.name || cardId} (${cardId})`;
+        cardPreviewDialog.querySelector('.stream-card-preview-caption').textContent = img.alt;
+        cardPreviewDialog.style.setProperty('--card-popup-width', CARD_DRAW_SETTINGS.popupWidthPx + 'px');
+        cardPreviewDialog.style.setProperty('--card-popup-height', CARD_DRAW_SETTINGS.popupMaxHeightVh + 'vh');
+        if (!cardPreviewDialog.open) cardPreviewDialog.showModal();
+    }
+    const cardDrawSeenMessages = new Set();
+    let cardDrawHistoryReady = false;
+    function animateDrawAboveAvatar(nickname, cardId) {
+        if (!CARD_DRAW_SETTINGS.showAvatarAnimation || !overlayEnabled || !drawnCardImage(cardId)) return;
+        const matches = [...walkers.values()].filter(w => w.label.textContent.trim().toLowerCase() === String(nickname).trim().toLowerCase());
+        // Nicknames are not unique IDs; don't show a draw above the wrong person's avatar.
+        if (matches.length !== 1) return;
+        const walker = matches[0];
+        walker.element.querySelectorAll('.stream-walker-drawn-card').forEach(el => el.remove());
+        const wrap = document.createElement('div');
+        wrap.className = 'stream-walker-drawn-card';
+        const scale = CARD_DRAW_SETTINGS.scaleCardWithAvatar ? avatarScale : 1;
+        wrap.style.setProperty('--draw-width', Math.max(CARD_DRAW_SETTINGS.minCardWidthPx, CARD_DRAW_SETTINGS.cardWidthPx * scale) + 'px');
+        wrap.style.setProperty('--draw-gap', CARD_DRAW_SETTINGS.avatarOffsetPx * scale + 'px');
+        wrap.style.setProperty('--draw-lifetime', CARD_DRAW_SETTINGS.revealDurationMs + 'ms');
+        wrap.style.setProperty('--draw-flip-time', CARD_DRAW_SETTINGS.flipDurationMs + 'ms');
+        const flipper = document.createElement('div');
+        flipper.className = 'stream-walker-card-flipper';
+        const back = document.createElement('img');
+        back.className = 'stream-walker-card-back'; back.src = siteAssetUrl(CARD_DRAW_SETTINGS.backImage); back.alt = '';
+        const front = document.createElement('img');
+        front.className = 'stream-walker-card-front'; front.alt = '';
+        setDrawCardImage(front, cardId);
+        flipper.append(back, front); wrap.append(flipper); walker.element.append(wrap);
+        setTimeout(() => wrap.remove(), CARD_DRAW_SETTINGS.revealDurationMs + 150);
+    }
+    function observeNewCardDraws(rows) {
+        const recent = [];
+        for (const m of rows || []) {
+            const match = /^\[gcg-card:([A-Z0-9]+-\d{3})\]$/.exec(m.message || '');
+            if (!match) continue;
+            const id = String(m.id);
+            if (!cardDrawSeenMessages.has(id) && cardDrawHistoryReady) recent.push({ nickname: m.nickname, cardId: match[1] });
+            cardDrawSeenMessages.add(id);
+        }
+        cardDrawHistoryReady = true;
+        // Supabase updates may contain multiple messages; only play fresh draws.
+        for (const draw of recent) animateDrawAboveAvatar(draw.nickname, draw.cardId);
+    }
     function renderMessages(rows) {
         const box = $('messages');
         box.replaceChildren();
@@ -584,8 +692,15 @@
                 drawer.className = 'msg-name';
                 drawer.textContent = m.nickname;
                 const detail = document.createElement('span');
-                detail.textContent = card ? ` drew ${card.name} (${card.id})!` : ` drew ${cardMatch[1]}!`;
-                body.append(prefix, drawer, detail);
+                detail.textContent = ' drew ';
+                const cardLink = document.createElement('button');
+                cardLink.type = 'button';
+                cardLink.className = 'stream-drawn-card-link';
+                cardLink.textContent = card ? `${card.name} (${card.id})` : cardMatch[1];
+                cardLink.title = 'View drawn card';
+                cardLink.addEventListener('click', () => openDrawnCard(cardMatch[1]));
+                const exclamation = document.createTextNode('!');
+                body.append(prefix, drawer, detail, cardLink, exclamation);
             }
             else {
                 renderChatBody(body, m.message);
@@ -604,11 +719,36 @@
             $('messages').textContent = 'Chat unavailable. Run STREAMS_SETUP.sql and check Supabase settings.';
             return;
         }
-        renderMessages((data || []).reverse());
+        const chronological = (data || []).reverse();
+        renderMessages(chronological);
+        observeNewCardDraws(chronological);
     }
     // Emoji / GIF / custom emote picker. Never inject user text as HTML.
     let customEmojis = [], gifTimer = null, gifAbort = null, gifBlocked = false;
     const picker = $('chat-picker');
+    function appendChatTextWithCardLinks(target, value) {
+        const text = String(value ?? '');
+        if (!CARD_DRAW_SETTINGS.linkTypedCardCodes) {
+            target.append(document.createTextNode(text));
+            return;
+        }
+        const pattern = new RegExp(CARD_DRAW_SETTINGS.typedCardCodePattern, 'gi');
+        let lastIndex = 0;
+        for (const match of text.matchAll(pattern)) {
+            const index = match.index;
+            if (index > lastIndex) target.append(document.createTextNode(text.slice(lastIndex, index)));
+            const cardId = match[0].toUpperCase();
+            const link = document.createElement('button');
+            link.type = 'button';
+            link.className = 'stream-drawn-card-link';
+            link.textContent = match[0];
+            link.title = 'View card ' + cardId;
+            link.addEventListener('click', () => openDrawnCard(cardId));
+            target.append(link);
+            lastIndex = index + match[0].length;
+        }
+        if (lastIndex < text.length) target.append(document.createTextNode(text.slice(lastIndex)));
+    }
     function renderChatBody(target, message) {
         const gifMatch = /^:gif:([a-zA-Z0-9_-]{4,100}):$/.exec(message || '');
         if (gifMatch) {
@@ -622,7 +762,7 @@
         }
         const codes = customEmojis.filter(e => /^:[a-z0-9_-]+:$/i.test(e.shortcode) && /^images\/emojis\/[a-zA-Z0-9_.-]+$/.test(e.image));
         if (!codes.length) {
-            target.textContent = message;
+            appendChatTextWithCardLinks(target, message);
             return;
         }
         const pattern = new RegExp('(' + codes.map(e => e.shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'g');
@@ -636,8 +776,7 @@
                 img.src = found.image;
                 target.append(img);
             }
-            else
-                target.append(document.createTextNode(part));
+            else appendChatTextWithCardLinks(target, part);
         }
     }
     function setPickerTab(tab) {
@@ -1324,8 +1463,7 @@
     });
     // Cards are loaded from the DeckBuilder's existing JSON set files (not duplicated).
     // To add a newly released set, add its filename to CARD_SET_FILES.
-    const CARD_SET_FILES = [...Array.from({ length: 6 }, (_, i) => `GD${String(i + 1).padStart(2, '0')}.json`),
-        ...Array.from({ length: 14 }, (_, i) => `ST${String(i + 1).padStart(2, '0')}.json`), 'EB01.json'];
+    const CARD_SET_FILES = CARD_DRAW_SETTINGS.setFiles;
     const cardById = new Map();
     let cardPoolPromise = null;
     async function loadCardPool() {
