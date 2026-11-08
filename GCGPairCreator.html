@@ -1,130 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>GCG Pair Creator v1.6.14</title>
-<link rel="stylesheet" href="css/GCGPairCreator.css">
-</head>
-
-<body>
-<div id="version-badge" class="version-badge">GCG Pair Creator · v1.6.19</div>
-
-<section id="password-screen">
-    <div class="login-panel">
-        <h1>Pair Creator</h1>
-        <p>Enter the shared password to continue.</p>
-        <div class="password-row">
-            <input id="password-input" type="password" autocomplete="current-password" placeholder="Password">
-            <button id="password-button" class="primary-button">Enter</button>
-        </div>
-        <div id="password-message"></div>
+ <head>
+  <!-- GCG PAGE SETTINGS: Update page title, navigation URLs, and content below. Shared visual settings: css/pages/*.css; page behaviour: js/*.js. -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+  <title>
+   GCG Pair Creator v1.6.14
+  </title>
+  <link href="css/GCGPairCreator.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <div class="version-badge" id="version-badge">
+   GCG Pair Creator · v1.6.19
+  </div>
+  <section id="password-screen">
+   <div class="login-panel">
+    <h1>
+     Pair Creator
+    </h1>
+    <p>
+     Enter the shared password to continue.
+    </p>
+    <div class="password-row">
+     <input autocomplete="current-password" id="password-input" placeholder="Password" type="password"/>
+     <button class="primary-button" id="password-button">
+      Enter
+     </button>
     </div>
-</section>
-
-<main id="app" class="hidden">
-    <div class="app-layout">
-        <aside id="sidebar" class="sidebar">
-            <button id="home-button" class="control-button">Home</button>
-            <button id="mode-toggle" class="control-button">Switch to Delete Pairs</button>
-            <select id="set-select" class="set-select"></select>
-            <div id="selected-1" class="selected-card add-only"></div>
-            <div id="selected-2" class="selected-card add-only"></div>
-            <div class="pair-actions add-only">
-                <button id="create-pair" class="create-button">Create Pair</button>
-                <button id="clear-pair-selection" class="control-button clear-selection-button" type="button" disabled>Clear</button>
-            </div>
-            <button id="add-card-button" class="control-button hidden add-only" type="button">+ Add Card ID</button>
-            <button id="refresh-cards-button" class="control-button hidden add-only" type="button">↻ Refresh Cards</button>
-
-            <div class="mode-note">
-                Delete mode: choose a card, choose one of its paired cards, then confirm deletion.
-            </div>
-        </aside>
-
-        <section class="main-panel">
-            <div id="gallery-view" class="delete-view">
-                <div class="top-row"><div id="status" class="status"></div></div>
-                <div id="card-grid" class="card-grid"></div>
-                <div id="empty-state" class="empty-state hidden">No cards found for this set.</div>
-            </div>
-
-            <div id="delete-pairs-view" class="delete-view hidden">
-                <div class="delete-view-header">
-                    <button id="delete-pairs-back" class="back-button">← Back</button>
-                    <div id="delete-pairs-title" class="delete-title"></div>
-                </div>
-
-                <div class="delete-scroll">
-                    <div id="delete-selected-card" class="selected-delete-card"></div>
-                    <div class="delete-subtitle">Paired Cards</div>
-                    <div id="pair-grid" class="pair-grid"></div>
-                    <div id="no-pairs-message" class="empty-state hidden">This card has no saved pairs.</div>
-                </div>
-            </div>
-
-            <div id="delete-confirm-view" class="delete-confirm-wrap hidden">
-                <div class="delete-view-header">
-                    <button id="delete-confirm-back" class="back-button">← Back</button>
-                    <div class="delete-title">Delete Pair?</div>
-                </div>
-
-                <div class="confirm-pair">
-                    <div id="confirm-card-1" class="confirm-card"></div>
-                    <div class="confirm-plus">+</div>
-                    <div id="confirm-card-2" class="confirm-card"></div>
-                </div>
-
-                <button id="delete-pair-button" class="delete-button">Delete This Pair</button>
-            </div>
-        </section>
+    <div id="password-message">
     </div>
-</main>
-
-<div id="add-card-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="add-card-title">
-    <div class="modal-panel">
-        <h2 id="add-card-title">Add Unrevealed Card</h2>
-        <p>Enter the last three digits of the GD06 card ID.</p>
-        <div class="add-card-id-row"><span class="add-card-prefix">GD06-</span><input id="add-card-input" class="add-card-input" type="text" inputmode="numeric" pattern="[0-9]{3}" maxlength="3" placeholder="050" autocomplete="off" aria-label="Last three digits of GD06 card ID"></div>
-        <div id="add-card-feedback" class="modal-message" style="min-height:1.4em;margin:10px 0;"></div>
-        <div id="add-card-preview" class="add-card-preview hidden"></div>
-        <div class="add-card-actions">
-            <button id="add-card-cancel" class="back-button" type="button">Cancel</button>
-            <button id="add-card-next" class="primary-button" type="button">Add Card</button>
-            <button id="add-card-confirm" class="primary-button hidden" type="button">Confirm & Add</button>
-        </div>
-        <button id="manage-added-cards" class="back-button" type="button" style="margin-top:16px;padding:9px 14px;width:100%">Manage Manually Added Cards</button>
+   </div>
+  </section>
+  <main class="hidden" id="app">
+   <div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+     <button class="control-button" id="home-button">
+      Home
+     </button>
+     <button class="control-button" id="mode-toggle">
+      Switch to Delete Pairs
+     </button>
+     <select class="set-select" id="set-select">
+     </select>
+     <div class="selected-card add-only" id="selected-1">
+     </div>
+     <div class="selected-card add-only" id="selected-2">
+     </div>
+     <div class="pair-actions add-only">
+      <button class="create-button" id="create-pair">
+       Create Pair
+      </button>
+      <button class="control-button clear-selection-button" disabled="" id="clear-pair-selection" type="button">
+       Clear
+      </button>
+     </div>
+     <button class="control-button hidden add-only" id="add-card-button" type="button">
+      + Add Card ID
+     </button>
+     <button class="control-button hidden add-only" id="refresh-cards-button" type="button">
+      ↻ Refresh Cards
+     </button>
+     <div class="mode-note">
+      Delete mode: choose a card, choose one of its paired cards, then confirm deletion.
+     </div>
+    </aside>
+    <section class="main-panel">
+     <div class="delete-view" id="gallery-view">
+      <div class="top-row">
+       <div class="status" id="status">
+       </div>
+      </div>
+      <div class="card-grid" id="card-grid">
+      </div>
+      <div class="empty-state hidden" id="empty-state">
+       No cards found for this set.
+      </div>
+     </div>
+     <div class="delete-view hidden" id="delete-pairs-view">
+      <div class="delete-view-header">
+       <button class="back-button" id="delete-pairs-back">
+        ← Back
+       </button>
+       <div class="delete-title" id="delete-pairs-title">
+       </div>
+      </div>
+      <div class="delete-scroll">
+       <div class="selected-delete-card" id="delete-selected-card">
+       </div>
+       <div class="delete-subtitle">
+        Paired Cards
+       </div>
+       <div class="pair-grid" id="pair-grid">
+       </div>
+       <div class="empty-state hidden" id="no-pairs-message">
+        This card has no saved pairs.
+       </div>
+      </div>
+     </div>
+     <div class="delete-confirm-wrap hidden" id="delete-confirm-view">
+      <div class="delete-view-header">
+       <button class="back-button" id="delete-confirm-back">
+        ← Back
+       </button>
+       <div class="delete-title">
+        Delete Pair?
+       </div>
+      </div>
+      <div class="confirm-pair">
+       <div class="confirm-card" id="confirm-card-1">
+       </div>
+       <div class="confirm-plus">
+        +
+       </div>
+       <div class="confirm-card" id="confirm-card-2">
+       </div>
+      </div>
+      <button class="delete-button" id="delete-pair-button">
+       Delete This Pair
+      </button>
+     </div>
+    </section>
+   </div>
+  </main>
+  <div aria-labelledby="add-card-title" aria-modal="true" class="modal-overlay hidden" id="add-card-modal" role="dialog">
+   <div class="modal-panel">
+    <h2 id="add-card-title">
+     Add Unrevealed Card
+    </h2>
+    <p>
+     Enter the last three digits of the GD06 card ID.
+    </p>
+    <div class="add-card-id-row">
+     <span class="add-card-prefix">
+      GD06-
+     </span>
+     <input aria-label="Last three digits of GD06 card ID" autocomplete="off" class="add-card-input" id="add-card-input" inputmode="numeric" maxlength="3" pattern="[0-9]{3}" placeholder="050" type="text"/>
     </div>
-</div>
-
-<div id="manage-cards-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="manage-cards-title">
-    <div class="modal-panel">
-        <h2 id="manage-cards-title">Remove Added Card</h2>
-        <p>Only manually added cards outside the GD06 CSV can be removed. Deleting a card also deletes all of its saved pairs.</p>
-        <select id="manage-card-select" class="set-select" aria-label="Manually added card"></select>
-        <div id="manage-card-preview" class="add-card-preview"></div>
-        <div id="manage-card-feedback" class="modal-message" style="min-height:1.4em;margin:10px 0;"></div>
-        <div class="add-card-actions">
-            <button id="manage-card-cancel" class="back-button" type="button">Cancel</button>
-            <button id="manage-card-delete" class="delete-button" type="button" style="width:auto;min-height:44px;margin:0;padding:8px 18px;font-size:1rem">Delete Card</button>
-        </div>
+    <div class="modal-message" id="add-card-feedback" style="min-height:1.4em;margin:10px 0;">
     </div>
-</div>
-
-<div id="status-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="status-modal-title">
-    <div class="modal-panel">
-        <h2 id="status-modal-title">Pair Status</h2>
-        <div id="status-spinner" class="modal-spinner hidden"></div>
-        <div id="status-modal-message" class="modal-message"></div>
-        <button id="status-modal-ok" class="modal-ok">Okay</button>
+    <div class="add-card-preview hidden" id="add-card-preview">
     </div>
-</div>
-
-
-    <script src="js/image-extension-fallback.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script src="js/admin-config.js"></script>
-    <script defer src="js/GCGPairCreator-config.js"></script>
-    <script defer src="js/GCGPairCreator-app.js"></script>
-</body>
+    <div class="add-card-actions">
+     <button class="back-button" id="add-card-cancel" type="button">
+      Cancel
+     </button>
+     <button class="primary-button" id="add-card-next" type="button">
+      Add Card
+     </button>
+     <button class="primary-button hidden" id="add-card-confirm" type="button">
+      Confirm &amp; Add
+     </button>
+    </div>
+    <button class="back-button" id="manage-added-cards" style="margin-top:16px;padding:9px 14px;width:100%" type="button">
+     Manage Manually Added Cards
+    </button>
+   </div>
+  </div>
+  <div aria-labelledby="manage-cards-title" aria-modal="true" class="modal-overlay hidden" id="manage-cards-modal" role="dialog">
+   <div class="modal-panel">
+    <h2 id="manage-cards-title">
+     Remove Added Card
+    </h2>
+    <p>
+     Only manually added cards outside the GD06 CSV can be removed. Deleting a card also deletes all of its saved pairs.
+    </p>
+    <select aria-label="Manually added card" class="set-select" id="manage-card-select">
+    </select>
+    <div class="add-card-preview" id="manage-card-preview">
+    </div>
+    <div class="modal-message" id="manage-card-feedback" style="min-height:1.4em;margin:10px 0;">
+    </div>
+    <div class="add-card-actions">
+     <button class="back-button" id="manage-card-cancel" type="button">
+      Cancel
+     </button>
+     <button class="delete-button" id="manage-card-delete" style="width:auto;min-height:44px;margin:0;padding:8px 18px;font-size:1rem" type="button">
+      Delete Card
+     </button>
+    </div>
+   </div>
+  </div>
+  <div aria-labelledby="status-modal-title" aria-modal="true" class="modal-overlay hidden" id="status-modal" role="dialog">
+   <div class="modal-panel">
+    <h2 id="status-modal-title">
+     Pair Status
+    </h2>
+    <div class="modal-spinner hidden" id="status-spinner">
+    </div>
+    <div class="modal-message" id="status-modal-message">
+    </div>
+    <button class="modal-ok" id="status-modal-ok">
+     Okay
+    </button>
+   </div>
+  </div>
+  <script src="js/image-extension-fallback.js">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+  </script>
+  <script src="js/admin-config.js">
+  </script>
+  <script defer="" src="js/GCGPairCreator-config.js">
+  </script>
+  <script defer="" src="js/GCGPairCreator-app.js">
+  </script>
+ </body>
 </html>

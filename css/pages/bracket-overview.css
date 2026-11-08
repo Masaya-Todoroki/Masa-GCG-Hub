@@ -1,0 +1,1969 @@
+/* =====================================================================
+   MASA'S GCG HUB — BRACKET OVERVIEW
+   EDITABLE SETTINGS (shared across this stylesheet)
+   Set design tokens here for future new rules. Existing legacy declarations
+   below are retained in their original order to avoid visual regressions.
+   ===================================================================== */
+
+:root {
+    --gcg-primary: #245c87;
+    --gcg-accent: #3d8cc5;
+    --gcg-outline: #91bfe4;
+    --gcg-page-background: #eef7ff;
+    --gcg-text: #153451;
+}
+/* =====================================================================
+   SOURCE: css/index.css
+   ===================================================================== */
+/* Booster Sets: percentage of the 480ms expansion when content starts / finishes fading. */
+
+:root {
+    --booster-fade-start: 0%;
+    --booster-fade-full: 75%;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    padding: 50px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.subtitle {
+    margin: 15px 0 40px;
+    opacity: 0.75;
+    font-size: 1rem;
+}
+
+.set-section {
+    margin-top: 30px;
+}
+
+.set-title {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.button-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    background: linear-gradient(180deg, #5f82ff, #4a6cff);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.btn:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.btn:active {
+    transform: translateY(0) scale(1);
+}
+
+.btn.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: default;
+}
+/* Top-level hub tabs */
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: -15px 0 30px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.tab-btn {
+    border: 0;
+    background: transparent;
+    color: rgba(255,255,255,0.65);
+    font: inherit;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: white;
+    background: rgba(255,255,255,0.07);
+}
+
+.tab-btn.active {
+    color: white;
+    background: linear-gradient(180deg, #5f82ff, #4a6cff);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 35px 25px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .button-row {
+        flex-direction: column;
+    }
+
+    .tabs {
+        gap: 3px;
+    }
+
+    .tab-btn {
+        padding: 9px 10px;
+        font-size: 0.88rem;
+    }
+
+    .btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+/* News tab / official X timeline */
+
+.news-section {
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.news-intro {
+    text-align: center;
+    color: rgba(255,255,255,.75);
+}
+
+.news-actions {
+    display: flex;
+    justify-content: center;
+    margin: 22px 0;
+}
+
+.news-feed {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    min-height: 220px;
+}
+
+.news-loading {
+    color: rgba(255,255,255,.65);
+    text-align: center;
+    font-size: .9rem;
+}
+
+@media (max-width: 600px) {
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .news-actions .btn {
+        text-align: center;
+    }
+}
+
+.news-language-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px auto 0;
+}
+
+.news-lang-btn {
+    cursor: pointer;
+    padding: 10px 22px;
+    border: 1px solid #666;
+    border-radius: 9px;
+    color: #fff;
+    background: #292929;
+    font: inherit;
+}
+
+.news-lang-btn.active {
+    background: #b51e2d;
+    border-color: #d7424d;
+    font-weight: 700;
+}
+
+.news-lang-btn:hover {
+    filter: brightness(1.2);
+}
+
+.news-feed {
+    max-width: 640px;
+    text-align: left;
+}
+
+.news-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.news-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+    transition: background .2s, border-color .2s;
+}
+
+.news-item:hover {
+    background: rgba(95,130,255,.18);
+    border-color: rgba(95,130,255,.5);
+}
+/* The link stretches over the whole card; the thumbnail button sits above it. */
+
+.news-link {
+    min-width: 0;
+    color: #fff;
+    text-decoration: none;
+}
+
+.news-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+}
+
+.news-link:focus-visible {
+    outline: none;
+}
+
+.news-link:focus-visible::after {
+    outline: 2px solid #5f82ff;
+    outline-offset: 2px;
+}
+
+.news-meta {
+    display: block;
+    font-size: .8rem;
+    opacity: .65;
+    margin-bottom: 4px;
+}
+
+.news-title {
+    display: block;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.news-thumb-btn {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: zoom-in;
+    line-height: 0;
+}
+
+.news-thumb-btn:hover .news-thumb {
+    filter: brightness(1.15);
+}
+
+.news-thumb-btn:focus-visible {
+    outline: 2px solid #5f82ff;
+    outline-offset: 2px;
+}
+
+.news-thumb {
+    width: 128px;
+    height: 72px;
+    object-fit: cover;
+    background: rgba(255,255,255,.08);
+}
+
+@media (max-width: 480px) {
+
+    .news-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .news-thumb-btn {
+        width: 100%;
+    }
+
+    .news-thumb {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+}
+
+#news-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.88);
+    cursor: zoom-out;
+}
+
+#news-lightbox[hidden] {
+    display: none;
+}
+
+#news-lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 8px;
+}
+/* Multiple images per news post. */
+
+.news-item {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.news-image-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+.news-image-gallery.single-image {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.news-image-gallery .news-thumb-btn {
+    width: 100%;
+}
+
+.news-image-gallery .news-thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+}
+
+.news-image-gallery.single-image .news-thumb {
+    max-height: 320px;
+}
+
+@media (max-width: 480px) {
+
+    .news-image-gallery {
+        gap: 6px;
+    }
+}
+/* Blue sliding segmented switches */
+
+.news-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin: 22px auto;
+}
+
+.news-segmented {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    position: relative;
+    padding: 4px;
+    border-radius: 13px;
+    background: #202b3b;
+    border: 1px solid #3a4b63;
+    min-width: 220px;
+    isolation: isolate;
+}
+
+.news-segmented::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc((100% - 8px)/2);
+    border-radius: 9px;
+    background: #2868bb;
+    box-shadow: 0 2px 10px #0005;
+    transition: transform .22s ease;
+}
+
+.news-segmented:has(button:nth-child(2).active)::before {
+    transform: translateX(100%);
+}
+
+.news-segmented button.news-lang-btn,.news-segmented button.news-source-btn {
+    position: relative;
+    background: transparent;
+    border: 0;
+    color: #b9c7db;
+    border-radius: 9px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font: inherit;
+    font-size: .9rem;
+    transition: color .2s;
+}
+
+.news-segmented button.active {
+    color: white;
+    font-weight: 700;
+}
+
+.news-segmented button:focus-visible {
+    outline: 2px solid #80b8ff;
+    outline-offset: 2px;
+}
+
+@media(max-width:540px) {
+
+    .news-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .news-segmented {
+        width: 100%;
+        box-sizing: border-box;
+        min-width: 0;
+    }
+}
+/* Hidden News admin controls */
+
+#news-admin-trigger {
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+#news-admin-controls[hidden] {
+    display: none !important;
+}
+
+#news-admin-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin: 10px auto;
+    flex-wrap: wrap;
+}
+
+#news-force-refresh {
+    padding: 8px 14px;
+    border-radius: 9px;
+    border: 1px solid #5374c4;
+    background: #306bc1;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+#news-force-refresh:disabled {
+    opacity: .55;
+    cursor: wait;
+}
+
+#news-admin-status {
+    font-size: 13px;
+    color: #b9c9e7;
+}
+/* Angled set browser / full-art selected view */
+
+.set-explorer {
+    position: relative;
+    margin: 38px auto 14px;
+    max-width: 960px;
+}
+
+.set-explorer-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.set-explorer-heading .set-title {
+    margin: 0 0 15px;
+}
+
+.set-explorer-hint {
+    color: rgba(255,255,255,.56);
+    font-size: .82rem;
+}
+
+.set-explorer-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #5f82ff transparent;
+    scroll-behavior: smooth;
+    cursor: grab;
+    touch-action: pan-x;
+}
+
+.set-explorer-scroll.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+    user-select: none;
+}
+
+.set-explorer-track {
+    display: flex;
+    align-items: stretch;
+    width: max-content;
+    min-width: 100%;
+    height: 300px;
+    gap: 0;
+    padding: 0 12px 7px;
+    box-sizing: border-box;
+}
+
+.set-art-panel {
+    position: relative;
+    display: block;
+    flex: 0 0 190px;
+    width: 190px;
+    height: 285px;
+    padding: 0;
+    margin-left: -45px;
+    border: 0;
+    background: #252d46;
+    color: white;
+    cursor: pointer;
+    isolation: isolate;
+    clip-path: polygon(23% 0,100% 0,77% 100%,0 100%);
+    transition: clip-path .48s cubic-bezier(.2,.75,.2,1),width .48s,flex-basis .48s,margin .48s,opacity .28s,filter .2s;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.set-art-panel:first-child {
+    margin-left: 0;
+}
+
+.set-art-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #20283d;
+    pointer-events: none;
+}
+
+.set-art-panel img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--set-collapsed-position, 88% center);
+    transform: scale(.94);
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform .48s;
+}
+/* Thin edge highlight follows the angled polygon and leaves a small visible gap. */
+
+.set-art-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);
+    pointer-events: none;
+    box-shadow: inset 0 0 0 2px rgba(174,200,255,.55);
+}
+
+.set-art-panel span {
+    position: absolute;
+    z-index: 1;
+    bottom: 15px;
+    left: 25%;
+    font-weight: 800;
+    font-size: 1.45rem;
+    text-shadow: 0 2px 8px #000;
+}
+
+.set-art-panel:hover {
+    filter: brightness(1.2);
+}
+
+.set-art-panel:focus-visible {
+    outline: 3px solid #9bb5ff;
+    outline-offset: -5px;
+}
+
+.set-explorer.is-selected .set-explorer-scroll {
+    overflow: hidden;
+    cursor: default;
+    touch-action: auto;
+}
+
+.set-explorer.is-selected .set-explorer-track {
+    width: 100%;
+    min-width: 0;
+    height: clamp(265px, 42vw, 410px);
+    padding: 0;
+}
+
+.set-explorer.is-selected .set-art-panel {
+    flex-basis: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    opacity: 1;
+    pointer-events: auto;
+    overflow: visible;
+    clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+}
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transform: none;
+    visibility: visible;
+    opacity: 1;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active span {
+    left: 20px;
+    top: 16px;
+    bottom: auto;
+}
+
+.set-explorer.is-selected .set-explorer-nav {
+    display: none;
+}
+
+.set-explorer.is-selected .set-explorer-hint {
+    visibility: hidden;
+}
+
+.set-selected-options {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-35%);
+    width: min(31%,260px);
+    z-index: 10;
+    pointer-events: none;
+    opacity: 1;
+}
+
+.set-selected-options[hidden] {
+    display: none;
+}
+
+.set-selected-options h3 {
+    font-size: 1.55rem;
+    margin: 0 0 14px;
+    text-shadow: 0 2px 8px #000;
+}
+
+.set-selected-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.set-selected-links .btn {
+    text-align: center;
+    border-radius: 9px;
+    padding: 11px 8px;
+    box-shadow: 0 2px 12px #0006;
+}
+
+.set-selected-tip {
+    display: none;
+}
+
+.set-explorer.is-selected::after {
+    content: "";
+    position: absolute;
+    inset: 55px auto 0 0;
+    width: 48%;
+    pointer-events: none;
+    background: linear-gradient(90deg,rgba(8,12,27,.65),transparent);
+    z-index: 1;
+}
+
+.set-explorer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 10px 0 0;
+}
+
+.set-explorer-nav button {
+    background: rgba(95,130,255,.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.set-explorer-nav button:hover {
+    background: #4a6cff;
+}
+
+@keyframes setOptionsIn {
+
+    from {
+        opacity: 0;
+        translate: 0 10px;
+    }
+
+    to {
+        opacity: 1;
+        translate: 0 0;
+    }
+}
+
+@media(max-width:600px) {
+
+    .set-explorer-track {
+        height: 235px;
+    }
+
+    .set-art-panel {
+        flex-basis: 130px;
+        width: 130px;
+        height: 220px;
+        margin-left: -25px;
+    }
+
+    .set-art-panel span {
+        font-size: 1rem;
+    }
+
+    .set-explorer.is-selected .set-explorer-track {
+        height: 245px;
+    }
+
+    .set-explorer.is-selected .set-art-panel.is-active {
+        min-height: 0;
+    }
+
+    .set-selected-options {
+        left: 4%;
+        width: 43%;
+        transform: translateY(-30%);
+    }
+
+    .set-selected-options h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .set-selected-links {
+        gap: 7px;
+    }
+
+    .set-selected-links .btn {
+        padding: 9px 4px;
+        font-size: .75rem;
+    }
+
+    .set-explorer.is-selected::after {
+        inset: 50px auto 0 0;
+        width: 65%;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    .set-art-panel,.set-art-panel img {
+        transition: none;
+    }
+
+    .set-selected-options {
+        animation: none;
+    }
+}
+/* V3: selected artwork uses its native dimensions, without cropping. */
+
+.set-explorer {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.set-explorer-scroll {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.set-explorer.is-selected .set-explorer-track {
+    height: auto;
+    min-height: 0;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    display: block;
+}
+
+.set-explorer.is-selected .set-art-panel {
+    display: none;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: var(--selected-art-ratio, 2.4);
+    box-sizing: border-box;
+    border: 1px solid rgba(174,200,255,.55);
+    overflow: hidden;
+    margin: 0;
+    flex: none;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    transform: none;
+}
+/* Keep only the title above the buttons, not a second label on the image. */
+
+.set-explorer.is-selected .set-art-panel.is-active span {
+    display: none;
+}
+/* Options sit over the image itself, not over the entire section. */
+
+.set-explorer.is-selected .set-selected-options {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: min(31%,260px);
+    max-width: 48%;
+    z-index: 3;
+}
+
+.set-explorer.is-selected::after {
+    display: none;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active::after {
+    background: linear-gradient(90deg,rgba(8,12,27,.68),rgba(8,12,27,.24) 45%,transparent 70%);
+    box-shadow: none;
+}
+
+@media(max-width:600px) {
+
+    .container {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .set-explorer.is-selected .set-explorer-track {
+        height: auto;
+    }
+
+    .set-explorer.is-selected .set-art-panel.is-active {
+        min-height: 0;
+    }
+
+    .set-explorer.is-selected .set-selected-options {
+        left: 4%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 43%;
+        max-width: 48%;
+    }
+
+    .set-explorer.is-selected .set-selected-options h3 {
+        margin-bottom: 8px;
+    }
+}
+/* V4: lock the explorer's vertical footprint in both states.
+   The complete landscape artwork fits inside that footprint without cropping. */
+
+.set-explorer {
+    --set-explorer-height: 300px;
+}
+
+.set-explorer-track,
+.set-explorer.is-selected .set-explorer-track {
+    height: var(--set-explorer-height);
+    min-height: var(--set-explorer-height);
+    max-height: var(--set-explorer-height);
+}
+
+.set-explorer.is-selected .set-explorer-track {
+    display: block;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    height: 100%;
+    max-height: 100%;
+    aspect-ratio: auto;
+    clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+}
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    object-fit: contain;
+    object-position: center;
+}
+
+@media (max-width:600px) {
+
+    .set-explorer {
+        --set-explorer-height: 235px;
+    }
+
+    .set-explorer.is-selected .set-selected-options h3 {
+        font-size: 1rem;
+    }
+
+    .set-explorer.is-selected .set-selected-links {
+        gap: 6px;
+    }
+
+    .set-explorer.is-selected .set-selected-links .btn {
+        padding: 7px 4px;
+    }
+}
+/* V5: Fill the same fixed-height area when a set is expanded. */
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    object-fit: cover;
+    object-position: center center;
+}
+/* V6: Keep panels in layout so the browser can animate back to the angled strip.
+   display:none and switching the track to display:block interrupted minimising. */
+
+.set-explorer.is-selected .set-explorer-track {
+    display: flex;
+    align-items: stretch;
+}
+
+.set-explorer.is-selected .set-art-panel {
+    display: block;
+    flex: 0 0 0px;
+    width: 0;
+    height: 100%;
+    margin-left: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    display: block;
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    overflow: hidden;
+    pointer-events: auto;
+}
+/* V7: cinematic fade return. The original angled carousel and its saved scroll
+   position are restored while invisible, then gently revealed in place. */
+
+.set-explorer-scroll {
+    transition: opacity 190ms ease-in-out;
+}
+
+.set-explorer.is-returning-out .set-explorer-scroll,
+.set-explorer.is-returning-in .set-explorer-scroll {
+    opacity: 0;
+}
+
+.set-explorer.is-returning-out .set-art-panel {
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+    .set-explorer-scroll {
+        transition: none;
+    }
+}
+/* V8: suppress geometry animation while restoring the saved carousel position. */
+
+.set-explorer.is-restoring .set-art-panel,
+.set-explorer.is-restoring .set-art-panel img,
+.set-explorer.is-restoring .set-explorer-track {
+    transition: none !important;
+}
+
+.set-explorer.is-returning-out .set-explorer-scroll {
+    opacity: 0;
+}
+
+.set-explorer.is-returning-in .set-explorer-scroll {
+    opacity: 1;
+}
+
+.set-explorer.is-returning-in .set-art-panel {
+    pointer-events: none;
+}
+/* V9: Return selected artwork to its saved position while the strip fades back. */
+
+.set-return-ghost {
+    background: #252d46;
+    box-shadow: inset 0 0 0 2px rgba(174,200,255,.55);
+}
+
+.set-return-ghost img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center center;
+}
+
+.set-explorer.is-returning-position .set-explorer-scroll {
+    opacity: 0;
+}
+
+.set-explorer.is-returning-position .set-art-panel {
+    pointer-events: none;
+}
+/* V11: keep the real strip hidden while the selected artwork flies out of its source panel. */
+
+.set-explorer.is-expanding-position .set-explorer-scroll {
+    opacity: 0 !important;
+}
+
+.set-explorer.is-expanding-position .set-art-panel {
+    pointer-events: none;
+}
+/* V12: exact source-panel clone for expansion, with matching image framing. */
+
+.set-expand-ghost {
+    isolation: isolate;
+    background: #252d46;
+}
+
+.set-expand-ghost::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #20283d;
+    pointer-events: none;
+}
+
+.set-expand-ghost::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);
+    box-shadow: inset 0 0 0 2px rgba(174,200,255,.55);
+}
+
+.set-expand-ghost img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+/* V13: The animation clone must match the actual source image and mask.
+   The old pseudo-element painted an opaque layer OVER the cloned artwork,
+   making the first frames look like a different image. */
+
+.set-expand-ghost::before {
+    display: none !important;
+}
+
+.set-expand-ghost::after {
+    background: linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);
+    box-shadow: inset 0 0 0 2px rgba(174,200,255,.55);
+}
+
+.set-expand-ghost img {
+    display: block;
+    object-fit: cover;
+    transition: none !important;
+}
+/* V14: keep the expanded destination fully painted beneath the moving artwork
+   before the shared-element copy is removed. */
+
+.set-explorer.is-expanding-position .set-explorer-scroll {
+    transition: none !important;
+}
+
+.set-expand-ghost {
+    box-shadow: none !important;
+}
+
+.set-expand-ghost::after {
+    box-shadow: none !important;
+}
+/* V15: keep the flying image above the hidden destination until its resize completes. */
+
+.set-expand-ghost {
+    visibility: visible;
+    opacity: 1;
+    will-change: left,top,width,height,clip-path;
+}
+
+.set-expand-ghost img {
+    will-change: transform,object-position;
+}
+
+.set-explorer.is-expanding-position .set-explorer-scroll {
+    opacity: 0 !important;
+}
+/* Per-set expanded framing, configured in BOOSTER_SETS. */
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    object-position: var(--set-expanded-position, 75% center);
+}
+/* V20 homepage branding */
+
+.brand-heading {
+    margin: 0 auto 12px;
+    text-align: center;
+}
+
+.brand-logo {
+    display: block;
+    width: min(100%, 440px);
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+
+    .brand-logo {
+        width: min(100%, 320px);
+    }
+}
+/* V21: compact desktop homepage branding (carousel untouched) */
+
+@media (min-width: 701px) {
+
+    body {
+        padding: 12px 20px;
+    }
+
+    .container {
+        padding: 24px 44px 34px;
+    }
+
+    .brand-heading {
+        margin: 0 auto 10px;
+    }
+
+    .brand-logo {
+        width: min(100%, 390px);
+    }
+
+    .subtitle {
+        margin: 6px 0 18px;
+    }
+
+    .tabs {
+        margin: 0 0 16px;
+        padding-bottom: 10px;
+    }
+
+    .set-section {
+        margin-top: 14px;
+    }
+
+    .set-title {
+        margin-bottom: 10px;
+    }
+
+    .set-explorer {
+        margin-top: 20px;
+    }
+}
+/* V24: compact homepage spacing; preserve Set Explorer geometry/animations. */
+
+body {
+    padding: 10px;
+}
+
+.container {
+    padding: 18px 32px 24px;
+}
+
+.brand-heading {
+    margin-bottom: 2px;
+}
+
+.brand-logo {
+    width: min(100%, 350px);
+}
+
+.subtitle {
+    margin: 2px 0 16px;
+}
+
+.tabs {
+    margin: 0 0 16px;
+    padding-bottom: 9px;
+    flex-wrap: wrap;
+    row-gap: 3px;
+}
+
+.tab-btn {
+    padding: 8px 13px;
+}
+
+.set-section {
+    margin-top: 12px;
+}
+
+.set-title {
+    margin-bottom: 10px;
+}
+
+.button-row {
+    gap: 10px;
+}
+
+.button-row .btn {
+    padding: 11px 22px;
+}
+
+.set-explorer {
+    margin-top: 18px;
+}
+
+.set-explorer-heading .set-title {
+    margin-bottom: 9px;
+}
+
+@media (min-width: 701px) {
+
+    body {
+        padding: 10px 16px;
+    }
+
+    .container {
+        padding: 18px 36px 26px;
+    }
+
+    .brand-logo {
+        width: min(100%, 350px);
+    }
+
+    .subtitle {
+        margin: 2px 0 14px;
+    }
+
+    .tabs {
+        margin: 0 0 14px;
+        padding-bottom: 8px;
+    }
+
+    .set-section {
+        margin-top: 10px;
+    }
+
+    .set-explorer {
+        margin-top: 17px;
+    }
+}
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 7px;
+    }
+
+    .container {
+        padding: 14px 14px 20px;
+        border-radius: 20px;
+    }
+
+    .brand-logo {
+        width: min(100%, 285px);
+    }
+
+    .subtitle {
+        margin: 0 0 12px;
+        font-size: .94rem;
+    }
+
+    .tabs {
+        margin: 0 0 14px;
+        padding-bottom: 8px;
+        gap: 2px;
+    }
+
+    .tab-btn {
+        padding: 8px 9px;
+        font-size: .82rem;
+    }
+
+    .set-section {
+        margin-top: 10px;
+    }
+
+    .set-title {
+        margin-bottom: 10px;
+    }
+
+    .button-row {
+        gap: 9px;
+    }
+
+    .button-row .btn {
+        padding: 11px 12px;
+    }
+
+    .set-explorer {
+        margin-top: 19px;
+    }
+}
+
+@media (max-width: 390px) {
+
+    .tab-btn {
+        padding: 8px 6px;
+        font-size: .78rem;
+    }
+}
+/* Keep the expanded controls above the moving artwork during the reveal. */
+
+.set-explorer {
+    z-index: 5;
+}
+/* V31: ensure controls are above the flying artwork throughout expansion.
+   The original carousel motion and artwork framing remain unchanged. */
+
+.set-explorer.is-expanding-position {
+    position: relative;
+    z-index: 10000;
+}
+
+.set-explorer.is-expanding-position .set-selected-options {
+    z-index: 10001;
+    visibility: visible;
+}
+/* V32: controls are siblings of the hidden scroller, not descendants. */
+
+.set-explorer.is-selected .set-selected-options {
+    z-index: 10;
+}
+/* V34: Match the expanded panel's tint during the shared-element animation.
+   Prevents a colour jump when the animated copy hands off to the real panel. */
+
+.set-expand-ghost::after {
+    background: linear-gradient(90deg, rgba(8,12,27,.68), rgba(8,12,27,.24) 45%, transparent 70%) !important;
+    box-shadow: none !important;
+}
+/* V37: allow the expansion artwork to dissolve into the finished panel.
+   The previous !important opacity prevented any fade-out animation. */
+
+.set-expand-ghost {
+    opacity: 1;
+    visibility: visible;
+}
+/* =====================================================================
+   SOURCE: css/bracketoverview.css
+   ===================================================================== */
+
+.bracket {
+    max-width: 780px;
+    text-align: left;
+}
+
+.bracket h1 {
+    text-align: center;
+}
+
+.bracket .subtitle {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.back {
+    color: #a9bcff;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 26px;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 0 auto 22px;
+    max-width: 500px;
+    font-weight: bold;
+}
+
+.control input {
+    background: #202342;
+    color: white;
+    border: 1px solid #7185c5;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 20px;
+    width: 125px;
+    box-sizing: border-box;
+}
+
+.summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 0 0 24px;
+}
+
+.summary>div {
+    background: rgba(255,255,255,.07);
+    padding: 18px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.summary span {
+    color: #c8cbe1;
+    font-size: 13px;
+}
+
+.summary strong {
+    font-size: 30px;
+}
+
+.tablewrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,td {
+    padding: 15px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.13);
+}
+
+th {
+    text-align: left;
+    color: #cbd5ff;
+    font-size: 14px;
+}
+
+td:nth-child(1),td:nth-child(2) {
+    font-weight: bold;
+}
+
+td:last-child {
+    font-size: 14px;
+}
+
+.final {
+    color: #a6f0bb;
+}
+
+.conditional {
+    color: #f9d58e;
+}
+
+.note {
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: .7;
+    margin-top: 25px;
+}
+
+@media(max-width:600px) {
+
+    .bracket {
+        padding: 25px 18px;
+    }
+
+    .bracket h1 {
+        font-size: 1.9rem;
+    }
+
+    th,td {
+        padding: 13px 7px;
+    }
+
+    .summary strong {
+        font-size: 25px;
+    }
+}
+/* =====================================================================
+   SOURCE: css/bracketoverview-redesign-v2.css
+   ===================================================================== */
+/* Bracket Overview – homepage-inspired layout; preserves existing JS IDs. */
+
+:root {
+    color-scheme: light;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0!important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: none!important;
+    width: 100%!important;
+    color: #152b47!important;
+    background: #f3f9ff!important;
+    font-family: Arial,Helvetica,sans-serif;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 76px 0 0;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(circle 180px at 0 27%,transparent 99%,#bdd8ef 100%,transparent 101%),
+ linear-gradient(132deg,transparent 0 72%,#d8e9f7 72.12%,transparent 72.3%),
+ linear-gradient(132deg,transparent 0 84%,#d8e9f7 84.12%,transparent 84.3%),
+ linear-gradient(180deg,#eef7ff 0%,#f7fbff 60%,#e9f4fd 100%);
+}
+
+.hub-header {
+    width: 100%;
+    height: 76px;
+    flex: 0 0 76px;
+    display: flex;
+    align-items: center;
+    padding: 0 clamp(22px,4.5vw,82px);
+    background: #fff;
+    border-bottom: 1px solid #90b8d8;
+    gap: 0;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    width: 315px;
+    flex: 0 0 315px;
+    height: 100%;
+    text-decoration: none;
+}
+
+.brand-logo {
+    width: 155px;
+    max-height: 64px;
+    object-fit: contain;
+}
+
+.header-descriptor {
+    border-left: 1px solid #9bb8d1;
+    padding: 0 20px;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.35;
+    letter-spacing: .13em;
+    color: #24476e;
+}
+
+.promo-home-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.home-tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    height: 56px;
+    padding: 0 25px;
+    background: #bde3fc;
+    clip-path: polygon(17% 0,100% 0,83% 100%,0 100%);
+    font-size: 17px;
+    font-weight: 900;
+    color: #152b47;
+    text-decoration: none;
+}
+
+.home-tab:hover {
+    background: #8fc8f2;
+}
+
+.bracket-page {
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 34px clamp(24px,3vw,48px) 80px;
+    text-align: left;
+    background: none!important;
+    border: none!important;
+    box-shadow: none!important;
+    border-radius: 0!important;
+}
+
+.bracket-page .section-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: clamp(26px,2.2vw,37px);
+    font-weight: 950;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -.035em;
+    line-height: 1.2;
+    color: #102a4b;
+    text-align: left;
+}
+
+.bracket-page .section-title::after {
+    content: "";
+    height: 2px;
+    background: #c1d9ec;
+    flex: 1;
+}
+
+.bracket-page .subtitle {
+    margin: 10px 0 25px;
+    color: #62768e;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.bracket-page .control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 90px;
+    max-width: none;
+    margin: 12px auto 27px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #173250;
+}
+
+.bracket-page .control input {
+    width: 155px;
+    padding: 13px 17px;
+    background: #fff;
+    color: #173250;
+    border: 1.5px solid #31628b;
+    border-radius: 11px;
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.bracket-page .summary {
+    max-width: 1260px;
+    margin: 0 auto 28px;
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 22px;
+}
+
+.bracket-page .summary>div {
+    position: relative;
+    min-height: 120px;
+    padding: 18px 28px;
+    background: #edf6ff;
+    border: 1.5px solid #3a78af;
+    border-radius: 6px;
+    clip-path: polygon(0 0,96% 0,100% 23%,100% 100%,0 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.bracket-page .summary span {
+    font-size: 18px;
+    font-weight: 750;
+    color: #183755;
+}
+
+.bracket-page .summary strong {
+    font-size: 48px;
+    line-height: 1.1;
+    font-weight: 950;
+    font-style: italic;
+    color: #14355b;
+}
+
+.bracket-page .tablewrap {
+    max-width: 1260px;
+    margin: 0 auto;
+    overflow-x: auto;
+    border: 1px solid #afc9dd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 5px #173e5b1c;
+}
+
+.bracket-page table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #102b4d;
+    background: #fff;
+}
+
+.bracket-page thead {
+    background: #25567d;
+}
+
+.bracket-page th {
+    color: #fff!important;
+    font-size: 19px;
+    font-weight: 850;
+    font-style: italic;
+    text-align: left;
+    border: 0;
+    padding: 13px 28px;
+}
+
+.bracket-page td {
+    font-size: 18px;
+    font-weight: 700;
+    border-bottom: 1px solid #d1e0ec;
+    padding: 16px 28px;
+    color: #173452;
+}
+
+.bracket-page tr:last-child td {
+    border-bottom: 0;
+}
+
+.bracket-page td:nth-child(3) {
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.bracket-page td:nth-child(3) [style*="color"] {
+    color: inherit;
+}
+
+.hub-footer {
+    width: 100%;
+    min-height: 62px;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px clamp(24px,4vw,75px);
+    background: linear-gradient(133deg,#91b8d9 0 16%,#f0f8ff 16% 18%,#91b8d9 18% 54%,#75a3c9 54%);
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+@media(max-width:700px) {
+
+    .hub-header {
+        height: 72px;
+        flex-basis: 72px;
+        padding: 0 14px;
+    }
+
+    .header-brand {
+        width: auto;
+        flex: 0 1 auto;
+    }
+
+    .brand-logo {
+        width: 115px;
+    }
+
+    .header-descriptor {
+        font-size: 9px;
+        letter-spacing: .07em;
+        padding: 0 9px;
+    }
+
+    .home-tab {
+        height: 48px;
+        min-width: 85px;
+        font-size: 14px;
+        padding: 0 13px;
+    }
+
+    .bracket-page {
+        padding: 25px 15px 55px;
+    }
+
+    .bracket-page .control {
+        gap: 18px;
+        justify-content: space-between;
+        font-size: 15px;
+    }
+
+    .bracket-page .control input {
+        width: 105px;
+        font-size: 18px;
+    }
+
+    .bracket-page .summary {
+        gap: 10px;
+    }
+
+    .bracket-page .summary>div {
+        padding: 14px 13px;
+        min-height: 102px;
+    }
+
+    .bracket-page .summary span {
+        font-size: 13px;
+    }
+
+    .bracket-page .summary strong {
+        font-size: 36px;
+    }
+
+    .bracket-page th,.bracket-page td {
+        padding: 13px 11px;
+        font-size: 14px;
+    }
+
+    .bracket-page td:nth-child(3) {
+        font-size: 13px;
+    }
+
+    .hub-footer {
+        font-size: 9px;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 14px 18px;
+    }
+}
+/* V2: draw BOTH edges of the clipped outline; clipping a normal border
+   cuts off the top-right border, so use nested polygons instead. */
+
+.bracket-page .summary > div {
+    border: 0!important;
+    clip-path: none!important;
+    background: transparent!important;
+    isolation: isolate;
+}
+
+.bracket-page .summary > div::before,
+.bracket-page .summary > div::after {
+    content: "";
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+
+.bracket-page .summary > div::before {
+    z-index: -2;
+    inset: 0;
+    background: #3a78af;
+    clip-path: polygon(0 0,calc(100% - 28px) 0,100% 28px,100% 100%,0 100%);
+}
+
+.bracket-page .summary > div::after {
+    z-index: -1;
+    inset: 1.5px;
+    background: #edf6ff;
+    clip-path: polygon(0 0,calc(100% - 27px) 0,100% 27px,100% 100%,0 100%);
+}

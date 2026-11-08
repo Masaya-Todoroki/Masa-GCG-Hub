@@ -1,0 +1,1182 @@
+/* =====================================================================
+   MASA'S GCG HUB — ALT ART PAIRINGS
+   EDITABLE SETTINGS (shared across this stylesheet)
+   Set design tokens here for future new rules. Existing legacy declarations
+   below are retained in their original order to avoid visual regressions.
+   ===================================================================== */
+
+:root {
+    --gcg-primary: #245c87;
+    --gcg-accent: #3d8cc5;
+    --gcg-outline: #91bfe4;
+    --gcg-page-background: #eef7ff;
+    --gcg-text: #153451;
+}
+/* =====================================================================
+   SOURCE: css/GCG-AAPairings.css
+   ===================================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #f4f4f4;
+}
+
+header {
+    background: #1b1b1b;
+    border-bottom: 1px solid #333;
+    padding: 20px;
+    text-align: center;
+}
+
+h1, h2, p {
+    margin: 0;
+}
+
+.container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.set-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.set-button {
+    background: #2a2a2a;
+    color: #f4f4f4;
+    border: 1px solid #444;
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.set-button:hover {
+    border-color: #777;
+}
+
+.set-button.active {
+    background: #f4f4f4;
+    color: #111;
+    border-color: #f4f4f4;
+}
+
+.top-controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 220px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #1d1d1d;
+    color: #f4f4f4;
+    font-size: 1rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    align-items: stretch;
+}
+
+.card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #666;
+}
+
+.card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    background: #222;
+}
+
+.card-text {
+    padding: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.card-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.25;
+    min-height: calc(1.2em * 4);
+}
+
+.type-box {
+    margin-top: auto;
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 0.75rem;
+    color: #ddd;
+    text-align: center;
+}
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+button {
+    background: #f4f4f4;
+    color: #111;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.selected-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.selected-card img {
+    width: 180px;
+    max-width: 40%;
+    border-radius: 10px;
+    background: #222;
+    flex-shrink: 0;
+}
+
+.selected-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.selected-info h2 {
+    font-size: 1.1rem;
+}
+
+.selected-info p {
+    margin-top: 6px;
+    color: #ddd;
+    font-size: 0.9rem;
+}
+
+.selected-info a {
+    color: #8fb3ff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.selected-info a:hover {
+    text-decoration: underline;
+}
+
+.status-box {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.message {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+.small-note {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-top: 8px;
+}
+
+.pair-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 8px;
+    row-gap: 12px;
+    overflow-x: visible;
+    padding-bottom: 0;
+}
+
+.pair-row::-webkit-scrollbar {
+    height: 8px;
+}
+
+.pair-row::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.pair-row .card {
+    min-width: 120px;
+    max-width: 140px;
+    flex-shrink: 0;
+}
+
+.pair-row .card-text {
+    padding: 8px;
+    font-size: 0.8rem;
+}
+
+@media (min-width: 900px) {
+
+    .grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+@media (min-width: 1300px) {
+
+    .grid {
+        grid-template-columns: repeat(8, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+
+    .container {
+        padding: 12px;
+    }
+
+    .grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .card-text {
+        padding: 8px;
+        font-size: 0.72rem;
+    }
+
+    .type-box {
+        font-size: 0.62rem;
+        padding: 4px 5px;
+    }
+
+    .search-box {
+        min-width: 0;
+        width: 100%;
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    .selected-card {
+        flex-direction: row;
+        align-items: center;
+        padding: 10px;
+        gap: 12px;
+    }
+
+    .selected-card img {
+        width: 140px;
+        max-width: 40%;
+    }
+
+    .selected-info h2 {
+        font-size: 1rem;
+    }
+
+    .selected-info p {
+        font-size: 0.85rem;
+    }
+
+    .pair-row .card {
+        min-width: 110px;
+        max-width: 120px;
+    }
+
+    .pair-row .card-text {
+        font-size: 0.72rem;
+    }
+
+    .pair-row .type-box {
+        font-size: 0.62rem;
+    }
+}
+/* Shown only when the official alt-art image is unavailable. */
+
+.card-art {
+    position: relative;
+    width: 100%;
+}
+
+.card-art img {
+    display: block;
+    width: 100%;
+}
+
+.reveal-ribbon {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%) rotate(-12deg);
+    padding: 8px 3px;
+    background: rgba(12, 12, 12, .88);
+    color: #fff;
+    border-top: 2px solid #e0bb63;
+    border-bottom: 2px solid #e0bb63;
+    font-weight: 800;
+    font-size: clamp(9px, 1.5vw, 15px);
+    text-align: center;
+    letter-spacing: .035em;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.card-art.unrevealed .reveal-ribbon {
+    display: block;
+}
+
+.selected-card .card-art {
+    width: 180px;
+    max-width: 40%;
+    flex-shrink: 0;
+}
+
+.selected-card .card-art img {
+    width: 100%;
+    max-width: 100%;
+}
+
+.selected-card .reveal-ribbon {
+    font-size: 12px;
+}
+
+@media (max-width: 700px) {
+
+    .selected-card .card-art {
+        width: 140px;
+        max-width: 40%;
+    }
+
+    .reveal-ribbon {
+        font-size: 9px;
+        padding: 5px 2px;
+    }
+}
+/* =====================================================================
+   SOURCE: css/GCG-AAPairings-redesign-v4.css
+   ===================================================================== */
+/* V1 visual layer. Existing pairing data/navigation JavaScript is unchanged. */
+
+:root {
+    --navy: #123355;
+    --blue: #2b78b4;
+    --border: #9bc9ed;
+    --paper: #f5faff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body.aa-page {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial,Helvetica,sans-serif;
+    color: var(--navy);
+    background: radial-gradient(circle 170px at -40px 230px,transparent 98%,#c4dff1 99%,transparent 100%),
+linear-gradient(133deg,transparent 75%,#d2e8f8 75.08%,transparent 75.2%),
+linear-gradient(180deg,#edf7ff,#f7fbff 65%,#eaf5ff);
+}
+
+.aa-page .site-header {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    background: white;
+    color: var(--navy);
+    border-bottom: 1px solid #91b8d9;
+    padding: 8px clamp(18px,5vw,90px);
+    min-height: 76px;
+    gap: 24px;
+}
+
+.site-brand {
+    width: 230px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex-shrink: 0;
+    text-decoration: none;
+}
+
+.site-logo {
+    width: 165px;
+    max-height: 60px;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+}
+
+.logo-fallback {
+    position: absolute;
+    left: 0;
+    font-weight: 900;
+    color: #145285;
+    font-size: 21px;
+}
+
+.site-logo:not([src=""]) {
+    background: transparent;
+}
+
+.brand-tagline {
+    border-left: 1px solid #9dbed7;
+    padding-left: 20px;
+    white-space: pre-line;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .13em;
+    line-height: 1.4;
+}
+
+.home-link {
+    margin-left: auto;
+    background: #bfe4ff;
+    clip-path: polygon(18% 0,100% 0,82% 100%,0 100%);
+    height: 54px;
+    min-width: 124px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #163552;
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 17px;
+}
+
+.home-link:hover {
+    background: #93cdf4;
+}
+
+.aa-page .container {
+    width: 100%;
+    max-width: 1510px;
+    margin: 0 auto;
+    padding: 30px clamp(16px,4vw,55px) 65px;
+    flex: 1;
+}
+
+.page-intro h1 {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: clamp(26px,2.5vw,38px);
+    font-style: italic;
+    font-weight: 950;
+    letter-spacing: -.03em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    margin: 0;
+    color: #112f52;
+}
+
+.page-intro h1:after {
+    content: "";
+    height: 2px;
+    flex: 1;
+    background: #bedbf0;
+}
+
+.page-intro p {
+    margin: 9px 0 22px;
+    color: #5c748c;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.set-panel {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-height: 70px;
+    padding: 12px 18px;
+    margin-bottom: 15px;
+    background: #f4faff;
+    border: 1.5px solid #458bca;
+    border-radius: 5px;
+}
+
+.set-label {
+    font-weight: 800;
+    padding: 10px 23px;
+    background: #d6edfc;
+    clip-path: polygon(14% 0,100% 0,86% 100%,0 100%);
+}
+
+.aa-page .set-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    justify-content: flex-start;
+    margin: 0;
+}
+
+.aa-page .set-button {
+    border: 1px solid #5f9fd1;
+    border-radius: 22px;
+    background: white;
+    color: #153756;
+    padding: 10px 19px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.aa-page .set-button.active {
+    background: #2379b8;
+    border-color: #2379b8;
+    color: white;
+}
+
+.aa-page .set-button:hover {
+    border-color: #0f5489;
+}
+
+.aa-page .top-controls {
+    margin: 0 0 17px;
+}
+
+.aa-page .search-box {
+    background: white;
+    color: #173552;
+    border: 1px solid #8ebce0;
+    border-radius: 8px;
+    min-width: 0;
+    width: 100%;
+    padding: 13px 17px;
+    font-size: 15px;
+}
+
+.aa-page .grid {
+    display: grid;
+    grid-template-columns: repeat(8,minmax(0,1fr));
+    gap: 12px;
+    align-items: stretch;
+}
+
+.aa-page .card {
+    background: #fbfdff;
+    border: 1px solid #a9d2f1;
+    border-radius: 10px;
+    overflow: hidden;
+    color: #123352;
+    box-shadow: 0 1px 2px #0e4e7a13;
+    cursor: pointer;
+}
+
+.aa-page .card:hover {
+    transform: translateY(-3px);
+    border-color: #287dbd;
+    box-shadow: 0 4px 12px #1c63902b;
+}
+
+.aa-page .card-art {
+    width: 100%;
+    background: transparent;
+}
+
+.aa-page .card img,.aa-page .card-art img {
+    display: block;
+    width: 100%;
+    height: auto!important;
+    aspect-ratio: auto!important;
+    object-fit: contain!important;
+    max-height: none!important;
+    background: transparent;
+}
+
+.aa-page .card-text {
+    padding: 8px 6px 10px;
+    min-height: 84px;
+    color: #102d4c;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.aa-page .card-name {
+    line-height: 1.25;
+    min-height: 3.75em;
+}
+
+.aa-page .type-box {
+    align-self: center;
+    min-width: 60px;
+    padding: 3px 10px;
+    margin-top: auto;
+    border: 0;
+    border-radius: 16px;
+    background: #d8edfd;
+    color: #1a507b;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.aa-page .hidden {
+    display: none!important;
+}
+
+.aa-page .status-box,.aa-page .message {
+    background: #f2f9ff;
+    color: #234969;
+    border: 1px solid #a6cdea;
+    border-radius: 8px;
+}
+
+.aa-page .top-bar {
+    margin: 0 0 16px;
+}
+
+.aa-page #back-button {
+    border: 1px solid #408fc9;
+    border-radius: 7px;
+    background: white;
+    color: #18416b;
+    padding: 11px 17px;
+}
+
+.aa-page .detail-name {
+    font-size: 23px;
+    color: #153452;
+}
+
+.aa-page .selected-card {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    background: #f7fbff;
+    border: 1.5px solid #5092c5;
+    border-radius: 8px;
+    padding: 20px 26px;
+    margin: 0 0 22px;
+}
+
+.aa-page .selected-card .card-art {
+    width: min(250px,35%);
+    max-width: 35%;
+    flex-shrink: 0;
+}
+
+.aa-page .selected-card img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.aa-page .selected-info {
+    flex: 1;
+    color: #173552;
+}
+
+.aa-page .selected-info h2 {
+    font-size: 26px;
+    margin: 0 0 14px;
+}
+
+.aa-page .selected-info p {
+    font-size: 15px;
+    color: #23496b;
+    margin: 7px 0;
+}
+
+.aa-page .selected-info a {
+    color: #146fae;
+}
+
+.aa-page .pairs-heading {
+    margin: 0 0 14px;
+    font-size: 23px;
+    font-style: italic;
+    color: #14375b;
+}
+
+.aa-page .pair-row {
+    justify-content: center;
+    gap: 14px;
+    padding: 18px;
+    background: #f7fbff;
+    border: 1.5px solid #91bfe4;
+    border-radius: 8px;
+}
+
+.aa-page .pair-row .card {
+    min-width: 120px;
+    max-width: 160px;
+    flex: 0 1 160px;
+}
+
+.aa-page .pair-row .card-text {
+    min-height: 55px;
+}
+
+.aa-page .site-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    min-height: 62px;
+    padding: 16px clamp(20px,4vw,70px);
+    background: linear-gradient(133deg,#91b8d9 0 15%,#eff8ff 15% 18%,#91b8d9 18% 55%,#6c9dc6 55%);
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+body.aa-page:has(#detail-view:not(.hidden)) .set-panel {
+    display: none;
+}
+
+@media(max-width:1150px) {
+
+    .aa-page .grid {
+        grid-template-columns: repeat(6,minmax(0,1fr));
+    }
+
+    .site-brand {
+        width: 185px;
+    }
+}
+
+@media(max-width:760px) {
+
+    .aa-page .site-header {
+        gap: 8px;
+        padding: 8px 12px;
+        min-height: 70px;
+    }
+
+    .site-brand {
+        width: 118px;
+    }
+
+    .site-logo {
+        width: 115px;
+    }
+
+    .logo-fallback {
+        font-size: 14px;
+    }
+
+    .brand-tagline {
+        font-size: 9px;
+        letter-spacing: .04em;
+        padding-left: 9px;
+    }
+
+    .home-link {
+        min-width: 78px;
+        height: 46px;
+        font-size: 14px;
+    }
+
+    .aa-page .container {
+        padding: 23px 12px 45px;
+    }
+
+    .page-intro p {
+        font-size: 13px;
+    }
+
+    .set-panel {
+        gap: 7px;
+        padding: 10px;
+        align-items: flex-start;
+    }
+
+    .set-label {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    .aa-page .set-buttons {
+        gap: 6px;
+    }
+
+    .aa-page .set-button {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .aa-page .grid {
+        grid-template-columns: repeat(4,minmax(0,1fr));
+        gap: 7px;
+    }
+
+    .aa-page .card-text {
+        padding: 5px 3px 7px;
+        min-height: 62px;
+        font-size: 10px;
+    }
+
+    .aa-page .card-name {
+        min-height: 3.6em;
+    }
+
+    .aa-page .type-box {
+        font-size: 9px;
+        min-width: 42px;
+        padding: 3px;
+    }
+
+    .aa-page .selected-card {
+        gap: 13px;
+        padding: 13px;
+    }
+
+    .aa-page .selected-card .card-art {
+        width: 38%;
+        max-width: 38%;
+    }
+
+    .aa-page .selected-info h2 {
+        font-size: 18px;
+    }
+
+    .aa-page .selected-info p {
+        font-size: 12px;
+    }
+
+    .aa-page .pair-row {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .aa-page .pair-row .card {
+        min-width: 100px;
+        max-width: 140px;
+    }
+
+    .aa-page .site-footer {
+        font-size: 9px;
+        flex-wrap: wrap;
+        padding: 13px 15px;
+    }
+}
+/* V2: compact details view; show pairs alongside the selected card. */
+
+.aa-page #detail-view .detail-layout {
+    display: grid;
+    grid-template-columns: minmax(195px,250px) minmax(0,1fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.aa-page #detail-view .selected-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin: 0;
+    padding: 13px;
+}
+
+.aa-page #detail-view .selected-card .card-art {
+    width: 100%;
+    max-width: 100%;
+}
+
+.aa-page #detail-view .selected-card .card-art img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+.aa-page #detail-view .selected-info h2 {
+    font-size: 19px;
+    margin: 0 0 8px;
+}
+
+.aa-page #detail-view .selected-info p {
+    font-size: 13px;
+    margin: 4px 0;
+}
+
+.aa-page #detail-view .assigned-pairs-panel {
+    min-width: 0;
+    border: 1.5px solid #91bfe4;
+    border-radius: 8px;
+    background: #f7fbff;
+    overflow: hidden;
+}
+
+.aa-page #detail-view .pairs-heading {
+    margin: 0;
+    padding: 12px 17px;
+    background: #255a83;
+    color: white;
+    font-size: 19px;
+    font-style: italic;
+}
+
+.aa-page #detail-view .pair-row {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    justify-content: flex-start;
+    align-content: start;
+    padding: 14px;
+    gap: 12px;
+}
+
+.aa-page #detail-view .pair-row .card {
+    flex: 0 0 155px;
+    min-width: 0;
+    max-width: 155px;
+}
+
+.aa-page #detail-view .message {
+    margin: 12px;
+}
+
+.aa-page #detail-view .top-bar {
+    margin-bottom: 13px;
+}
+
+.aa-page #detail-view .detail-name {
+    font-size: 21px;
+}
+
+@media(max-width:760px) {
+
+    .aa-page #detail-view .detail-layout {
+        grid-template-columns: minmax(115px,35%) minmax(0,1fr);
+        gap: 9px;
+    }
+
+    .aa-page #detail-view .selected-card {
+        padding: 7px;
+        gap: 7px;
+    }
+
+    .aa-page #detail-view .selected-info h2 {
+        font-size: 14px;
+    }
+
+    .aa-page #detail-view .selected-info p {
+        font-size: 11px;
+        overflow-wrap: anywhere;
+    }
+
+    .aa-page #detail-view .pairs-heading {
+        padding: 9px;
+        font-size: 15px;
+    }
+
+    .aa-page #detail-view .pair-row {
+        gap: 7px;
+        padding: 7px;
+        justify-content: center;
+    }
+
+    .aa-page #detail-view .pair-row .card {
+        flex: 0 1 120px;
+        width: min(100%,120px);
+        min-width: 0;
+    }
+}
+/* V3 mobile detail layout: selected card above a two-column pair gallery. */
+
+@media (max-width:760px) {
+
+    .aa-page #detail-view .detail-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+        min-width: 0;
+    }
+
+    .aa-page #detail-view .selected-card {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0,38%) minmax(0,1fr);
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        min-width: 0;
+    }
+
+    .aa-page #detail-view .selected-card .card-art {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .aa-page #detail-view .selected-card .card-art img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+    }
+
+    .aa-page #detail-view .selected-info {
+        min-width: 0;
+        align-self: center;
+    }
+
+    .aa-page #detail-view .selected-info h2 {
+        font-size: clamp(14px,4vw,20px);
+        line-height: 1.25;
+        margin: 0 0 10px;
+        overflow-wrap: anywhere;
+    }
+
+    .aa-page #detail-view .selected-info p {
+        font-size: clamp(12px,3.2vw,15px);
+        line-height: 1.4;
+        margin: 5px 0;
+    }
+
+    .aa-page #detail-view .assigned-pairs-panel {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .aa-page #detail-view .pair-row {
+        display: grid;
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 10px;
+        padding: 10px;
+        align-items: stretch;
+        justify-items: stretch;
+    }
+
+    .aa-page #detail-view .pair-row .card {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        flex: none;
+    }
+
+    .aa-page #detail-view .pair-row .card img {
+        width: 100%;
+        height: auto!important;
+        object-fit: contain!important;
+    }
+
+    .aa-page #detail-view .pair-row .card-text {
+        min-height: 0;
+        padding: 8px 5px 10px;
+        font-size: 12px;
+    }
+
+    .aa-page #detail-view .pair-row .card-name {
+        min-height: 0;
+        margin-bottom: 7px;
+    }
+
+    .aa-page #detail-view .pairs-heading {
+        font-size: 18px;
+        padding: 11px 13px;
+    }
+
+    .aa-page #detail-view .top-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .aa-page #detail-view .detail-name {
+        font-size: clamp(16px,4.5vw,21px);
+        overflow-wrap: anywhere;
+    }
+}
+/* V4 mobile: pair thumbnails match the selected card's visual size. */
+
+@media (max-width:760px) {
+
+    .aa-page #detail-view .pair-row {
+        justify-items: center;
+        align-items: start;
+        gap: 10px 8px;
+        padding: 10px 7px;
+    }
+
+    .aa-page #detail-view .pair-row .card {
+        width: min(100%, 34vw);
+        max-width: 160px;
+        justify-self: center;
+    }
+
+    .aa-page #detail-view .pair-row .card img {
+        display: block;
+        width: 100%;
+        height: auto!important;
+        object-fit: contain!important;
+    }
+
+    .aa-page #detail-view .pair-row .card-text {
+        font-size: 11px;
+        padding: 6px 3px 8px;
+    }
+}

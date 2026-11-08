@@ -1,0 +1,3559 @@
+/* =====================================================================
+   MASA'S GCG HUB — HOME / SHARED SITE FOUNDATION
+   EDITABLE SETTINGS (shared across this stylesheet)
+   Set design tokens here for future new rules. Existing legacy declarations
+   below are retained in their original order to avoid visual regressions.
+   ===================================================================== */
+
+:root {
+    --gcg-primary: #245c87;
+    --gcg-accent: #3d8cc5;
+    --gcg-outline: #91bfe4;
+    --gcg-page-background: #eef7ff;
+    --gcg-text: #153451;
+}
+/* =====================================================================
+   SOURCE: css/index.css
+   ===================================================================== */
+/* Booster Sets: percentage of the 480ms expansion when content starts / finishes fading. */
+
+:root {
+    --booster-fade-start: 0%;
+    --booster-fade-full: 75%;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #1e1e2f, #2c2c54);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    padding: 50px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.subtitle {
+    margin: 15px 0 40px;
+    opacity: 0.75;
+    font-size: 1rem;
+}
+
+.set-section {
+    margin-top: 30px;
+}
+
+.set-title {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.button-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    background: linear-gradient(180deg, #5f82ff, #4a6cff);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.btn:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.btn:active {
+    transform: translateY(0) scale(1);
+}
+
+.btn.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: default;
+}
+/* Top-level hub tabs */
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: -15px 0 30px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+.tab-btn {
+    border: 0;
+    background: transparent;
+    color: rgba(255,255,255,0.65);
+    font: inherit;
+    font-weight: bold;
+    padding: 10px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-btn:hover {
+    color: white;
+    background: rgba(255,255,255,0.07);
+}
+
+.tab-btn.active {
+    color: white;
+    background: linear-gradient(180deg, #5f82ff, #4a6cff);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@media (max-width: 600px) {
+
+    .container {
+        padding: 35px 25px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .button-row {
+        flex-direction: column;
+    }
+
+    .tabs {
+        gap: 3px;
+    }
+
+    .tab-btn {
+        padding: 9px 10px;
+        font-size: 0.88rem;
+    }
+
+    .btn {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+/* News tab / official X timeline */
+
+.news-section {
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.news-intro {
+    text-align: center;
+    color: rgba(255,255,255,.75);
+}
+
+.news-actions {
+    display: flex;
+    justify-content: center;
+    margin: 22px 0;
+}
+
+.news-feed {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    min-height: 220px;
+}
+
+.news-loading {
+    color: rgba(255,255,255,.65);
+    text-align: center;
+    font-size: .9rem;
+}
+
+@media (max-width: 600px) {
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .news-actions .btn {
+        text-align: center;
+    }
+}
+
+.news-language-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px auto 0;
+}
+
+.news-lang-btn {
+    cursor: pointer;
+    padding: 10px 22px;
+    border: 1px solid #666;
+    border-radius: 9px;
+    color: #fff;
+    background: #292929;
+    font: inherit;
+}
+
+.news-lang-btn.active {
+    background: #b51e2d;
+    border-color: #d7424d;
+    font-weight: 700;
+}
+
+.news-lang-btn:hover {
+    filter: brightness(1.2);
+}
+
+.news-feed {
+    max-width: 640px;
+    text-align: left;
+}
+
+.news-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.news-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.08);
+    transition: background .2s, border-color .2s;
+}
+
+.news-item:hover {
+    background: rgba(95,130,255,.18);
+    border-color: rgba(95,130,255,.5);
+}
+/* The link stretches over the whole card; the thumbnail button sits above it. */
+
+.news-link {
+    min-width: 0;
+    color: #fff;
+    text-decoration: none;
+}
+
+.news-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+}
+
+.news-link:focus-visible {
+    outline: none;
+}
+
+.news-link:focus-visible::after {
+    outline: 2px solid #5f82ff;
+    outline-offset: 2px;
+}
+
+.news-meta {
+    display: block;
+    font-size: .8rem;
+    opacity: .65;
+    margin-bottom: 4px;
+}
+
+.news-title {
+    display: block;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.news-thumb-btn {
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: zoom-in;
+    line-height: 0;
+}
+
+.news-thumb-btn:hover .news-thumb {
+    filter: brightness(1.15);
+}
+
+.news-thumb-btn:focus-visible {
+    outline: 2px solid #5f82ff;
+    outline-offset: 2px;
+}
+
+.news-thumb {
+    width: 128px;
+    height: 72px;
+    object-fit: cover;
+    background: rgba(255,255,255,.08);
+}
+
+@media (max-width: 480px) {
+
+    .news-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .news-thumb-btn {
+        width: 100%;
+    }
+
+    .news-thumb {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+}
+
+#news-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.88);
+    cursor: zoom-out;
+}
+
+#news-lightbox[hidden] {
+    display: none;
+}
+
+#news-lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    border-radius: 8px;
+}
+/* Multiple images per news post. */
+
+.news-item {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.news-image-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+.news-image-gallery.single-image {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.news-image-gallery .news-thumb-btn {
+    width: 100%;
+}
+
+.news-image-gallery .news-thumb {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+}
+
+.news-image-gallery.single-image .news-thumb {
+    max-height: 320px;
+}
+
+@media (max-width: 480px) {
+
+    .news-image-gallery {
+        gap: 6px;
+    }
+}
+/* Blue sliding segmented switches */
+
+.news-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin: 22px auto;
+}
+
+.news-segmented {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    position: relative;
+    padding: 4px;
+    border-radius: 13px;
+    background: #202b3b;
+    border: 1px solid #3a4b63;
+    min-width: 220px;
+    isolation: isolate;
+}
+
+.news-segmented::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc((100% - 8px)/2);
+    border-radius: 9px;
+    background: #2868bb;
+    box-shadow: 0 2px 10px #0005;
+    transition: transform .22s ease;
+}
+
+.news-segmented:has(button:nth-child(2).active)::before {
+    transform: translateX(100%);
+}
+
+.news-segmented button.news-lang-btn,.news-segmented button.news-source-btn {
+    position: relative;
+    background: transparent;
+    border: 0;
+    color: #b9c7db;
+    border-radius: 9px;
+    padding: 10px 14px;
+    cursor: pointer;
+    font: inherit;
+    font-size: .9rem;
+    transition: color .2s;
+}
+
+.news-segmented button.active {
+    color: white;
+    font-weight: 700;
+}
+
+.news-segmented button:focus-visible {
+    outline: 2px solid #80b8ff;
+    outline-offset: 2px;
+}
+
+@media(max-width:540px) {
+
+    .news-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .news-segmented {
+        width: 100%;
+        box-sizing: border-box;
+        min-width: 0;
+    }
+}
+/* Hidden News admin controls */
+
+#news-admin-trigger {
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+#news-admin-controls[hidden] {
+    display: none !important;
+}
+
+#news-admin-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin: 10px auto;
+    flex-wrap: wrap;
+}
+
+#news-force-refresh {
+    padding: 8px 14px;
+    border-radius: 9px;
+    border: 1px solid #5374c4;
+    background: #306bc1;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+}
+
+#news-force-refresh:disabled {
+    opacity: .55;
+    cursor: wait;
+}
+
+#news-admin-status {
+    font-size: 13px;
+    color: #b9c9e7;
+}
+/* Angled set browser / full-art selected view */
+
+.set-explorer {
+    position: relative;
+    margin: 38px auto 14px;
+    max-width: 960px;
+}
+
+.set-explorer-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.set-explorer-heading .set-title {
+    margin: 0 0 15px;
+}
+
+.set-explorer-hint {
+    color: rgba(255,255,255,.56);
+    font-size: .82rem;
+}
+
+.set-explorer-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #5f82ff transparent;
+    scroll-behavior: smooth;
+    cursor: grab;
+    touch-action: pan-x;
+}
+
+.set-explorer-scroll.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+    user-select: none;
+}
+
+.set-explorer-track {
+    display: flex;
+    align-items: stretch;
+    width: max-content;
+    min-width: 100%;
+    height: 300px;
+    gap: 0;
+    padding: 0 12px 7px;
+    box-sizing: border-box;
+}
+
+.set-art-panel {
+    position: relative;
+    display: block;
+    flex: 0 0 190px;
+    width: 190px;
+    height: 285px;
+    padding: 0;
+    margin-left: -45px;
+    border: 0;
+    background: #252d46;
+    color: white;
+    cursor: pointer;
+    isolation: isolate;
+    clip-path: polygon(23% 0,100% 0,77% 100%,0 100%);
+    transition: clip-path .48s cubic-bezier(.2,.75,.2,1),width .48s,flex-basis .48s,margin .48s,opacity .28s,filter .2s;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.set-art-panel:first-child {
+    margin-left: 0;
+}
+
+.set-art-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #20283d;
+    pointer-events: none;
+}
+
+.set-art-panel img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--set-collapsed-position, 88% center);
+    transform: scale(.94);
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform .48s;
+}
+/* Thin edge highlight follows the angled polygon and leaves a small visible gap. */
+
+.set-art-panel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);
+    pointer-events: none;
+    box-shadow: inset 0 0 0 2px rgba(174,200,255,.55);
+}
+
+.set-art-panel span {
+    position: absolute;
+    z-index: 1;
+    bottom: 15px;
+    left: 25%;
+    font-weight: 800;
+    font-size: 1.45rem;
+    text-shadow: 0 2px 8px #000;
+}
+
+.set-art-panel:hover {
+    filter: brightness(1.2);
+}
+
+.set-art-panel:focus-visible {
+    outline: 3px solid #9bb5ff;
+    outline-offset: -5px;
+}
+
+.set-explorer.is-selected .set-explorer-scroll {
+    overflow: hidden;
+    cursor: default;
+    touch-action: auto;
+}
+
+.set-explorer.is-selected .set-explorer-track {
+    width: 100%;
+    min-width: 0;
+    height: clamp(265px, 42vw, 410px);
+    padding: 0;
+}
+
+.set-explorer.is-selected .set-art-panel {
+    flex-basis: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    opacity: 1;
+    pointer-events: auto;
+    overflow: visible;
+    clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+}
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transform: none;
+    visibility: visible;
+    opacity: 1;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active span {
+    left: 20px;
+    top: 16px;
+    bottom: auto;
+}
+
+.set-explorer.is-selected .set-explorer-nav {
+    display: none;
+}
+
+.set-explorer.is-selected .set-explorer-hint {
+    visibility: hidden;
+}
+
+.set-selected-options {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-35%);
+    width: min(31%,260px);
+    z-index: 10;
+    pointer-events: none;
+    opacity: 1;
+}
+
+.set-selected-options[hidden] {
+    display: none;
+}
+
+.set-selected-options h3 {
+    font-size: 1.55rem;
+    margin: 0 0 14px;
+    text-shadow: 0 2px 8px #000;
+}
+
+.set-selected-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    pointer-events: auto;
+}
+
+.set-selected-links .btn {
+    text-align: center;
+    border-radius: 9px;
+    padding: 11px 8px;
+    box-shadow: 0 2px 12px #0006;
+}
+
+.set-selected-tip {
+    display: none;
+}
+
+.set-explorer.is-selected::after {
+    content: "";
+    position: absolute;
+    inset: 55px auto 0 0;
+    width: 48%;
+    pointer-events: none;
+    background: linear-gradient(90deg,rgba(8,12,27,.65),transparent);
+    z-index: 1;
+}
+
+.set-explorer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 10px 0 0;
+}
+
+.set-explorer-nav button {
+    background: rgba(95,130,255,.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.set-explorer-nav button:hover {
+    background: #4a6cff;
+}
+
+@keyframes setOptionsIn {
+
+    from {
+        opacity: 0;
+        translate: 0 10px;
+    }
+
+    to {
+        opacity: 1;
+        translate: 0 0;
+    }
+}
+
+@media(max-width:600px) {
+
+    .set-explorer-track {
+        height: 235px;
+    }
+
+    .set-art-panel {
+        flex-basis: 130px;
+        width: 130px;
+        height: 220px;
+        margin-left: -25px;
+    }
+
+    .set-art-panel span {
+        font-size: 1rem;
+    }
+
+    .set-explorer.is-selected .set-explorer-track {
+        height: 245px;
+    }
+
+    .set-explorer.is-selected .set-art-panel.is-active {
+        min-height: 0;
+    }
+
+    .set-selected-options {
+        left: 4%;
+        width: 43%;
+        transform: translateY(-30%);
+    }
+
+    .set-selected-options h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .set-selected-links {
+        gap: 7px;
+    }
+
+    .set-selected-links .btn {
+        padding: 9px 4px;
+        font-size: .75rem;
+    }
+
+    .set-explorer.is-selected::after {
+        inset: 50px auto 0 0;
+        width: 65%;
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    .set-art-panel,.set-art-panel img {
+        transition: none;
+    }
+
+    .set-selected-options {
+        animation: none;
+    }
+}
+/* V3: selected artwork uses its native dimensions, without cropping. */
+
+.set-explorer {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.set-explorer-scroll {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.set-explorer.is-selected .set-explorer-track {
+    height: auto;
+    min-height: 0;
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    display: block;
+}
+
+.set-explorer.is-selected .set-art-panel {
+    display: none;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: var(--selected-art-ratio, 2.4);
+    box-sizing: border-box;
+    border: 1px solid rgba(174,200,255,.55);
+    overflow: hidden;
+    margin: 0;
+    flex: none;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    transform: none;
+}
+/* Keep only the title above the buttons, not a second label on the image. */
+
+.set-explorer.is-selected .set-art-panel.is-active span {
+    display: none;
+}
+/* Options sit over the image itself, not over the entire section. */
+
+.set-explorer.is-selected .set-selected-options {
+    position: absolute;
+    left: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: min(31%,260px);
+    max-width: 48%;
+    z-index: 3;
+}
+
+.set-explorer.is-selected::after {
+    display: none;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active::after {
+    background: linear-gradient(90deg,rgba(8,12,27,.68),rgba(8,12,27,.24) 45%,transparent 70%);
+    box-shadow: none;
+}
+
+@media(max-width:600px) {
+
+    .container {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .set-explorer.is-selected .set-explorer-track {
+        height: auto;
+    }
+
+    .set-explorer.is-selected .set-art-panel.is-active {
+        min-height: 0;
+    }
+
+    .set-explorer.is-selected .set-selected-options {
+        left: 4%;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 43%;
+        max-width: 48%;
+    }
+
+    .set-explorer.is-selected .set-selected-options h3 {
+        margin-bottom: 8px;
+    }
+}
+/* V4: lock the explorer's vertical footprint in both states.
+   The complete landscape artwork fits inside that footprint without cropping. */
+
+.set-explorer {
+    --set-explorer-height: 300px;
+}
+
+.set-explorer-track,
+.set-explorer.is-selected .set-explorer-track {
+    height: var(--set-explorer-height);
+    min-height: var(--set-explorer-height);
+    max-height: var(--set-explorer-height);
+}
+
+.set-explorer.is-selected .set-explorer-track {
+    display: block;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    height: 100%;
+    max-height: 100%;
+    aspect-ratio: auto;
+    clip-path: polygon(0 0,100% 0,100% 100%,0 100%);
+}
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    object-fit: contain;
+    object-position: center;
+}
+
+@media (max-width:600px) {
+
+    .set-explorer {
+        --set-explorer-height: 235px;
+    }
+
+    .set-explorer.is-selected .set-selected-options h3 {
+        font-size: 1rem;
+    }
+
+    .set-explorer.is-selected .set-selected-links {
+        gap: 6px;
+    }
+
+    .set-explorer.is-selected .set-selected-links .btn {
+        padding: 7px 4px;
+    }
+}
+/* V5: Fill the same fixed-height area when a set is expanded. */
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    object-fit: cover;
+    object-position: center center;
+}
+/* V6: Keep panels in layout so the browser can animate back to the angled strip.
+   display:none and switching the track to display:block interrupted minimising. */
+
+.set-explorer.is-selected .set-explorer-track {
+    display: flex;
+    align-items: stretch;
+}
+
+.set-explorer.is-selected .set-art-panel {
+    display: block;
+    flex: 0 0 0px;
+    width: 0;
+    height: 100%;
+    margin-left: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    display: block;
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    overflow: hidden;
+    pointer-events: auto;
+}
+/* V7: cinematic fade return. The original angled carousel and its saved scroll
+   position are restored while invisible, then gently revealed in place. */
+
+.set-explorer-scroll {
+    transition: opacity 190ms ease-in-out;
+}
+
+.set-explorer.is-returning-out .set-explorer-scroll,
+.set-explorer.is-returning-in .set-explorer-scroll {
+    opacity: 0;
+}
+
+.set-explorer.is-returning-out .set-art-panel {
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+    .set-explorer-scroll {
+        transition: none;
+    }
+}
+/* V8: suppress geometry animation while restoring the saved carousel position. */
+
+.set-explorer.is-restoring .set-art-panel,
+.set-explorer.is-restoring .set-art-panel img,
+.set-explorer.is-restoring .set-explorer-track {
+    transition: none !important;
+}
+
+.set-explorer.is-returning-out .set-explorer-scroll {
+    opacity: 0;
+}
+
+.set-explorer.is-returning-in .set-explorer-scroll {
+    opacity: 1;
+}
+
+.set-explorer.is-returning-in .set-art-panel {
+    pointer-events: none;
+}
+/* V9: Return selected artwork to its saved position while the strip fades back. */
+
+.set-return-ghost {
+    background: #252d46;
+    box-shadow: inset 0 0 0 2px rgba(174,200,255,.55);
+}
+
+.set-return-ghost img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center center;
+}
+
+.set-explorer.is-returning-position .set-explorer-scroll {
+    opacity: 0;
+}
+
+.set-explorer.is-returning-position .set-art-panel {
+    pointer-events: none;
+}
+/* V11: keep the real strip hidden while the selected artwork flies out of its source panel. */
+
+.set-explorer.is-expanding-position .set-explorer-scroll {
+    opacity: 0 !important;
+}
+
+.set-explorer.is-expanding-position .set-art-panel {
+    pointer-events: none;
+}
+/* V12: exact source-panel clone for expansion, with matching image framing. */
+
+.set-expand-ghost {
+    isolation: isolate;
+    background: #252d46;
+}
+
+.set-expand-ghost::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #20283d;
+    pointer-events: none;
+}
+
+.set-expand-ghost::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);
+    box-shadow: inset 0 0 0 2px rgba(174,200,255,.55);
+}
+
+.set-expand-ghost img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+/* V13: The animation clone must match the actual source image and mask.
+   The old pseudo-element painted an opaque layer OVER the cloned artwork,
+   making the first frames look like a different image. */
+
+.set-expand-ghost::before {
+    display: none !important;
+}
+
+.set-expand-ghost::after {
+    background: linear-gradient(0deg,rgba(0,0,0,.7),transparent 42%);
+    box-shadow: inset 0 0 0 2px rgba(174,200,255,.55);
+}
+
+.set-expand-ghost img {
+    display: block;
+    object-fit: cover;
+    transition: none !important;
+}
+/* V14: keep the expanded destination fully painted beneath the moving artwork
+   before the shared-element copy is removed. */
+
+.set-explorer.is-expanding-position .set-explorer-scroll {
+    transition: none !important;
+}
+
+.set-expand-ghost {
+    box-shadow: none !important;
+}
+
+.set-expand-ghost::after {
+    box-shadow: none !important;
+}
+/* V15: keep the flying image above the hidden destination until its resize completes. */
+
+.set-expand-ghost {
+    visibility: visible;
+    opacity: 1;
+    will-change: left,top,width,height,clip-path;
+}
+
+.set-expand-ghost img {
+    will-change: transform,object-position;
+}
+
+.set-explorer.is-expanding-position .set-explorer-scroll {
+    opacity: 0 !important;
+}
+/* Per-set expanded framing, configured in BOOSTER_SETS. */
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    object-position: var(--set-expanded-position, 75% center);
+}
+/* V20 homepage branding */
+
+.brand-heading {
+    margin: 0 auto 12px;
+    text-align: center;
+}
+
+.brand-logo {
+    display: block;
+    width: min(100%, 440px);
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+@media (max-width: 600px) {
+
+    .brand-logo {
+        width: min(100%, 320px);
+    }
+}
+/* V21: compact desktop homepage branding (carousel untouched) */
+
+@media (min-width: 701px) {
+
+    body {
+        padding: 12px 20px;
+    }
+
+    .container {
+        padding: 24px 44px 34px;
+    }
+
+    .brand-heading {
+        margin: 0 auto 10px;
+    }
+
+    .brand-logo {
+        width: min(100%, 390px);
+    }
+
+    .subtitle {
+        margin: 6px 0 18px;
+    }
+
+    .tabs {
+        margin: 0 0 16px;
+        padding-bottom: 10px;
+    }
+
+    .set-section {
+        margin-top: 14px;
+    }
+
+    .set-title {
+        margin-bottom: 10px;
+    }
+
+    .set-explorer {
+        margin-top: 20px;
+    }
+}
+/* V24: compact homepage spacing; preserve Set Explorer geometry/animations. */
+
+body {
+    padding: 10px;
+}
+
+.container {
+    padding: 18px 32px 24px;
+}
+
+.brand-heading {
+    margin-bottom: 2px;
+}
+
+.brand-logo {
+    width: min(100%, 350px);
+}
+
+.subtitle {
+    margin: 2px 0 16px;
+}
+
+.tabs {
+    margin: 0 0 16px;
+    padding-bottom: 9px;
+    flex-wrap: wrap;
+    row-gap: 3px;
+}
+
+.tab-btn {
+    padding: 8px 13px;
+}
+
+.set-section {
+    margin-top: 12px;
+}
+
+.set-title {
+    margin-bottom: 10px;
+}
+
+.button-row {
+    gap: 10px;
+}
+
+.button-row .btn {
+    padding: 11px 22px;
+}
+
+.set-explorer {
+    margin-top: 18px;
+}
+
+.set-explorer-heading .set-title {
+    margin-bottom: 9px;
+}
+
+@media (min-width: 701px) {
+
+    body {
+        padding: 10px 16px;
+    }
+
+    .container {
+        padding: 18px 36px 26px;
+    }
+
+    .brand-logo {
+        width: min(100%, 350px);
+    }
+
+    .subtitle {
+        margin: 2px 0 14px;
+    }
+
+    .tabs {
+        margin: 0 0 14px;
+        padding-bottom: 8px;
+    }
+
+    .set-section {
+        margin-top: 10px;
+    }
+
+    .set-explorer {
+        margin-top: 17px;
+    }
+}
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 7px;
+    }
+
+    .container {
+        padding: 14px 14px 20px;
+        border-radius: 20px;
+    }
+
+    .brand-logo {
+        width: min(100%, 285px);
+    }
+
+    .subtitle {
+        margin: 0 0 12px;
+        font-size: .94rem;
+    }
+
+    .tabs {
+        margin: 0 0 14px;
+        padding-bottom: 8px;
+        gap: 2px;
+    }
+
+    .tab-btn {
+        padding: 8px 9px;
+        font-size: .82rem;
+    }
+
+    .set-section {
+        margin-top: 10px;
+    }
+
+    .set-title {
+        margin-bottom: 10px;
+    }
+
+    .button-row {
+        gap: 9px;
+    }
+
+    .button-row .btn {
+        padding: 11px 12px;
+    }
+
+    .set-explorer {
+        margin-top: 19px;
+    }
+}
+
+@media (max-width: 390px) {
+
+    .tab-btn {
+        padding: 8px 6px;
+        font-size: .78rem;
+    }
+}
+/* Keep the expanded controls above the moving artwork during the reveal. */
+
+.set-explorer {
+    z-index: 5;
+}
+/* V31: ensure controls are above the flying artwork throughout expansion.
+   The original carousel motion and artwork framing remain unchanged. */
+
+.set-explorer.is-expanding-position {
+    position: relative;
+    z-index: 10000;
+}
+
+.set-explorer.is-expanding-position .set-selected-options {
+    z-index: 10001;
+    visibility: visible;
+}
+/* V32: controls are siblings of the hidden scroller, not descendants. */
+
+.set-explorer.is-selected .set-selected-options {
+    z-index: 10;
+}
+/* V34: Match the expanded panel's tint during the shared-element animation.
+   Prevents a colour jump when the animated copy hands off to the real panel. */
+
+.set-expand-ghost::after {
+    background: linear-gradient(90deg, rgba(8,12,27,.68), rgba(8,12,27,.24) 45%, transparent 70%) !important;
+    box-shadow: none !important;
+}
+/* V37: allow the expansion artwork to dissolve into the finished panel.
+   The previous !important opacity prevented any fade-out animation. */
+
+.set-expand-ghost {
+    opacity: 1;
+    visibility: visible;
+}
+/* =====================================================================
+   SOURCE: css/gcg-theme.css
+   ===================================================================== */
+/* V22 - Official GCG-inspired colour refresh. Visual only; Set Explorer geometry and animations unchanged. */
+
+:root {
+    --gcg-metal: linear-gradient(180deg, #8faec9 0%, #7197b9 25%, #507da5 55%, #315d86 80%, #24496e 100%);
+    --gcg-metal-hover: linear-gradient(180deg, #a4bed4 0%, #85a7c3 25%, #6289ac 55%, #3d6b93 80%, #2c567c 100%);
+    --gcg-line: #799bb8;
+}
+
+body {
+    background: linear-gradient(135deg,#171e29 0%,#263445 55%,#1b2735 100%);
+}
+
+.container {
+    background: rgba(221,233,242,.065);
+    border-color: rgba(176,199,216,.17);
+}
+
+.btn, .tab-btn.active {
+    background: var(--gcg-metal);
+    color: #fff;
+    border: 1px solid rgba(184,210,229,.55);
+    text-shadow: none;
+}
+
+.btn:hover, .tab-btn.active:hover {
+    background: var(--gcg-metal-hover);
+}
+
+.tab-btn:not(.active):hover {
+    background: rgba(135,173,202,.15);
+}
+
+.tabs {
+    border-bottom-color: rgba(176,199,216,.25);
+}
+
+.set-title, .set-section h2 {
+    color: #e9f0f6;
+}
+
+.news-segmented::before {
+    background: var(--gcg-metal);
+}
+
+#news-force-refresh {
+    background: var(--gcg-metal);
+    border-color: var(--gcg-line);
+    color: white;
+    text-shadow: none;
+}
+
+.news-item:hover {
+    background: rgba(98,137,172,.19);
+    border-color: rgba(154,191,219,.55);
+}
+
+.news-link:focus-visible::after, .news-thumb-btn:focus-visible {
+    outline-color: #92b5d0;
+}
+
+.set-explorer-scroll {
+    scrollbar-color: #648db5 transparent;
+}
+/* =====================================================================
+   SOURCE: css/admin-indicator.css
+   ===================================================================== */
+/* Only shown after a server-verified admin role check. */
+
+.gcg-admin-indicator[hidden] {
+    display: none !important;
+}
+
+.gcg-admin-indicator {
+    position: fixed;
+    top: 12px;
+    right: 14px;
+    z-index: 10000;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border: 1px solid rgba(125, 211, 252, .4);
+    border-radius: 999px;
+    background: rgba(12, 22, 36, .92);
+    color: #bae6fd;
+    font: 600 12px/1.2 system-ui, sans-serif;
+    letter-spacing: .03em;
+    text-decoration: none;
+    box-shadow: 0 3px 12px rgba(0,0,0,.2);
+}
+
+.gcg-admin-indicator::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #38bdf8;
+}
+
+.gcg-admin-indicator:hover {
+    background: #1b354d;
+    color: white;
+}
+/* =====================================================================
+   SOURCE: css/home-mockup-v2.css
+   ===================================================================== */
+/* Mockup-accurate light homepage. Only loaded by index.html. */
+
+:root {
+    --blue: #2e6e9b;
+    --navy: #112c48;
+    --rule: #9dc3e5;
+    --pale: #edf6ff;
+}
+
+*,*::before,*::after {
+    box-sizing: border-box;
+}
+
+html {
+    background: #eaf3fb;
+}
+
+body {
+    display: block!important;
+    min-height: 100vh;
+    margin: 0!important;
+    padding: 0!important;
+    text-align: left!important;
+    color: #0c1b36!important;
+    font-family: Arial,Helvetica,sans-serif!important;
+    background: linear-gradient(130deg,transparent 0 65%,rgba(43,119,177,.08) 65.1% 65.2%,transparent 65.3%),
+ repeating-linear-gradient(0deg,transparent 0 82px,rgba(95,156,204,.035) 83px),
+ radial-gradient(ellipse at 60% 38%,#fff 10%,#eaf4ff 95%)!important;
+}
+
+.container {
+    width: 100%!important;
+    max-width: 1700px!important;
+    min-height: 100vh;
+    padding: 0!important;
+    margin: 0 auto!important;
+    border: 0!important;
+    border-radius: 0!important;
+    box-shadow: none!important;
+    background: transparent!important;
+    backdrop-filter: none!important;
+    overflow: hidden;
+    position: relative;
+    isolation: isolate;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    right: -125px;
+    top: 155px;
+    width: 360px;
+    height: 570px;
+    opacity: .27;
+    background: linear-gradient(135deg,transparent 45%,#6da4ce 45.2%,transparent 45.6%),linear-gradient(55deg,transparent 50%,#6da4ce 50.2%,transparent 50.5%);
+    clip-path: polygon(50% 0,100% 28%,86% 100%,12% 84%,0 25%);
+    border: 2px solid #93b8d7;
+    pointer-events: none;
+}
+
+.hub-header {
+    height: 116px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    padding: 0 clamp(20px,4.5vw,80px);
+    background: rgba(255,255,255,.9);
+    border-bottom: 1px solid #7ca9d0;
+    position: relative;
+    z-index: 10;
+}
+
+.hub-header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 72px;
+    height: 72px;
+    border-left: 1px solid #8db9e0;
+    transform: skew(-43deg);
+    transform-origin: top;
+}
+
+.header-brand {
+    display: block;
+    flex: 0 0 auto;
+    line-height: 0;
+}
+
+.brand-logo {
+    width: clamp(180px,17vw,280px)!important;
+    max-height: 94px!important;
+    object-fit: contain!important;
+}
+
+.header-descriptor {
+    flex: 0 0 auto;
+    border-left: 1px solid #6687a6;
+    padding-left: 18px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    line-height: 1.55;
+    color: #234a72;
+    white-space: nowrap;
+}
+
+.tabs {
+    display: flex!important;
+    align-items: center;
+    justify-content: flex-end!important;
+    gap: 0!important;
+    margin: 0 0 0 auto!important;
+    padding: 0!important;
+    border: 0!important;
+    flex-wrap: nowrap!important;
+    background: none!important;
+}
+
+.tab-btn,.streams-nav {
+    font-family: inherit!important;
+    font-size: clamp(11px,1.04vw,15px)!important;
+    font-weight: 800!important;
+    color: #14233e!important;
+    background: transparent!important;
+    border: 0!important;
+    border-radius: 0!important;
+    padding: 16px clamp(8px,1.25vw,19px)!important;
+    white-space: nowrap;
+    box-shadow: none!important;
+    transform: none!important;
+    text-decoration: none!important;
+    cursor: pointer;
+    transition: background .2s!important;
+}
+
+.tab-btn:hover,.streams-nav:hover {
+    color: #0e4878!important;
+    background: #e6f4ff!important;
+}
+
+.tab-btn.active {
+    color: #123352!important;
+    background: #b8e5ff!important;
+    clip-path: polygon(18% 0,100% 0,82% 100%,0 100%);
+    padding-left: 25px!important;
+    padding-right: 25px!important;
+}
+
+.header-menu {
+    display: none;
+    border: 1px solid #9abdd8;
+    border-radius: 2px;
+    background: white;
+    color: #204b6c;
+    font-size: 24px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.blueprint-decor {
+    position: absolute;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.decor-left {
+    left: -65px;
+    top: 150px;
+    width: 195px;
+    height: 195px;
+    border: 1px solid #8eb8d9;
+    border-radius: 50%;
+    opacity: .45;
+}
+
+.decor-left::before,.decor-left::after {
+    content: "";
+    position: absolute;
+    background: #7caed4;
+}
+
+.decor-left::before {
+    height: 1px;
+    width: 120%;
+    top: 50%;
+    left: -10%;
+}
+
+.decor-left::after {
+    width: 1px;
+    height: 120%;
+    left: 50%;
+    top: -10%;
+}
+
+.decor-right {
+    right: -90px;
+    top: 440px;
+    width: 270px;
+    height: 270px;
+    border: 1px solid #99b9d8;
+    border-radius: 50%;
+    opacity: .2;
+}
+
+.hero-section {
+    padding: 42px clamp(20px,5.2vw,86px) 0;
+    position: relative;
+}
+
+.hero-heading {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 22px;
+}
+
+.hero-heading::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: #b3d3eb;
+}
+
+.hero-heading h1 {
+    margin: 0!important;
+    font-size: clamp(22px,2.1vw,31px)!important;
+    font-weight: 900!important;
+    font-style: italic;
+    letter-spacing: -.035em;
+    color: #091833;
+    white-space: nowrap;
+}
+
+.speed-stripes {
+    font-size: 24px;
+    color: #6697bd;
+    font-style: normal;
+    letter-spacing: -.23em;
+    padding-left: 9px;
+}
+
+.hero-explore {
+    order: 2;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    border: 0;
+    background: transparent;
+    color: #2d5e87;
+    font-size: 13px;
+    font-weight: 900;
+    font-style: italic;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.hero-explore span {
+    font-size: 27px;
+    font-style: normal;
+}
+
+.set-explorer {
+    position: relative!important;
+    max-width: none!important;
+    width: 100%!important;
+    margin: 0!important;
+    padding: 0!important;
+    background: transparent!important;
+    border: 0!important;
+    box-shadow: none!important;
+}
+
+.set-explorer-scroll {
+    overflow-x: auto!important;
+    overflow-y: hidden!important;
+    scrollbar-width: none!important;
+    cursor: grab;
+}
+
+.set-explorer-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.set-explorer-track {
+    height: clamp(260px,23vw,360px)!important;
+    padding: 0 2px 0!important;
+    min-width: 100%;
+    gap: 0;
+}
+
+.set-art-panel {
+    height: 100%!important;
+    width: clamp(195px,16vw,260px)!important;
+    flex: 0 0 clamp(195px,16vw,260px)!important;
+    margin-left: -46px!important;
+    clip-path: polygon(24% 0,100% 0,76% 100%,0 100%)!important;
+    background: #254764!important;
+}
+
+.set-art-panel:first-child {
+    margin-left: 0!important;
+}
+
+.set-art-panel img {
+    transform: scale(1.08)!important;
+    object-fit: cover!important;
+}
+
+.set-art-panel span {
+    bottom: 15px!important;
+    left: 30%!important;
+    font-size: clamp(21px,2vw,31px)!important;
+    font-style: italic!important;
+    letter-spacing: -.04em;
+    text-shadow: 0 2px 3px #000,0 4px 15px #000!important;
+}
+
+.set-art-panel::after {
+    box-shadow: inset 0 0 0 3px #f5faff!important;
+    background: linear-gradient(0deg,rgba(0,0,0,.75),transparent 40%)!important;
+}
+
+.set-art-panel:hover {
+    filter: brightness(1.13);
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 42%;
+    z-index: 5;
+    width: 44px;
+    height: 52px;
+    background: rgba(35,85,125,.92);
+    border: 0;
+    color: white;
+    font-size: 39px;
+    line-height: 1;
+    cursor: pointer;
+    clip-path: polygon(16% 0,100% 0,84% 100%,0 100%);
+}
+
+.carousel-arrow-left {
+    left: -24px;
+}
+
+.carousel-arrow-right {
+    right: -24px;
+}
+
+.hero-progress {
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+}
+
+.hero-progress i {
+    display: block;
+    width: 43px;
+    height: 8px;
+    border-radius: 10px;
+    background: #c7dbee;
+    transform: skew(-20deg);
+}
+
+.hero-progress i.on {
+    background: #1778b7;
+}
+
+.set-explorer.is-selected .set-explorer-track {
+    height: auto!important;
+    padding: 0!important;
+}
+
+.set-explorer.is-selected .set-art-panel {
+    height: 0!important;
+    width: 0!important;
+    flex-basis: 0!important;
+    margin: 0!important;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    height: auto!important;
+    width: 100%!important;
+    flex: 0 0 100%!important;
+    clip-path: polygon(0 0,100% 0,100% 100%,0 100%)!important;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    transform: none!important;
+    object-fit: contain!important;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active span {
+    display: none!important;
+}
+
+.set-explorer.is-selected .carousel-arrow {
+    display: none;
+}
+
+.set-selected-options h3 {
+    color: white!important;
+}
+
+.set-selected-links .btn {
+    background: #f1f8ff!important;
+    color: #173d5c!important;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: minmax(0,2.6fr) minmax(300px,1fr);
+    gap: 22px;
+    margin: 15px clamp(20px,3vw,50px) 0;
+    align-items: stretch;
+}
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 18px 13px;
+}
+
+.quick-tile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    min-width: 0;
+    min-height: 125px;
+    padding: 15px 17px;
+    border: 1px solid #6a9ac7;
+    background: linear-gradient(130deg,#fff,#f0f7ff);
+    color: #111d36;
+    text-align: left;
+    text-decoration: none;
+    clip-path: polygon(0 13%,5% 0,95% 0,100% 13%,100% 87%,95% 100%,5% 100%,0 87%);
+    cursor: pointer;
+    transition: background .18s,transform .18s;
+}
+
+.quick-tile:hover {
+    background: #ddecfb;
+    transform: translateY(-2px);
+}
+
+.quick-tile::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #4e8dc1;
+}
+
+.tile-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 76px;
+    height: 73px;
+    background: linear-gradient(140deg,#497da5,#1c5079);
+    color: white;
+    clip-path: polygon(22% 0,100% 0,78% 100%,0 100%);
+}
+
+.tile-icon svg {
+    width: 45px;
+    height: 45px;
+    transform: translateX(3px);
+}
+
+.tile-copy {
+    min-width: 0;
+}
+
+.tile-copy strong {
+    display: block;
+    font-size: clamp(15px,1.5vw,23px);
+    font-weight: 900;
+    letter-spacing: -.05em;
+    margin-bottom: 5px;
+}
+
+.tile-copy small {
+    font-size: clamp(11px,.94vw,14px);
+    line-height: 1.35;
+    color: #253c58;
+}
+
+.quick-tile>b {
+    font-size: 30px;
+    font-weight: 400;
+    margin-left: auto;
+    color: #142b4b;
+}
+
+.updates-panel {
+    min-width: 0;
+    border: 1px solid #6c9bc1;
+    background: rgba(255,255,255,.88);
+    clip-path: polygon(4% 0,100% 0,100% 100%,0 100%,0 8%);
+    display: flex;
+    flex-direction: column;
+}
+
+.updates-panel h2 {
+    margin: 0!important;
+    padding: 13px 19px!important;
+    background: linear-gradient(100deg,#2b638b,#1a527b);
+    color: white;
+    font-size: clamp(17px,1.5vw,22px)!important;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: .02em;
+}
+
+.updates-panel h2 span {
+    font-style: normal;
+    color: #90b9d8;
+    letter-spacing: -.25em;
+    padding-left: 9px;
+}
+
+.update-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 13px;
+    border-bottom: 1px solid #d3e2ed;
+    min-height: 71px;
+}
+
+.update-label {
+    font-size: 10px;
+    letter-spacing: .06em;
+    font-weight: 900;
+    color: white;
+    background: #2e9bd4;
+    padding: 7px 9px;
+    border-radius: 3px;
+    min-width: 57px;
+    text-align: center;
+}
+
+.update-label.purple {
+    background: #9451bc;
+}
+
+.update-label.teal {
+    background: #0b9e9e;
+}
+
+.update-row>div {
+    min-width: 0;
+    flex: 1;
+}
+
+.update-row strong {
+    display: block;
+    font-size: clamp(12px,.95vw,15px);
+    font-weight: 900;
+}
+
+.update-row small {
+    display: block;
+    color: #536a7c;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.update-row button,.update-row a {
+    font-size: 28px;
+    color: #142e4d;
+    background: none;
+    border: 0;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.view-updates {
+    margin-top: auto;
+    align-self: stretch;
+    background: #f1f8ff;
+    border: 0;
+    padding: 15px 16px;
+    color: #285a81;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 900;
+    font-style: italic;
+    cursor: pointer;
+}
+
+.view-updates span {
+    font-size: 24px;
+    padding-left: 8px;
+    vertical-align: middle;
+}
+
+.promos-strip {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin: 30px clamp(20px,3vw,50px) 0;
+    padding: 12px 0;
+    border-top: 1px solid #bed7e9;
+    color: #426d90;
+}
+
+.promos-strip>span {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .12em;
+    margin-right: auto;
+}
+
+.promos-strip a {
+    font-size: 12px;
+    color: #235c85;
+    text-decoration: none;
+    font-weight: 800;
+    border-bottom: 1px solid #8db6d3;
+    padding: 8px 4px;
+}
+
+.hub-footer {
+    margin-top: 32px;
+    min-height: 105px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 20px clamp(20px,3vw,50px);
+    background: linear-gradient(135deg,#8eb5d6 0 15%,#e7f4ff 15% 18%,#8eb5d6 18% 55%,#6f9fc6 55% 100%);
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: .22em;
+}
+
+.tab-content:not(#cards) {
+    padding: 45px clamp(24px,5vw,80px);
+    min-height: 420px;
+}
+
+.tab-content:not(#cards) .set-section {
+    margin: 0 0 25px;
+}
+
+.tab-content:not(#cards) .set-title {
+    font-size: 27px;
+    color: #183b59;
+    opacity: 1;
+}
+
+.button-row {
+    justify-content: flex-start!important;
+}
+
+.btn {
+    border: 1px solid #83b0d2!important;
+    border-radius: 2px!important;
+    background: #e3f0fc!important;
+    color: #194f78!important;
+    padding: 13px 20px!important;
+    font-size: 13px!important;
+    font-weight: 800!important;
+    box-shadow: none!important;
+}
+
+.btn:hover {
+    background: #2c709f!important;
+    color: #fff!important;
+    transform: none!important;
+    box-shadow: none!important;
+}
+
+.news-section {
+    background: rgba(255,255,255,.8);
+    padding: 22px;
+    border: 1px solid #bdd7e8;
+    max-width: 900px!important;
+}
+
+.news-intro,.news-loading {
+    color: #516f87!important;
+}
+
+.news-item {
+    background: #f2f8fe!important;
+    border-color: #c6dceb!important;
+    border-radius: 2px!important;
+}
+
+.news-link {
+    color: #143854!important;
+}
+
+.news-meta {
+    color: #50748c!important;
+}
+
+.news-segmented {
+    background: #e5f1fb!important;
+    border-color: #b5d1e5!important;
+}
+
+.news-segmented:before {
+    background: #3279aa!important;
+}
+
+.news-segmented button.news-lang-btn,.news-segmented button.news-source-btn {
+    color: #345a76!important;
+}
+
+.news-segmented button.active {
+    color: white!important;
+}
+
+@media(max-width:1250px) {
+
+    .hub-header {
+        gap: 12px;
+        padding: 0 25px;
+    }
+
+    .header-descriptor {
+        font-size: 9px;
+        padding-left: 10px;
+    }
+
+    .tab-btn,.streams-nav {
+        padding: 14px 9px!important;
+    }
+
+    .quick-tile {
+        gap: 9px;
+        padding: 12px 10px;
+    }
+
+    .tile-icon {
+        flex-basis: 58px;
+        height: 65px;
+    }
+
+    .tile-icon svg {
+        width: 37px;
+        height: 37px;
+    }
+}
+
+@media(max-width:1000px) {
+
+    .hub-header {
+        height: auto;
+        min-height: 100px;
+        flex-wrap: wrap;
+        padding: 12px 25px;
+    }
+
+    .header-brand {
+        margin-right: 0;
+    }
+
+    .tabs {
+        order: 3;
+        flex: 1 0 100%;
+        justify-content: center!important;
+        border-top: 1px solid #b4d0e4!important;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-grid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+    }
+}
+
+@media(max-width:680px) {
+
+    .hub-header {
+        min-height: 83px;
+        gap: 10px;
+        padding: 8px 14px;
+    }
+
+    .brand-logo {
+        width: 180px!important;
+    }
+
+    .header-descriptor {
+        font-size: 8px;
+        letter-spacing: .04em;
+    }
+
+    .header-menu {
+        display: block;
+        margin-left: auto;
+    }
+
+    .tabs {
+        display: none!important;
+        flex-direction: column;
+        align-items: stretch;
+        order: 3;
+        flex: 1 0 100%;
+        background: white!important;
+    }
+
+    .hub-header.menu-open .tabs {
+        display: flex!important;
+    }
+
+    .tab-btn,.streams-nav {
+        width: 100%;
+        text-align: left;
+        padding: 12px 18px!important;
+    }
+
+    .tab-btn.active {
+        clip-path: none;
+    }
+
+    .hero-section {
+        padding: 28px 18px 0;
+    }
+
+    .hero-heading {
+        gap: 9px;
+    }
+
+    .hero-heading h1 {
+        font-size: 21px!important;
+    }
+
+    .speed-stripes {
+        display: none;
+    }
+
+    .hero-explore {
+        font-size: 10px;
+        gap: 5px;
+    }
+
+    .hero-explore span {
+        font-size: 19px;
+    }
+
+    .set-explorer-track {
+        height: 245px!important;
+    }
+
+    .set-art-panel {
+        flex-basis: 160px!important;
+        width: 160px!important;
+        margin-left: -31px!important;
+    }
+
+    .set-art-panel span {
+        font-size: 20px!important;
+    }
+
+    .carousel-arrow {
+        width: 31px;
+        height: 42px;
+        font-size: 29px;
+    }
+
+    .carousel-arrow-left {
+        left: -10px;
+    }
+
+    .carousel-arrow-right {
+        right: -10px;
+    }
+
+    .hero-progress {
+        height: 32px;
+    }
+
+    .dashboard {
+        margin: 15px 14px 0;
+    }
+
+    .quick-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 9px;
+    }
+
+    .quick-tile {
+        min-height: 94px;
+        padding: 10px 8px;
+        gap: 8px;
+    }
+
+    .tile-icon {
+        flex-basis: 47px;
+        height: 53px;
+    }
+
+    .tile-icon svg {
+        width: 31px;
+        height: 31px;
+    }
+
+    .tile-copy strong {
+        font-size: 14px;
+    }
+
+    .tile-copy small {
+        font-size: 10px;
+    }
+
+    .quick-tile>b {
+        font-size: 21px;
+    }
+
+    .promos-strip {
+        margin: 20px 14px 0;
+    }
+
+    .hub-footer {
+        font-size: 9px;
+        min-height: 80px;
+        letter-spacing: .07em;
+    }
+}
+
+@media(max-width:380px) {
+
+    .header-descriptor {
+        display: none;
+    }
+
+    .quick-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .tile-icon {
+        flex-basis: 39px;
+    }
+
+    .tile-copy strong {
+        font-size: 12px;
+    }
+}
+/* =====================================================================
+   SOURCE: css/booster-layout-v4.css
+   ===================================================================== */
+/* V4: Stable booster height in both modes; promo shortcuts replace duplicate navigation. */
+
+:root {
+    --booster-panel-height: clamp(390px,31vw,510px);
+}
+
+.set-explorer,
+.set-explorer.is-selected {
+    --set-explorer-height: var(--booster-panel-height) !important;
+}
+
+.set-explorer-scroll,
+.set-explorer.is-selected .set-explorer-scroll {
+    height: var(--booster-panel-height)!important;
+    min-height: var(--booster-panel-height)!important;
+    max-height: var(--booster-panel-height)!important;
+}
+
+.set-explorer-track,
+.set-explorer.is-selected .set-explorer-track {
+    height: var(--booster-panel-height)!important;
+    min-height: var(--booster-panel-height)!important;
+    max-height: var(--booster-panel-height)!important;
+    display: flex!important;
+    align-items: stretch!important;
+}
+
+.set-art-panel {
+    height: 100%!important;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active {
+    height: 100%!important;
+    min-height: 100%!important;
+    max-height: 100%!important;
+    width: 100%!important;
+    flex: 0 0 100%!important;
+    overflow: hidden!important;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active img {
+    position: absolute!important;
+    inset: 0!important;
+    width: 100%!important;
+    height: 100%!important;
+    object-fit: cover!important;
+    object-position: var(--set-expanded-position,center center)!important;
+    transform: none!important;
+}
+
+.set-explorer.is-selected .set-art-panel.is-active::after {
+    background: linear-gradient(90deg,rgba(7,16,35,.82),rgba(7,16,35,.55) 24%,rgba(7,16,35,.08) 54%,transparent 78%)!important;
+}
+
+.set-explorer.is-selected .set-selected-options {
+    left: 4%!important;
+    top: 50%!important;
+    transform: translateY(-50%)!important;
+    z-index: 10!important;
+}
+
+.dashboard {
+    grid-template-columns: minmax(0,2.6fr) minmax(300px,1fr)!important;
+}
+
+.promo-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 16px;
+    min-width: 0;
+}
+
+.promo-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    min-height: 248px;
+    padding: 24px 20px;
+    text-decoration: none;
+    color: #10223e;
+    background: linear-gradient(130deg,#fff,#e8f4ff);
+    border: 1px solid #6a9ac7;
+    clip-path: polygon(0 7%,5% 0,95% 0,100% 7%,100% 93%,95% 100%,5% 100%,0 93%);
+    transition: background .2s,transform .2s;
+}
+
+.promo-card:hover {
+    background: #d8ecfb;
+    transform: translateY(-2px);
+}
+
+.promo-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 2px;
+    background: #4e8dc1;
+}
+
+.promo-symbol {
+    display: grid;
+    place-items: center;
+    flex: 0 0 75px;
+    height: 86px;
+    background: linear-gradient(140deg,#497da5,#1c5079);
+    color: white;
+    font-size: 40px;
+    clip-path: polygon(22% 0,100% 0,78% 100%,0 100%);
+}
+
+.promo-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.promo-copy small {
+    color: #4a7798;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .13em;
+}
+
+.promo-copy strong {
+    font-size: clamp(20px,2vw,30px);
+    font-weight: 900;
+    letter-spacing: -.04em;
+}
+
+.promo-copy>span {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #405a71;
+}
+
+.promo-chevron {
+    margin-left: auto;
+    font-size: 32px;
+    color: #1a4162;
+}
+
+@media(max-width:1000px) {
+
+    .dashboard {
+        grid-template-columns: 1fr!important;
+    }
+
+    .promo-card {
+        min-height: 190px;
+    }
+}
+
+@media(max-width:680px) {
+
+    :root {
+        --booster-panel-height: clamp(300px,78vw,390px);
+    }
+
+    .promo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .promo-card {
+        min-height: 130px;
+        padding: 15px;
+    }
+
+    .promo-symbol {
+        flex-basis: 60px;
+        height: 65px;
+        font-size: 29px;
+    }
+
+    .promo-copy strong {
+        font-size: 21px;
+    }
+
+    .set-explorer.is-selected .set-selected-options {
+        left: 4%!important;
+        width: 48%!important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/home-viewport-v5.css
+   ===================================================================== */
+/* V5 desktop fit: keep booster height stable in both states, compact lower section. */
+
+@media (min-width:1001px) {
+
+    :root {
+        --booster-panel-height: clamp(310px, 39dvh, 440px);
+    }
+
+    .hub-header {
+        height: clamp(74px, 9dvh, 98px);
+    }
+
+    .brand-logo {
+        max-height: 75px !important;
+    }
+
+    .hero-section {
+        padding-top: clamp(18px, 3dvh, 30px);
+    }
+
+    .hero-heading {
+        margin-bottom: 13px;
+    }
+
+    .hero-progress {
+        height: 27px;
+    }
+
+    .dashboard {
+        margin-top: 6px;
+        gap: 15px;
+    }
+
+    .promo-grid {
+        gap: 12px;
+    }
+
+    .promo-card {
+        min-height: 0;
+        height: clamp(130px, 17dvh, 170px);
+        padding: 12px 17px;
+        gap: 12px;
+    }
+
+    .promo-symbol {
+        flex-basis: 60px;
+        height: 66px;
+        font-size: 32px;
+    }
+
+    .promo-copy {
+        gap: 5px;
+    }
+
+    .promo-copy strong {
+        font-size: clamp(17px, 1.5vw, 24px);
+    }
+
+    .promo-copy > span {
+        font-size: 12px;
+        line-height: 1.25;
+    }
+
+    .promo-chevron {
+        font-size: 25px;
+    }
+
+    .updates-panel h2 {
+        padding: 9px 15px !important;
+        font-size: 17px !important;
+    }
+
+    .update-row {
+        min-height: 0;
+        padding: 8px 12px;
+    }
+
+    .update-row strong {
+        font-size: 12px;
+    }
+
+    .update-row small {
+        font-size: 10px;
+        margin-top: 2px;
+    }
+
+    .update-label {
+        padding: 5px 6px;
+        font-size: 9px;
+        min-width: 47px;
+    }
+
+    .view-updates {
+        padding: 8px 13px;
+        font-size: 11px;
+    }
+
+    .promos-strip {
+        margin-top: 13px;
+        padding: 7px 0;
+    }
+
+    .hub-footer {
+        min-height: 58px;
+        margin-top: 12px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+}
+
+@media (min-width:1001px) and (max-height:780px) {
+
+    :root {
+        --booster-panel-height: clamp(245px, 37dvh, 330px);
+    }
+
+    .hero-section {
+        padding-top: 14px;
+    }
+
+    .hero-heading {
+        margin-bottom: 9px;
+    }
+
+    .promo-card {
+        height: 112px;
+    }
+
+    .promo-copy > span {
+        display: none;
+    }
+
+    .hero-progress {
+        height: 22px;
+    }
+
+    .hub-footer {
+        min-height: 48px;
+    }
+}
+/* =====================================================================
+   SOURCE: css/home-latest-news-v6.css
+   ===================================================================== */
+/* Live news headlines from existing Cloudflare website feed */
+
+#homepage-latest-news {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#homepage-latest-news .update-row {
+    flex: 1;
+    min-height: 0;
+    padding: 9px 12px;
+    gap: 9px;
+}
+
+#homepage-latest-news .update-row>a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+#homepage-latest-news .update-row>a:hover strong {
+    text-decoration: underline;
+}
+
+#homepage-latest-news .update-row .update-label {
+    flex: 0 0 auto;
+    font-size: 9px;
+    min-width: 49px;
+    padding: 6px 7px;
+    background: #3189ba;
+}
+
+#homepage-latest-news .update-row .update-text {
+    min-width: 0;
+    flex: 1;
+}
+
+#homepage-latest-news .update-row strong {
+    display: block;
+    font-size: clamp(11px,.9vw,14px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#homepage-latest-news .update-row small {
+    display: block;
+    color: #5c7487;
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+#homepage-latest-news .update-row .news-arrow {
+    font-size: 23px;
+    flex: 0 0 auto;
+    color: #183e5d;
+}
+
+#homepage-latest-news .updates-loading {
+    margin: auto;
+    padding: 20px 12px;
+    color: #58758d;
+    font-size: 12px;
+}
+/* =====================================================================
+   SOURCE: css/secondary-tabs-v7.css
+   ===================================================================== */
+/* V7: promo-card style reused across secondary navigation tabs */
+
+.secondary-tab {
+    padding: clamp(20px,3vw,42px) clamp(20px,5vw,80px)!important;
+    min-height: 0!important;
+}
+
+.secondary-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 23px;
+    color: #152f4c;
+    font-size: clamp(20px,2vw,28px);
+    font-style: italic;
+    font-weight: 900;
+    letter-spacing: .02em;
+}
+
+.secondary-heading-line {
+    flex: 1;
+    height: 1px;
+    background: #a7c8e3;
+}
+
+.secondary-grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 16px;
+}
+
+.secondary-tab .secondary-card {
+    height: clamp(115px,15dvh,160px)!important;
+    min-height: 115px!important;
+    padding: 16px 22px!important;
+    gap: 18px!important;
+}
+
+.secondary-tab .promo-symbol {
+    flex: 0 0 66px;
+    height: 72px;
+    font-size: 35px;
+    display: grid;
+    place-items: center;
+}
+
+.secondary-tab .promo-copy strong {
+    font-size: clamp(18px,1.65vw,26px)!important;
+    line-height: 1.12;
+}
+
+.secondary-tab .promo-copy small {
+    font-size: 10px;
+    letter-spacing: .14em;
+}
+
+.secondary-tab .promo-copy>span {
+    font-size: clamp(11px,1vw,14px);
+    line-height: 1.35;
+}
+
+.secondary-tab .promo-chevron {
+    font-size: 28px;
+    margin-left: auto;
+}
+
+@media(min-width:1400px) {
+
+    .secondary-grid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+    }
+}
+
+@media(max-width:760px) {
+
+    .secondary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .secondary-tab .secondary-card {
+        height: auto!important;
+        min-height: 115px!important;
+    }
+
+    .secondary-tab .promo-symbol {
+        flex-basis: 55px;
+        height: 60px;
+        font-size: 29px;
+    }
+
+    .secondary-tab {
+        padding: 25px 18px!important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/site-layout-v8.css
+   ===================================================================== */
+/* V8: shared sticky-footer layout and centered News panel. */
+
+html, body {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+body > .container {
+    display: flex !important;
+    flex-direction: column;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    height: auto !important;
+}
+/* Only the currently selected tab occupies space; the footer is never fixed. */
+
+body > .container > .tab-content {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+body > .container > .tab-content:not(.active) {
+    display: none !important;
+}
+
+body > .container > .hub-footer {
+    flex: 0 0 auto;
+    width: 100%;
+    margin-top: auto !important;
+}
+/* Keep News centered, with balanced space on either side. */
+
+body > .container > #news.tab-content.active {
+    width: 100%;
+    padding-left: clamp(16px, 4vw, 72px) !important;
+    padding-right: clamp(16px, 4vw, 72px) !important;
+}
+
+#news .news-section {
+    width: min(100%, 980px) !important;
+    max-width: 980px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box;
+}
+
+#news .news-feed {
+    width: 100% !important;
+    max-width: 800px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+#news .news-controls {
+    justify-content: center !important;
+}
+
+@media (max-width: 680px) {
+
+    #news .news-section {
+        padding: 16px !important;
+    }
+
+    #news .news-feed {
+        max-width: 100% !important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/nav-separators-v9.css
+   ===================================================================== */
+/* V9: distinguish external Streams page and admin-only Pair Creator */
+
+@media (min-width:681px) {
+
+    .hub-header .tabs .nav-external,
+  .hub-header .tabs .nav-admin {
+        position: relative;
+        margin-left: 16px!important;
+        padding-left: 21px!important;
+    }
+
+    .hub-header .tabs .nav-external::before,
+  .hub-header .tabs .nav-admin::before {
+        content: "";
+        position: absolute;
+        left: -7px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 26px;
+        width: 1px;
+        background: #8bb3d1;
+        pointer-events: none;
+    }
+
+    .hub-header .tabs .nav-admin::before {
+        background: #48718f;
+    }
+}
+
+@media(max-width:680px) {
+
+    .hub-header .tabs .nav-external,
+  .hub-header .tabs .nav-admin {
+        border-top: 1px solid #b6d3e8!important;
+        margin-top: 5px!important;
+        padding-top: 16px!important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/tab-scrollbar-fix-v10.css
+   ===================================================================== */
+/* V10: Reserve the same scrollbar width for every tab, including News. */
+
+html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+}
+/* Avoid a nested scrollbar on the page body. */
+
+body {
+    overflow-y: visible !important;
+}
+/* =====================================================================
+   SOURCE: css/home-promo-balance-v12.css
+   ===================================================================== */
+/* V12 — balance the two promo cards with the adjacent live-news panel.
+   No fixed height: the news feed can change as new articles load. */
+
+@media (min-width:1001px) {
+
+    #cards .dashboard {
+        align-items: stretch !important;
+        margin-top: 18px !important;
+    }
+
+    #cards .promo-grid {
+        align-self: stretch;
+        height: 100%;
+        min-height: 0;
+        grid-template-rows: minmax(0,1fr);
+        align-items: stretch;
+    }
+
+    #cards .promo-grid > .promo-card {
+        height: 100% !important;
+        min-height: 0 !important;
+        padding: 16px 18px !important;
+        align-self: stretch;
+    }
+
+    #cards .updates-panel {
+        align-self: stretch;
+        height: auto !important;
+    }
+}
+/* At narrower widths the existing stacked layout remains natural. */
+
+@media (max-width:1000px) {
+
+    #cards .dashboard {
+        margin-top: 15px !important;
+    }
+
+    #cards .promo-grid > .promo-card {
+        height: auto !important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/site-thumbnails-v13.css
+   ===================================================================== */
+/* v13: website favicons/logos on Deck Builder and Simulator cards */
+
+.secondary-tab .brand-symbol {
+    overflow: hidden;
+    background: linear-gradient(140deg,#497da5,#1c5079);
+    padding: 10px;
+}
+
+.secondary-tab .brand-symbol .site-brand-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: auto;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,.15));
+}
+
+.secondary-tab .brand-symbol .brand-icon-fallback {
+    display: none;
+}
+
+.secondary-tab .brand-symbol.image-unavailable .site-brand-image {
+    display: none;
+}
+
+.secondary-tab .brand-symbol.image-unavailable .brand-icon-fallback {
+    display: block;
+    color: #fff;
+    font-size: 32px;
+    line-height: 1;
+}
+
+@media(max-width:760px) {
+
+    .secondary-tab .brand-symbol {
+        padding: 7px;
+    }
+}
+/* V15: clean square logo tiles instead of angled blue badges */
+
+.secondary-tab .promo-symbol.brand-symbol {
+    box-sizing: border-box;
+    flex: 0 0 64px;
+    width: 64px;
+    height: 64px;
+    padding: 8px;
+    display: grid;
+    place-items: center;
+    background: #fff !important;
+    border: 2px solid #151d2b !important;
+    border-radius: 0 !important;
+    clip-path: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.secondary-tab .promo-symbol.brand-symbol::before,
+.secondary-tab .promo-symbol.brand-symbol::after {
+    display: none !important;
+}
+
+.secondary-tab .brand-symbol .site-brand-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: none;
+}
+
+.secondary-tab .brand-symbol.image-unavailable .brand-icon-fallback {
+    color: #183a5b;
+    font-size: 30px;
+}
+
+@media(max-width:760px) {
+
+    .secondary-tab .promo-symbol.brand-symbol {
+        flex-basis: 56px;
+        width: 56px;
+        height: 56px;
+        padding: 6px;
+    }
+}
+/* V16: subtly rounded logo tiles */
+
+.secondary-tab .promo-symbol.brand-symbol {
+    border-radius: 7px !important;
+}
+/* =====================================================================
+   SOURCE: css/single-corner-cards-v20.css
+   ===================================================================== */
+/* V20: single upper-right chamfer across homepage promos and secondary tab cards.
+   Preserves the existing pale gradient and hover background. */
+
+#cards .promo-grid .promo-card,
+.secondary-tab .secondary-grid .promo-card {
+    clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 22px, 100% 100%, 0 100%) !important;
+    border: 0 !important;
+    position: relative;
+    isolation: isolate;
+}
+
+#cards .promo-grid .promo-card::before,
+.secondary-tab .secondary-grid .promo-card::before {
+    display: none !important;
+}
+
+#cards .promo-grid .promo-card::after,
+.secondary-tab .secondary-grid .promo-card::after {
+    content: "" !important;
+    display: block !important;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201000%201000%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20d%3D%22M1%201%20H960%20L999%20140%20V999%20H1%20Z%22%20fill%3D%22none%22%20stroke%3D%22%236a9ac7%22%20stroke-width%3D%221.25%22%20vector-effect%3D%22non-scaling-stroke%22%2F%3E%3C%2Fsvg%3E") center / 100% 100% no-repeat !important;
+    opacity: 1;
+}
+
+@media(max-width:760px) {
+
+    #cards .promo-grid .promo-card,
+  .secondary-tab .secondary-grid .promo-card {
+        clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 17px, 100% 100%, 0 100%) !important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/home-dashboard-refinement-v21.css
+   ===================================================================== */
+/* V21 — homepage only. Two compact, stacked links balance the news column.
+   Keep the single top-right chamfer from V20 and its existing outline. */
+
+@media (min-width:1001px) {
+
+    #cards .dashboard {
+        grid-template-columns: minmax(0,2fr) minmax(310px,1fr) !important;
+        gap: 14px !important;
+        align-items: stretch !important;
+    }
+
+    #cards .promo-grid {
+        display: grid !important;
+        grid-template-columns: minmax(0,1fr) !important;
+        grid-template-rows: repeat(2,minmax(0,1fr)) !important;
+        gap: 12px !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        align-self: stretch !important;
+    }
+
+    #cards .promo-grid > .promo-card {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0 !important;
+        padding: 12px 20px !important;
+        align-self: stretch !important;
+    }
+}
+
+#cards .promo-grid > .promo-card .promo-symbol {
+    box-sizing: border-box !important;
+    width: 62px !important;
+    height: 62px !important;
+    flex: 0 0 62px !important;
+    display: grid !important;
+    place-items: center !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #285b81 !important;
+    border: 2px solid #1c2938 !important;
+    border-radius: 7px !important;
+    clip-path: none !important;
+    transform: none !important;
+    font-size: 29px !important;
+}
+
+#cards .promo-grid > .promo-card .promo-symbol::before,
+#cards .promo-grid > .promo-card .promo-symbol::after {
+    display: none !important;
+}
+
+#cards .promo-grid .promo-copy small {
+    display: none !important;
+}
+
+#cards .promo-grid .promo-copy strong {
+    margin-bottom: 3px !important;
+}
+
+#cards .promo-grid .promo-copy > span {
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+@media(max-width:760px) {
+
+    #cards .promo-grid > .promo-card .promo-symbol {
+        width: 54px !important;
+        height: 54px !important;
+        flex-basis: 54px !important;
+        font-size: 25px !important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/precise-card-borders-v22.css
+   ===================================================================== */
+/* V22: draw the outline with the EXACT same CSS polygon as the card.
+   No SVG scaling or extra diagonal line. Only the border layer changes. */
+
+#cards .promo-grid .promo-card,
+.secondary-tab .secondary-grid .promo-card {
+    --cut-x: 24px;
+    --cut-y: 22px;
+    --line: 1.5px;
+    clip-path: polygon(0 0, calc(100% - var(--cut-x)) 0, 100% var(--cut-y), 100% 100%, 0 100%) !important;
+    border: none !important;
+    position: relative;
+}
+
+#cards .promo-grid .promo-card::after,
+.secondary-tab .secondary-grid .promo-card::after {
+    content: "" !important;
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: 2 !important;
+    pointer-events: none !important;
+    opacity: 1 !important;
+    background: #719ec7 !important;
+    /* Even-odd polygon makes a continuous thin outline, with no SVG scaling. */
+    clip-path: polygon(evenodd,
+    0 0, calc(100% - var(--cut-x)) 0, 100% var(--cut-y), 100% 100%, 0 100%, 0 0,
+    var(--line) var(--line),
+    calc(100% - var(--cut-x) - 0.65px) var(--line),
+    calc(100% - var(--line)) calc(var(--cut-y) + 0.65px),
+    calc(100% - var(--line)) calc(100% - var(--line)),
+    var(--line) calc(100% - var(--line)),
+    var(--line) var(--line)
+  ) !important;
+}
+
+@media(max-width:760px) {
+
+    #cards .promo-grid .promo-card,
+  .secondary-tab .secondary-grid .promo-card {
+        --cut-x: 18px;
+        --cut-y: 17px;
+    }
+}
+/* =====================================================================
+   SOURCE: css/home-card-size-v25.css
+   ===================================================================== */
+/* V25: full-width homepage alignment, with compact content. */
+
+.gcg-admin-indicator {
+    top: auto !important;
+    right: auto !important;
+    bottom: 14px !important;
+    left: 14px !important;
+}
+
+@media (min-width:1001px) {
+
+    #cards .dashboard {
+        grid-template-columns: minmax(0,2fr) minmax(310px,1fr) !important;
+        gap: 14px !important;
+    }
+
+    #cards .promo-grid {
+        width: 100% !important;
+        justify-items: stretch !important;
+    }
+
+    #cards .promo-grid > .promo-card {
+        width: 100% !important;
+        max-width: none !important;
+        padding: 10px 18px !important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/home-three-column-v26.css
+   ===================================================================== */
+/* V26: compact three-column homepage, preserve full-width content area.
+   V25 remains installed; these rules override its homepage layout only. */
+
+@media (min-width: 1001px) {
+
+    #cards .dashboard {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+        align-items: stretch !important;
+    }
+
+    #cards .dashboard > .promo-grid {
+        display: contents !important;
+    }
+
+    #cards .dashboard > .promo-grid > .promo-card {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        height: 142px !important;
+        min-height: 0 !important;
+        align-self: center !important;
+        padding: 18px 18px !important;
+    }
+
+    #cards .dashboard > .updates-panel {
+        min-width: 0 !important;
+        grid-column: 3;
+        align-self: stretch !important;
+    }
+}
+/* Only the two homepage promos; no impact on simulator/deck/tool cards. */
+
+#cards .dashboard .promo-grid > .promo-card .promo-copy small,
+#cards .dashboard .promo-grid > .promo-card .promo-copy > span {
+    display: none !important;
+}
+
+#cards .dashboard .promo-grid > .promo-card .promo-copy strong {
+    margin: 0 !important;
+}
+
+@media (min-width: 761px) and (max-width: 1000px) {
+
+    #cards .dashboard {
+        grid-template-columns: 1fr !important;
+    }
+
+    #cards .dashboard .promo-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+        grid-template-rows: auto !important;
+    }
+
+    #cards .dashboard .promo-grid > .promo-card {
+        height: 130px !important;
+        min-height: 0 !important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/home-promo-subtitles-v27.css
+   ===================================================================== */
+/* V27: Restore homepage promo subtitles, retaining the V26 three-column layout. */
+
+#cards .dashboard .promo-grid > .promo-card .promo-copy > span {
+    display: block !important;
+    font-size: 12px !important;
+    line-height: 1.35 !important;
+    margin-top: 5px !important;
+    color: #4d6277 !important;
+}
+
+#cards .dashboard .promo-grid > .promo-card .promo-copy {
+    min-width: 0 !important;
+}
+
+#cards .dashboard .promo-grid > .promo-card .promo-copy strong {
+    line-height: 1.15 !important;
+}

@@ -1,1 +1,53 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GCG Hub — Admin</title><link rel="stylesheet" href="css/gcg-theme.css"><link rel="stylesheet" href="css/admin.css"></head><body><main class="admin-card"><a href="index.html" class="back">← Back to GCG Hub</a><h1>GCG Hub Admin</h1><p id="status" role="status">Loading…</p><form id="login" hidden><label>Email<input id="email" type="email" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label><button type="submit">Sign in</button></form><section id="dashboard" hidden><p>Admin session verified. Future Streams and site controls will appear here.</p><button id="signout">Sign out</button></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="js/admin-config.js"></script><script src="js/admin.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <!-- GCG PAGE SETTINGS: Update page title, navigation URLs, and content below. Shared visual settings: css/pages/*.css; page behaviour: js/*.js. -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   GCG Hub — Admin
+  </title>
+  <link href="css/gcg-theme.css" rel="stylesheet"/>
+  <link href="css/admin.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <main class="admin-card">
+   <a class="back" href="index.html">
+    ← Back to GCG Hub
+   </a>
+   <h1>
+    GCG Hub Admin
+   </h1>
+   <p id="status" role="status">
+    Loading…
+   </p>
+   <form hidden="" id="login">
+    <label>
+     Email
+     <input autocomplete="username" id="email" required="" type="email"/>
+    </label>
+    <label>
+     Password
+     <input autocomplete="current-password" id="password" required="" type="password"/>
+    </label>
+    <button type="submit">
+     Sign in
+    </button>
+   </form>
+   <section hidden="" id="dashboard">
+    <p>
+     Admin session verified. Future Streams and site controls will appear here.
+    </p>
+    <button id="signout">
+     Sign out
+    </button>
+   </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+  </script>
+  <script src="js/admin-config.js">
+  </script>
+  <script src="js/admin.js">
+  </script>
+ </body>
+</html>

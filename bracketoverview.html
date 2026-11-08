@@ -1,20 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
+  <!-- GCG PAGE SETTINGS: Update page title, navigation URLs, and content below. Shared visual settings: css/pages/*.css; page behaviour: js/*.js. -->
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <title>
    Bracket Overview | Masa's GCG Hub
   </title>
-  <link href="css/index.css" rel="stylesheet"/>
-  <link href="css/bracketoverview.css" rel="stylesheet"/>
+  <link href="css/pages/bracket-overview.css" rel="stylesheet"/>
  </head>
  <body>
-  <main class="container bracket">
-   <a class="back" href="index.html">
-    &larr; Back to GCG Hub
+  <header class="hub-header">
+   <a aria-label="Masa's GCG Hub home" class="header-brand" href="index.html">
+    <img alt="Masa's GCG Hub" class="brand-logo" src="images/Branding/logo.png"/>
    </a>
-   <h1>
+   <div class="header-descriptor">
+    INDEPENDENT
+    <br/>
+    GUNDAM CARD GAME
+    <br/>
+    RESOURCE
+   </div>
+   <nav aria-label="Main navigation" class="promo-home-nav">
+    <a class="home-tab" href="index.html">
+     Home
+    </a>
+   </nav>
+  </header>
+  <main class="bracket-page">
+   <h1 class="section-title">
     Bracket Overview
    </h1>
    <p class="subtitle">
@@ -64,9 +78,17 @@
     </table>
    </div>
   </main>
-  <script src="js/image-extension-fallback.js"></script>
-    <script defer="" src="js/bracketoverview.js">
+  <footer class="hub-footer">
+   <span>
+    MASA’S GCG HUB
+   </span>
+   <span>
+    UNOFFICIAL GUNDAM CARD GAME FAN RESOURCE · NOT AFFILIATED WITH BANDAI
+   </span>
+  </footer>
+  <script src="js/image-extension-fallback.js">
+  </script>
+  <script defer="" src="js/bracketoverview.js">
   </script>
  </body>
 </html>
-

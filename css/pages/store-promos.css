@@ -1,0 +1,1498 @@
+/* =====================================================================
+   MASA'S GCG HUB — STORE PROMOS — PAGE-SPECIFIC OVERRIDES
+   EDITABLE SETTINGS (shared across this stylesheet)
+   Set design tokens here for future new rules. Existing legacy declarations
+   below are retained in their original order to avoid visual regressions.
+   ===================================================================== */
+
+:root {
+    --gcg-primary: #245c87;
+    --gcg-accent: #3d8cc5;
+    --gcg-outline: #91bfe4;
+    --gcg-page-background: #eef7ff;
+    --gcg-text: #153451;
+}
+/* =====================================================================
+   SOURCE: css/storepromos.css
+   ===================================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding-bottom: 105px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #101010;
+    color: #ffffff;
+}
+
+button,
+        a {
+    font-family: inherit;
+}
+/* =========================================
+           HEADER
+        ========================================= */
+
+.page-header {
+    padding: 18px 20px 24px;
+    text-align: center;
+    background-color: #1b1b1b;
+    border-bottom: 1px solid #343434;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+}
+
+.page-description {
+    margin: 5px 0 18px;
+    font-size: clamp(15px, 2vw, 19px);
+    font-weight: 600;
+}
+/* =========================================
+           TOP NAVIGATION
+        ========================================= */
+
+.season-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.nav-button {
+    min-width: 82px;
+    padding: 11px 20px;
+    border: 1px solid #444444;
+    border-radius: 999px;
+    background-color: #292929;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.nav-button:hover {
+    background-color: #3a3a3a;
+    border-color: #666666;
+    transform: translateY(-1px);
+}
+
+.nav-button.active {
+    background-color: #f4f4f4;
+    border-color: #f4f4f4;
+    color: #111111;
+}
+/* =========================================
+           MAIN CONTENT
+        ========================================= */
+
+main {
+    width: 100%;
+    padding: 26px 3%;
+}
+
+.season-title {
+    margin: 0 0 8px;
+    text-align: center;
+    font-size: clamp(25px, 3vw, 35px);
+}
+
+.category-title {
+    margin: 0 0 24px;
+    text-align: center;
+    color: #cfcfcf;
+    font-size: clamp(18px, 2vw, 24px);
+}
+/* =========================================
+           CARD GRID
+        ========================================= */
+
+.promo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.promo-card {
+    overflow: hidden;
+    border: 1px solid #383838;
+    border-radius: 13px;
+    background-color: #1b1b1b;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.promo-card:hover {
+    transform: translateY(-3px);
+    border-color: #666666;
+}
+
+.card-image-button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+
+.promo-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+/* =========================================
+           FIXED BOTTOM TOGGLE
+        ========================================= */
+
+.bottom-toggle-wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    display: flex;
+    justify-content: center;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    pointer-events: none;
+}
+
+.bottom-toggle {
+    display: flex;
+    width: min(390px, calc(100vw - 24px));
+    overflow: hidden;
+    border: 1px solid #4a4a4a;
+    border-radius: 999px;
+    background-color: rgba(35, 35, 35, 0.92);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    pointer-events: auto;
+}
+
+.type-button {
+    flex: 1;
+    padding: 14px 18px;
+    border: 0;
+    background: transparent;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.type-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.type-button.active {
+    background-color: #f4f4f4;
+    color: #111111;
+}
+/* =========================================
+           IMAGE VIEWER
+        ========================================= */
+
+.image-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: rgba(0, 0, 0, 0.92);
+}
+
+.image-viewer.open {
+    display: flex;
+}
+
+.image-viewer img {
+    display: block;
+    max-width: min(92vw, 650px);
+    max-height: 92vh;
+    border-radius: 10px;
+}
+
+.viewer-close {
+    position: fixed;
+    top: 14px;
+    right: 20px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #ffffff;
+    font-size: 46px;
+    line-height: 1;
+    cursor: pointer;
+}
+/* =========================================
+           MOBILE
+        ========================================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding-bottom: 95px;
+    }
+
+    .page-header {
+        padding: 16px 12px 20px;
+    }
+
+    .page-description {
+        margin-bottom: 16px;
+    }
+
+    .season-buttons {
+        gap: 8px;
+    }
+
+    .nav-button {
+        min-width: 68px;
+        padding: 9px 14px;
+        font-size: 14px;
+    }
+
+    main {
+        padding: 20px 10px;
+    }
+
+    .promo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .promo-card {
+        border-radius: 8px;
+    }
+
+    .type-button {
+        padding: 13px 10px;
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 370px) {
+
+    .nav-button {
+        padding: 8px 11px;
+        font-size: 13px;
+    }
+
+    .promo-grid {
+        gap: 8px;
+    }
+}
+/* V23 — Gundam Card Game homepage-matched colour theme */
+
+:root {
+    --gcg-metal: linear-gradient(180deg,#8faec9 0%,#7197b9 25%,#507da5 55%,#315d86 80%,#24496e 100%);
+    --gcg-metal-hover: linear-gradient(180deg,#a4bed4 0%,#85a7c3 25%,#6289ac 55%,#3d6b93 80%,#2c567c 100%);
+    --gcg-border: rgba(176,199,216,.34);
+}
+
+body {
+    background: linear-gradient(135deg,#171e29 0%,#263445 55%,#1b2735 100%);
+    color: #f5f8fc;
+}
+
+.page-header {
+    background: rgba(20,30,43,.86);
+    border-bottom-color: var(--gcg-border);
+}
+
+.page-description,.category-title {
+    color: #c6d6e5;
+}
+
+.nav-button {
+    background: var(--gcg-metal);
+    border-color: rgba(184,210,229,.55);
+    color: #fff;
+    text-shadow: none;
+}
+
+.nav-button:hover {
+    background: var(--gcg-metal-hover);
+    border-color: #b7d0e2;
+}
+
+.nav-button.active {
+    background: var(--gcg-metal-hover);
+    border-color: #d4e5f1;
+    color: #fff;
+    box-shadow: 0 0 0 2px rgba(171,205,231,.18);
+}
+
+.promo-card {
+    background: #1c2939;
+    border-color: var(--gcg-border);
+}
+
+.promo-card:hover {
+    border-color: #a0bfd8;
+}
+
+.bottom-toggle {
+    background: rgba(22,34,49,.96);
+    border-color: var(--gcg-border);
+}
+
+.type-button {
+    color: #fff;
+    text-shadow: none;
+}
+
+.type-button:hover {
+    background: rgba(135,173,202,.2);
+}
+
+.type-button.active {
+    background: var(--gcg-metal);
+    color: #fff;
+}
+/* V25: persistent, cached card image layers (no source swaps or grid rebuilds) */
+
+.card-image-button.persistent-promo-image {
+    position: relative;
+}
+
+.card-image-button.persistent-promo-image .promo-image-layer[hidden] {
+    display: none !important;
+}
+/* V26: permanent, non-collapsing image slots. All cached images overlay each other. */
+
+.card-image-button.persistent-promo-image {
+    position: relative;
+    aspect-ratio: 63 / 88;
+    overflow: hidden;
+}
+
+.card-image-button.persistent-promo-image .promo-image-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.card-image-button.persistent-promo-image .promo-image-layer[hidden] {
+    display: none !important;
+}
+/* V27: stable double-buffered card images; no hidden/display:none or grid rebuild. */
+
+.card-image-button.swap-promo-image {
+    position: relative;
+    aspect-ratio: 63 / 88;
+    overflow: hidden;
+}
+
+.card-image-button.swap-promo-image .swap-promo-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    opacity: 1;
+    transition: none;
+}
+/* =====================================================================
+   SOURCE: css/storepromos-redesign-v28.css
+   ===================================================================== */
+/* GCG gallery redesign V28 — visual-only; existing gallery scripts untouched. */
+
+:root {
+    --ink: #142c49;
+    --blue: #3979aa;
+    --line: #91b9dc;
+    --soft: #e8f3fc;
+}
+
+html {
+    background: #f4f9fe;
+}
+
+body {
+    color: var(--ink)!important;
+    background: radial-gradient(circle at 0 23%,transparent 0 105px,rgba(107,160,203,.14) 106px,transparent 107px),linear-gradient(132deg,transparent 0 68%,rgba(119,166,205,.12) 68.1%,transparent 68.35%),linear-gradient(165deg,#f5faff 0%,#fff 55%,#eaf4fe 100%)!important;
+    background-attachment: fixed!important;
+}
+
+header,.page-header {
+    background: rgba(255,255,255,.92)!important;
+    border-bottom: 1px solid #aac8e2!important;
+    padding: 24px 3% 20px!important;
+    text-align: center;
+}
+
+header h1,.page-header h1 {
+    color: #152f4e!important;
+    font-size: clamp(27px,3vw,39px)!important;
+    line-height: 1.2;
+    letter-spacing: -.035em;
+    font-weight: 850!important;
+}
+
+header p,.page-description {
+    color: #54718e!important;
+    font-size: clamp(13px,1.25vw,16px)!important;
+    font-weight: 500!important;
+    margin: 8px 0 18px!important;
+}
+
+nav,.season-buttons {
+    gap: 8px!important;
+    margin-top: 14px!important;
+}
+
+.btn,.nav-button {
+    min-width: 0!important;
+    padding: 10px 17px!important;
+    border-radius: 0!important;
+    clip-path: polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%)!important;
+    background: #f0f7fe!important;
+    border: 1px solid #9dbfda!important;
+    color: #23486a!important;
+    font-size: 14px!important;
+    font-weight: 750!important;
+    box-shadow: none!important;
+    text-shadow: none!important;
+    transition: background .15s ease, color .15s ease!important;
+}
+
+.btn:hover,.nav-button:hover {
+    background: #dceefa!important;
+    color: #123d65!important;
+    transform: none!important;
+}
+
+.btn.active,.nav-button.active {
+    background: #315f87!important;
+    border-color: #315f87!important;
+    color: white!important;
+    box-shadow: none!important;
+}
+
+main {
+    padding: 24px 3% 100px!important;
+}
+
+main h2,.season-title {
+    font-size: clamp(23px,2.4vw,31px)!important;
+    color: #173352!important;
+    font-weight: 850!important;
+    margin: 0 0 8px!important;
+    letter-spacing: -.02em;
+}
+
+.category-title {
+    color: #52728f!important;
+    font-size: clamp(16px,1.6vw,20px)!important;
+    margin: 0 0 22px!important;
+}
+
+.promo-grid,.grid {
+    max-width: 1700px!important;
+    gap: 15px!important;
+}
+
+.promo-card,.card {
+    border: 1px solid #a7c6e0!important;
+    border-radius: 7px!important;
+    background: white!important;
+    box-shadow: 0 3px 14px rgba(42,93,137,.08)!important;
+    transition: transform .15s ease,box-shadow .15s ease!important;
+}
+
+.promo-card:hover,.card:hover {
+    border-color: #5b98c7!important;
+    transform: translateY(-3px)!important;
+    box-shadow: 0 8px 22px rgba(42,93,137,.17)!important;
+}
+
+.promo-card img,.card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.viewer,.image-viewer {
+    background: rgba(9,20,34,.94)!important;
+}
+
+@media(max-width:650px) {
+
+    header,.page-header {
+        padding: 20px 12px 16px!important;
+    }
+
+    main {
+        padding: 20px 10px 90px!important;
+    }
+
+    .btn,.nav-button {
+        font-size: 12px!important;
+        padding: 9px 11px!important;
+    }
+
+    .promo-grid,.grid {
+        gap: 9px!important;
+    }
+}
+/* Keep the Participation/Winner control visible while scrolling. */
+
+.bottom-toggle-wrapper {
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom))!important;
+}
+
+.bottom-toggle {
+    background: #fff!important;
+    border: 1px solid #9ebed8!important;
+    border-radius: 8px!important;
+    box-shadow: 0 6px 24px rgba(23,59,90,.19)!important;
+    overflow: hidden;
+}
+
+.type-button {
+    background: #fff!important;
+    color: #28577d!important;
+    text-shadow: none!important;
+}
+
+.type-button:hover {
+    background: #e8f3fb!important;
+}
+
+.type-button.active {
+    background: #315f87!important;
+    color: #fff!important;
+}
+/* V29: compact editorial gallery; borders remain complete at every corner. */
+
+html,body {
+    min-height: 100%;
+}
+
+header,.page-header {
+    text-align: left!important;
+    padding: 25px max(24px,calc((100vw - 1600px)/2)) 20px!important;
+    background: rgba(255,255,255,.75)!important;
+}
+
+header h1,.page-header h1 {
+    font-size: clamp(26px,2.4vw,36px)!important;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -.02em!important;
+}
+
+header p,.page-description {
+    margin: 5px 0 16px!important;
+    font-size: 14px!important;
+}
+
+nav,.season-buttons {
+    display: flex!important;
+    flex-wrap: wrap!important;
+    align-items: center!important;
+    justify-content: flex-start!important;
+    gap: 8px!important;
+    margin: 0!important;
+}
+
+.btn,.nav-button {
+    clip-path: none!important;
+    border: 1px solid #a3c1dc!important;
+    border-radius: 4px!important;
+    padding: 10px 15px!important;
+    background: #f6fbff!important;
+    color: #234667!important;
+    box-shadow: none!important;
+    line-height: 1.3!important;
+}
+
+.btn.active,.nav-button.active {
+    background: #315f87!important;
+    color: #fff!important;
+    border-color: #315f87!important;
+}
+
+.btn:focus-visible,.nav-button:focus-visible,.type-button:focus-visible {
+    outline: 3px solid #58a6df!important;
+    outline-offset: 2px!important;
+}
+
+main {
+    max-width: 1700px!important;
+    margin: 0 auto!important;
+    padding: 22px 24px 64px!important;
+}
+
+main h2,.season-title {
+    font-size: clamp(23px,2.1vw,30px)!important;
+    text-align: left!important;
+    margin: 0 0 5px!important;
+    font-style: italic;
+    text-transform: uppercase;
+}
+
+.category-title {
+    font-size: 16px!important;
+    text-align: left!important;
+    margin: 0 0 20px!important;
+}
+
+.promo-grid,.grid {
+    gap: 16px!important;
+}
+
+.promo-card,.card {
+    overflow: hidden;
+    border-radius: 6px!important;
+}
+
+@media(max-width:700px) {
+
+    header,.page-header {
+        padding: 18px 14px!important;
+    }
+
+    main {
+        padding: 18px 12px 55px!important;
+    }
+
+    .btn,.nav-button {
+        font-size: 12px!important;
+        padding: 9px 10px!important;
+    }
+}
+/* The participation toggle is a normal part of the toolbar, not a floating footer. */
+
+.bottom-toggle-wrapper {
+    position: static!important;
+    left: auto!important;
+    right: auto!important;
+    bottom: auto!important;
+    width: auto!important;
+    padding: 0!important;
+    margin: 0!important;
+    background: none!important;
+    border: 0!important;
+    box-shadow: none!important;
+    transform: none!important;
+}
+
+.bottom-toggle {
+    display: flex!important;
+    box-shadow: none!important;
+    border-radius: 4px!important;
+}
+
+.type-button {
+    padding: 10px 15px!important;
+    font-size: 14px!important;
+}
+
+.page-header .toolbar {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.page-header .toolbar .season-buttons {
+    flex: 1 1 550px;
+}
+/* =====================================================================
+   SOURCE: css/promo-gallery-v30.css
+   ===================================================================== */
+/* V30 gallery composition — shared page frame and homepage-inspired footer */
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh!important;
+    display: flex!important;
+    flex-direction: column!important;
+    padding-bottom: 0!important;
+    margin: 0!important;
+}
+
+header,.page-header {
+    padding: 24px max(22px,calc((100vw - 1500px)/2)) 18px!important;
+    background: rgba(255,255,255,.9)!important;
+}
+
+header h1,.page-header h1 {
+    font-size: clamp(25px,2.4vw,34px)!important;
+    line-height: 1.12!important;
+    margin: 0!important;
+}
+
+header p,.page-description {
+    margin: 6px 0 0!important;
+    font-size: 14px!important;
+}
+
+header nav,.page-header .toolbar {
+    margin-top: 20px!important;
+}
+
+.page-header .toolbar {
+    display: flex!important;
+    align-items: center!important;
+    gap: 18px!important;
+}
+
+.page-header .toolbar .season-buttons {
+    flex: 1 1 auto!important;
+    gap: 7px!important;
+}
+
+.nav-button,.btn {
+    border: 1px solid #a5c5e1!important;
+    clip-path: none!important;
+    border-radius: 3px!important;
+    padding: 9px 12px!important;
+    font-size: 13px!important;
+    white-space: nowrap!important;
+}
+
+.bottom-toggle-wrapper {
+    flex: 0 0 auto!important;
+    padding: 0!important;
+}
+
+.bottom-toggle {
+    min-width: 250px!important;
+    display: flex!important;
+    border: 1px solid #a5c5e1!important;
+    border-radius: 3px!important;
+    overflow: hidden!important;
+}
+
+.type-button {
+    flex: 1!important;
+    padding: 10px 14px!important;
+}
+
+main {
+    width: 100%!important;
+    max-width: 1550px!important;
+    flex: 1 0 auto!important;
+    margin: 0 auto!important;
+    padding: 34px 24px 56px!important;
+}
+
+main h2,.season-title {
+    font-size: clamp(23px,2vw,29px)!important;
+    font-style: normal!important;
+    font-weight: 800!important;
+    text-transform: none!important;
+    margin: 0 0 4px!important;
+}
+
+.category-title {
+    font-size: 14px!important;
+    font-weight: 600!important;
+    margin: 0 0 20px!important;
+}
+
+.promo-grid,.grid {
+    width: 100%!important;
+    max-width: none!important;
+    grid-template-columns: repeat(8,minmax(0,1fr))!important;
+    gap: 14px!important;
+}
+
+.promo-card,.card {
+    min-width: 0!important;
+    border-radius: 5px!important;
+    box-shadow: 0 4px 15px rgba(35,80,125,.08)!important;
+}
+
+.gcg-footer {
+    flex: 0 0 auto;
+    position: relative;
+    min-height: 64px;
+    background: linear-gradient(125deg,#8db3d3 0 26%,#dff0ff 26% 29%,#8db3d3 29% 58%,#709bc0 58% 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 16px max(24px,calc((100vw - 1500px)/2));
+    font: 800 11px/1.4 Arial,sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.gcg-footer span:last-child {
+    text-align: right;
+}
+
+@media(max-width:1250px) {
+
+    .promo-grid,.grid {
+        grid-template-columns: repeat(6,minmax(0,1fr))!important;
+    }
+
+    .page-header .toolbar {
+        align-items: flex-start!important;
+        flex-wrap: wrap!important;
+    }
+
+    .bottom-toggle {
+        min-width: 260px!important;
+    }
+}
+
+@media(max-width:800px) {
+
+    .promo-grid,.grid {
+        grid-template-columns: repeat(4,minmax(0,1fr))!important;
+    }
+
+    main {
+        padding: 24px 15px 42px!important;
+    }
+
+    .gcg-footer {
+        padding: 16px;
+        letter-spacing: 1px;
+    }
+}
+
+@media(max-width:500px) {
+
+    .promo-grid,.grid {
+        grid-template-columns: repeat(2,minmax(0,1fr))!important;
+        gap: 10px!important;
+    }
+
+    header,.page-header {
+        padding: 20px 15px!important;
+    }
+
+    .gcg-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .gcg-footer span:last-child {
+        text-align: left;
+    }
+
+    .bottom-toggle-wrapper {
+        width: 100%!important;
+    }
+
+    .bottom-toggle {
+        width: 100%!important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/promo-gallery-v31.css
+   ===================================================================== */
+/* V31 – gallery layout. Built on existing card-loading scripts and HTML IDs. */
+
+:root {
+    --navy: #173955;
+    --blue: #3476a4;
+    --line: #bdd1e1;
+    --paper: #f3f8fc;
+}
+
+html {
+    min-height: 100%;
+    background: #eef5fa;
+}
+
+body.gcg-promo-page {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0!important;
+    background: radial-gradient(circle at 87% 24%,rgba(107,159,197,.11),transparent 36%),linear-gradient(145deg,#f8fbfe,#eaf3fa)!important;
+    color: #1d3b55!important;
+    font-family: Arial,Helvetica,sans-serif;
+}
+
+.gcg-promo-page * {
+    box-sizing: border-box;
+}
+
+.hub-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    min-height: 76px;
+    padding: 10px max(22px,calc((100vw - 1540px)/2));
+    background: #fff;
+    border-bottom: 1px solid #cbdce9;
+    box-shadow: 0 2px 10px rgba(31,77,111,.06);
+}
+
+.hub-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #173c5d;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: .03em;
+    white-space: nowrap;
+}
+
+.hub-brand img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.hub-brand b {
+    color: #347eaf;
+}
+
+.hub-brand small {
+    display: block;
+    font-size: 8px;
+    letter-spacing: .12em;
+    font-weight: 600;
+    color: #7893a6;
+    margin-top: 4px;
+}
+
+.hub-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+}
+
+.hub-links a {
+    padding: 11px 14px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 800;
+    color: #385f7c;
+    border-radius: 3px;
+    border-bottom: 3px solid transparent;
+}
+
+.hub-links a:hover,.hub-links a.current {
+    background: #eaf4fc;
+    border-bottom-color: #3781b5;
+    color: #16507a;
+}
+
+.gcg-promo-page header,.gcg-promo-page .page-header {
+    width: 100%;
+    max-width: none;
+    margin: 0!important;
+    padding: 29px max(24px,calc((100vw - 1540px)/2)) 19px!important;
+    text-align: left!important;
+    background: linear-gradient(120deg,#f7fbff 0%,#e2eff9 100%)!important;
+    border: 0!important;
+    border-bottom: 1px solid #bdd5e7!important;
+    box-shadow: none!important;
+}
+
+.gcg-promo-page .eyebrow {
+    color: #4b8fbb;
+    font-size: 10px;
+    letter-spacing: .2em;
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+.gcg-promo-page header h1,.gcg-promo-page .page-header h1 {
+    font-size: clamp(25px,2.7vw,38px)!important;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -.025em!important;
+    color: #163b59!important;
+    margin: 0 0 6px!important;
+    line-height: 1.13;
+}
+
+.gcg-promo-page header p,.gcg-promo-page .page-description {
+    font-size: 13px!important;
+    color: #64839a!important;
+    margin: 0 0 19px!important;
+    font-weight: 500!important;
+}
+
+.gcg-promo-page .season-buttons,.gcg-promo-page header nav:not(.hub-links) {
+    display: flex!important;
+    justify-content: flex-start!important;
+    align-items: center!important;
+    flex-wrap: wrap!important;
+    gap: 8px!important;
+    margin: 0!important;
+    padding: 0!important;
+}
+
+.gcg-promo-page .season-buttons .nav-button,.gcg-promo-page header .btn {
+    clip-path: none!important;
+    transform: none!important;
+    min-width: 0!important;
+    padding: 10px 16px!important;
+    border: 1px solid #adc7da!important;
+    border-radius: 4px!important;
+    background: #fff!important;
+    color: #356180!important;
+    font-size: 13px!important;
+    font-weight: 800!important;
+    box-shadow: none!important;
+    text-decoration: none!important;
+    line-height: 1.2!important;
+}
+
+.gcg-promo-page .season-buttons .nav-button:hover,.gcg-promo-page header .btn:hover {
+    background: #e3f2fb!important;
+    border-color: #589bc6!important;
+}
+
+.gcg-promo-page .season-buttons .nav-button.active,.gcg-promo-page header .btn.active {
+    background: #286b9a!important;
+    color: #fff!important;
+    border-color: #286b9a!important;
+}
+
+.gcg-promo-page main {
+    width: 100%;
+    max-width: 1588px!important;
+    margin: 0 auto!important;
+    padding: 24px 24px 95px!important;
+    flex: 1 0 auto;
+}
+
+.gcg-promo-page main h2,.gcg-promo-page .season-title {
+    font-size: clamp(19px,2vw,27px)!important;
+    color: #214c70!important;
+    text-align: left!important;
+    text-transform: uppercase;
+    font-style: italic;
+    letter-spacing: .02em;
+    margin: 0 0 10px!important;
+}
+
+.gcg-promo-page main .promo-grid,.gcg-promo-page main .grid {
+    gap: 17px!important;
+}
+
+.gcg-promo-page .promo-card,.gcg-promo-page .card {
+    background: transparent!important;
+    border: 0!important;
+    border-radius: 4px!important;
+    box-shadow: none!important;
+    overflow: visible!important;
+}
+
+.gcg-promo-page .promo-card img,.gcg-promo-page .card img {
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(17,46,68,.16);
+}
+
+.gcg-promo-page .bottom-toggle-wrapper {
+    position: fixed!important;
+    bottom: max(14px,env(safe-area-inset-bottom))!important;
+    left: 50%!important;
+    right: auto!important;
+    top: auto!important;
+    transform: translateX(-50%)!important;
+    width: max-content!important;
+    max-width: calc(100vw - 24px)!important;
+    z-index: 1000!important;
+    padding: 5px!important;
+    margin: 0!important;
+    background: rgba(255,255,255,.97)!important;
+    border: 1px solid #9dbdd3!important;
+    border-radius: 8px!important;
+    box-shadow: 0 8px 30px rgba(18,51,75,.25)!important;
+}
+
+.gcg-promo-page .bottom-toggle {
+    display: flex!important;
+    gap: 4px!important;
+    border: 0!important;
+    background: transparent!important;
+    box-shadow: none!important;
+    padding: 0!important;
+}
+
+.gcg-promo-page .type-button {
+    border: 0!important;
+    border-radius: 5px!important;
+    padding: 11px 22px!important;
+    font-size: 13px!important;
+    font-weight: 800!important;
+    color: #3b6481!important;
+    background: transparent!important;
+}
+
+.gcg-promo-page .type-button.active {
+    background: #286b9a!important;
+    color: white!important;
+}
+
+.gcg-promo-page .gcg-footer {
+    margin-top: auto!important;
+    min-height: 58px;
+    display: flex!important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px max(24px,calc((100vw - 1540px)/2))!important;
+    background: repeating-linear-gradient(120deg,transparent 0 34px,rgba(255,255,255,.05) 35px 37px),#173c5b!important;
+    color: #d9e8f3!important;
+    border-top: 4px solid #4a96c3;
+    font-size: 11px!important;
+}
+
+.gcg-promo-page .gcg-footer span:first-child {
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+@media(max-width:850px) {
+
+    .hub-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 10px 16px;
+    }
+
+    .hub-links {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+    }
+
+    .hub-links a {
+        white-space: nowrap;
+        padding: 9px 11px;
+    }
+
+    .gcg-promo-page header,.gcg-promo-page .page-header {
+        padding: 22px 16px 16px!important;
+    }
+
+    .gcg-promo-page main {
+        padding: 20px 14px 100px!important;
+    }
+
+    .gcg-promo-page .gcg-footer {
+        padding: 18px 14px!important;
+        flex-wrap: wrap;
+    }
+
+    .gcg-promo-page .type-button {
+        padding: 11px 17px!important;
+    }
+}
+/* =====================================================================
+   SOURCE: css/promo-home-header-v32.css
+   ===================================================================== */
+/* V32: Preserve the actual homepage header markup, layout, navigation and footer. */
+
+.gcg-promo-page .hub-header {
+    width: 100%;
+    max-width: none;
+    margin: 0!important;
+    height: 76px;
+    min-height: 76px;
+    flex: 0 0 auto;
+    padding: 0 clamp(20px,4.5vw,80px)!important;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    background: rgba(255,255,255,.9)!important;
+    border: 0!important;
+    border-bottom: 1px solid #7ca9d0!important;
+    box-shadow: none!important;
+}
+
+.gcg-promo-page .hub-header .tabs {
+    display: flex!important;
+    align-items: center;
+    justify-content: flex-end!important;
+    flex-wrap: nowrap!important;
+}
+
+.gcg-promo-page .hub-header .tab-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gcg-promo-page .hub-header .brand-logo {
+    display: block;
+}
+
+.gcg-promo-page .hub-header .header-menu {
+    flex: 0 0 auto;
+}
+
+.gcg-promo-page .page-header,.gcg-promo-page header:not(.hub-header) {
+    width: 100%;
+}
+
+.gcg-promo-page .hub-footer.gcg-footer {
+    margin-top: auto!important;
+    min-height: 58px!important;
+    background: linear-gradient(135deg,#8eb5d6 0 15%,#e7f4ff 15% 18%,#8eb5d6 18% 55%,#6f9fc6 55% 100%)!important;
+    color: #fff!important;
+    border-top: 0!important;
+    font-size: 11px!important;
+    font-weight: 900;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+}
+
+.gcg-promo-page .hub-header .header-brand {
+    padding: 0!important;
+    background: none!important;
+}
+
+@media(max-width:1200px) {
+
+    .gcg-promo-page .hub-header {
+        height: auto;
+        min-height: 100px;
+        flex-wrap: wrap;
+        padding: 12px 25px!important;
+    }
+
+    .gcg-promo-page .hub-header .tabs {
+        order: 3;
+        flex: 1 0 100%;
+        justify-content: center!important;
+        border-top: 1px solid #b4d0e4!important;
+    }
+}
+
+@media(max-width:700px) {
+
+    .gcg-promo-page .hub-header {
+        min-height: 83px;
+        gap: 10px;
+        padding: 8px 14px!important;
+    }
+
+    .gcg-promo-page .hub-header .tabs {
+        display: none!important;
+        flex-direction: column;
+        align-items: stretch;
+        order: 3;
+        flex: 1 0 100%;
+        background: white!important;
+    }
+
+    .gcg-promo-page .hub-header.menu-open .tabs {
+        display: flex!important;
+    }
+
+    .gcg-promo-page .hub-header .tab-btn {
+        width: 100%;
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    .gcg-promo-page .hub-header .tab-btn.active {
+        clip-path: none;
+    }
+}
+/* =====================================================================
+   SOURCE: css/promo-polish-v33.css
+   ===================================================================== */
+/* V33 — Simple home navigation and uncropped promotional cards. */
+
+.gcg-promo-page .hub-header .promo-home-nav {
+    margin-left: auto!important;
+    flex: 0 0 auto!important;
+    width: auto!important;
+    justify-content: flex-end!important;
+    border: 0!important;
+}
+
+.gcg-promo-page .hub-header .promo-home-nav .tab-btn {
+    min-width: 115px;
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.gcg-promo-page .hub-header .header-menu {
+    display: none!important;
+}
+
+.gcg-promo-page .hub-header {
+    flex-wrap: nowrap!important;
+    min-height: 76px!important;
+    height: 76px!important;
+}
+
+.gcg-promo-page .hub-header .promo-home-nav {
+    order: initial!important;
+}
+
+@media(max-width:700px) {
+
+    .gcg-promo-page .hub-header {
+        padding: 8px 15px!important;
+        gap: 8px!important;
+    }
+
+    .gcg-promo-page .hub-header .promo-home-nav {
+        display: flex!important;
+        flex: 0 0 auto!important;
+        order: initial!important;
+    }
+
+    .gcg-promo-page .hub-header .promo-home-nav .tab-btn {
+        width: auto!important;
+        min-width: 85px;
+        padding: 12px 15px!important;
+        justify-content: center!important;
+    }
+
+    .gcg-promo-page .hub-header .header-descriptor {
+        display: none!important;
+    }
+}
+/* Cards must show the entire original image, not a cropped thumbnail.
+   Keep these rules scoped to galleries; image-viewer remains unaffected. */
+
+.gcg-promo-page main .promo-card,
+.gcg-promo-page main .card,
+.gcg-promo-page main .promo-grid > *,
+.gcg-promo-page main .grid > * {
+    height: auto!important;
+    max-height: none!important;
+    aspect-ratio: auto!important;
+    overflow: visible!important;
+}
+
+.gcg-promo-page main .promo-card img,
+.gcg-promo-page main .card img,
+.gcg-promo-page main .promo-grid img,
+.gcg-promo-page main .grid img {
+    display: block!important;
+    width: 100%!important;
+    height: auto!important;
+    max-height: none!important;
+    object-fit: contain!important;
+    object-position: center!important;
+    aspect-ratio: auto!important;
+    clip-path: none!important;
+}
+
+.gcg-promo-page .gcg-footer {
+    padding-bottom: 20px!important;
+}
+
+.gcg-promo-page .gcg-footer span {
+    display: block;
+}
+/* =====================================================================
+   SOURCE: css/promo-footer-fix-v34.css
+   ===================================================================== */
+/* V34: edge-to-edge footer, and keep floating switch clear of the footer. */
+
+html, body.gcg-promo-page {
+    min-height: 100%;
+}
+
+body.gcg-promo-page {
+    min-height: 100vh;
+    margin: 0!important;
+    display: flex;
+    flex-direction: column;
+    overflow-x: clip;
+}
+
+body.gcg-promo-page > main {
+    flex: 1 0 auto;
+}
+
+body.gcg-promo-page > .gcg-footer.hub-footer {
+    box-sizing: border-box!important;
+    position: relative!important;
+    left: auto!important;
+    right: auto!important;
+    width: 100%!important;
+    max-width: none!important;
+    min-width: 100%!important;
+    margin: 0!important;
+    padding: 15px clamp(24px,4.3vw,80px)!important;
+    display: flex!important;
+    justify-content: space-between!important;
+    align-items: center!important;
+    gap: 24px!important;
+    flex: 0 0 auto!important;
+    white-space: normal!important;
+}
+
+body.gcg-promo-page > .gcg-footer.hub-footer span {
+    display: inline!important;
+    flex: 0 1 auto!important;
+}
+
+body.gcg-promo-page .bottom-toggle-wrapper {
+    position: fixed!important;
+    bottom: 76px!important;
+    left: 50%!important;
+    right: auto!important;
+    transform: translateX(-50%)!important;
+    z-index: 100!important;
+    width: min(430px,calc(100vw - 24px))!important;
+    margin: 0!important;
+    pointer-events: none;
+}
+
+body.gcg-promo-page .bottom-toggle-wrapper .bottom-toggle {
+    pointer-events: auto;
+}
+
+@media(max-width:700px) {
+
+    body.gcg-promo-page > .gcg-footer.hub-footer {
+        padding: 15px 18px!important;
+        flex-wrap: wrap!important;
+        gap: 5px!important;
+        font-size: 9px!important;
+    }
+
+    body.gcg-promo-page .bottom-toggle-wrapper {
+        bottom: 82px!important;
+    }
+}

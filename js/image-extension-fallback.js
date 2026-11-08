@@ -1,17 +1,23 @@
+/* =====================================================================
+   GCG JAVASCRIPT — js/image-extension-fallback.js
+   CONFIGURATION / USER-EDITABLE SETTINGS
+   Search this file for: const, let, CONFIG, URL, and asset paths.
+   Do not move existing declarations without checking initialization
+   order; this cleanup preserves existing runtime behaviour.
+   ===================================================================== */
 // Resolve image extensions automatically, preferring WebP when available.
 // A failed candidate is tried with other formats before existing fallback handlers run.
 (() => {
     const extensions = ["webp", "png", "jpg", "jpeg", "avif", "gif"];
     const attempts = new WeakMap();
-
     document.addEventListener("error", (event) => {
         const img = event.target;
-        if (!(img instanceof HTMLImageElement)) return;
-
+        if (!(img instanceof HTMLImageElement))
+            return;
         const current = img.getAttribute("src") || "";
         const match = current.match(/^(.*)\.(webp|png|jpe?g|avif|gif)([?#].*)?$/i);
-        if (!match) return;
-
+        if (!match)
+            return;
         const stem = match[1];
         const suffix = match[3] || "";
         let state = attempts.get(img);
@@ -24,7 +30,8 @@
         if (next) {
             event.stopImmediatePropagation();
             img.src = `${stem}.${next}${suffix}`;
-        } else {
+        }
+        else {
             attempts.delete(img);
         }
     }, true);
