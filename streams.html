@@ -1,334 +1,247 @@
 <!DOCTYPE html>
-
 <html lang="en">
-<head>
-<!-- GCG PAGE SETTINGS: Update page title, navigation URLs, and content below. Shared visual settings: css/pages/*.css; page behaviour: js/*.js. -->
-<meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
    Streams | Masa's GCG Hub
   </title>
-<link href="images/Branding/favicon.png" rel="icon"/>
-<link href="css/streams.css" rel="stylesheet"/>
-<link href="css/shared-header.css" rel="stylesheet"/></head>
-<body>
-<script src="js/shared-header.js"></script>
-<main class="shell">
-<div class="heading">
-<div>
-<p class="eyebrow">
+  <link href="images/Branding/favicon.png" rel="icon"/>
+  <link href="css/streams.css?v=20261108-v12" rel="stylesheet"/>
+ </head>
+ <body>
+  <header class="top">
+   <a class="home" href="index.html">
+    ← Masa's GCG Hub
+   </a>
+   <span class="wordmark">
+    Masa's GCG Hub
+    <b>
+     STREAMS
+    </b>
+   </span>
+   <a hidden="" href="admin.html" id="admin-link">
+    ● Admin Mode
+   </a>
+  </header>
+  <main class="shell">
+   <div class="heading">
+    <div>
+     <p class="eyebrow">
       COMMUNITY WATCH PARTY
      </p>
-<h1>
+     <h1>
       Gundam Card Game Streams
      </h1>
-<p class="sub">
+     <p class="sub">
       Watch together, discuss reveals, and catch the latest featured video.
      </p>
-</div>
-<span class="status" id="stream-status">
+    </div>
+    <span class="status" id="stream-status">
      FEATURED VIDEO
     </span>
-</div>
-<div class="layout">
-<section class="video-column">
-<div class="video-frame" id="video-frame">
-<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" hidden="" id="video" referrerpolicy="strict-origin-when-cross-origin" title="Featured YouTube stream">
-</iframe>
-<div class="empty-video" id="empty-video">
-<span class="play">
+   </div>
+   <div class="layout">
+    <section class="video-column">
+     <div class="video-frame" id="video-frame">
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="" hidden="" id="video" referrerpolicy="strict-origin-when-cross-origin" title="Featured YouTube stream">
+      </iframe>
+      <div class="empty-video" id="empty-video">
+       <span class="play">
         ▶
        </span>
-<h2>
+       <h2>
         No featured stream yet
        </h2>
-<p>
+       <p>
         An admin can add a YouTube livestream or replay.
        </p>
-</div>
-<div aria-hidden="true" class="stream-avatar-layer" id="stream-avatar-layer">
-</div>
-</div>
-<div class="view-toolbar">
-<button aria-pressed="true" id="avatars-toggle" title="Show or hide viewer avatars" type="button">
+      </div>
+      <div id="stream-avatar-layer" class="stream-avatar-layer" aria-hidden="true"></div>
+     </div>
+     <div class="view-toolbar">
+      <button aria-pressed="true" id="avatars-toggle" type="button" title="Show or hide viewer avatars">
        👾 Avatars: On
       </button>
-<button aria-pressed="false" id="theatre-toggle" type="button">
+      <button aria-pressed="false" id="theatre-toggle" type="button">
        ▣ Theatre Mode
       </button>
-<button aria-pressed="false" hidden="" id="player-lock-toggle" title="Prevent mouse interaction with the YouTube player" type="button">
+      <button aria-pressed="false" hidden="" id="player-lock-toggle" title="Prevent mouse interaction with the YouTube player" type="button">
        🔓 Lock Player
       </button>
-<button hidden="" id="capture-start" type="button">
+      <button hidden="" id="capture-start" type="button">
        ◉ Start Capture
       </button>
-<button disabled="" hidden="" id="screenshot-button" type="button">
+      <button disabled="" hidden="" id="screenshot-button" type="button">
        ▢ Copy video frame
       </button>
-<button hidden="" id="capture-stop" type="button">
+      <button hidden="" id="capture-stop" type="button">
        ■ Stop Capture
       </button>
-<span aria-live="polite" id="capture-feedback" role="status">
-</span>
-<a hidden="" id="youtube-link" rel="noopener noreferrer" target="_blank">
+      <span aria-live="polite" id="capture-feedback" role="status">
+      </span>
+      <a hidden="" id="youtube-link" rel="noopener noreferrer" target="_blank">
        Open on YouTube ↗
       </a>
-</div>
-<section class="admin-panel" hidden="" id="admin-panel">
-<div class="admin-head">
-<h3>
+     </div>
+     <section class="admin-panel" hidden="" id="admin-panel">
+      <div class="admin-head">
+       <h3>
         Admin · Featured video
        </h3>
-<span>
+       <span>
         Only visible to authorised admins
        </span>
-</div>
-<form id="stream-form">
-<label for="stream-url">
+      </div>
+      <form id="stream-form">
+       <label for="stream-url">
         YouTube URL (livestream, replay or video)
        </label>
-<input id="stream-url" placeholder="https://www.youtube.com/watch?v=..." required="" type="url"/>
-<label class="check">
-<input id="stream-live" type="checkbox"/>
+       <input id="stream-url" placeholder="https://www.youtube.com/watch?v=..." required="" type="url"/>
+       <label class="check">
+        <input id="stream-live" type="checkbox"/>
         Mark as LIVE (manual)
        </label>
-<div class="actions">
-<button type="submit">
+       <div class="actions">
+        <button type="submit">
          Save featured video
         </button>
-<button class="secondary" id="clear-stream" type="button">
+        <button class="secondary" id="clear-stream" type="button">
          Clear video
         </button>
-<button class="secondary" id="refresh-all-viewers" title="Ask everyone currently connected to reload their Streams page" type="button">
+        <button class="secondary" id="refresh-all-viewers" type="button" title="Ask everyone currently connected to reload their Streams page">
          🔄 Refresh All Viewers
         </button>
-<button class="secondary" id="clear-chat" style="border-color:#b95656;color:#e89a9a" type="button">
+        <button class="secondary" id="clear-chat" style="border-color:#b95656;color:#e89a9a" type="button">
          Clear Chat
         </button>
-</div>
-<p id="admin-feedback" role="status">
-</p>
-</form>
-</section>
-</section>
-<aside class="chat">
-<div class="chat-header">
-<div>
-<h2>
+       </div>
+       <p id="admin-feedback" role="status">
+       </p>
+      </form>
+     </section>
+    </section>
+    <aside class="chat">
+     <div class="chat-header">
+      <div>
+       <h2>
         Community Chat
        </h2>
-<p>
+       <p>
         Open even when the stream is offline
        </p>
-</div>
-<span aria-label="Connected viewers" class="chat-viewers" id="chat-viewer-count" role="status" title="Connected viewers (including you)">
-<span aria-hidden="true">
-        👥
-       </span>
-<span id="viewer-count-number">
-        0
-       </span>
-</span>
-</div>
-<div class="messages-wrap">
-<div aria-live="polite" class="messages" id="messages">
-<p class="notice">
-        Connecting to chat…
-       </p>
-</div>
-<div aria-hidden="true" class="reaction-float-layer" id="reaction-float-layer">
-</div>
-</div>
-<div class="chat-bottom">
-<div class="identity">
-<div class="identity-profile">
-<img alt="" class="identity-avatar" hidden="" id="identity-avatar"/>
-<span id="nickname-display">
+      </div>
+      <span class="chat-viewers" id="chat-viewer-count" title="Connected viewers (including you)" aria-label="Connected viewers" role="status"><span aria-hidden="true">👥</span> <span id="viewer-count-number">0</span></span>
+     </div>
+     <div class="messages-wrap">
+      <div aria-live="polite" class="messages" id="messages">
+      <p class="notice">
+       Connecting to chat…
+      </p>
+     </div>
+      <div class="reaction-float-layer" id="reaction-float-layer" aria-hidden="true"></div>
+     </div>
+     <div class="chat-bottom">
+      <div class="identity">
+       <div class="identity-profile">
+       <img id="identity-avatar" class="identity-avatar" alt="" hidden/><span id="nickname-display">
         Choose a nickname
        </span>
-<button aria-label="Edit profile" id="edit-nickname" title="Edit profile" type="button">
+       <button aria-label="Edit profile" id="edit-nickname" title="Edit profile" type="button">
         ✎
        </button>
-</div>
-<div aria-label="Chat games" class="chat-actions">
-<button aria-label="Roll a six-sided die" id="roll-dice" title="Roll D6" type="button">
-         🎲
-        </button>
-<button aria-label="Draw a random Gundam card" id="draw-card" title="Draw random card" type="button">
-         🃏
-        </button>
-</div>
-<div aria-label="Live floating reactions" class="quick-reactions">
-<button aria-label="Send fire reaction" data-reaction="🔥" title="Hype" type="button">
-         🔥
-        </button>
-<button aria-label="Send heart reaction" data-reaction="❤️" title="Love" type="button">
-         ❤️
-        </button>
-<button aria-label="Send laughing reaction" data-reaction="😂" title="Laugh" type="button">
-         😂
-        </button>
-<span class="finger-reaction-wrap">
-<button aria-label="Send Shining Finger reaction; hold to choose skin tone" data-reaction="☝️" id="finger-reaction" title="Click to react, hold to choose skin tone" type="button">
-          ☝️
-         </button>
-<span aria-label="Choose Shining Finger skin tone" class="finger-tone-picker" hidden="" id="finger-tone-picker" role="group">
-<button aria-label="Default skin tone" data-finger-tone="☝️" type="button">
-           ☝️
-          </button>
-<button aria-label="Light skin tone" data-finger-tone="☝🏻" type="button">
-           ☝🏻
-          </button>
-<button aria-label="Medium-light skin tone" data-finger-tone="☝🏼" type="button">
-           ☝🏼
-          </button>
-<button aria-label="Medium skin tone" data-finger-tone="☝🏽" type="button">
-           ☝🏽
-          </button>
-<button aria-label="Medium-dark skin tone" data-finger-tone="☝🏾" type="button">
-           ☝🏾
-          </button>
-<button aria-label="Dark skin tone" data-finger-tone="☝🏿" type="button">
-           ☝🏿
-          </button>
-<button aria-label="Shining Finger green" data-finger-tone="shining-finger" type="button">
-<img alt="Shining Finger" src="images/emojis/ShiningFinger.webp"/>
-</button>
-<button aria-label="Darkness Finger purple" data-finger-tone="darkness-finger" type="button">
-<img alt="Darkness Finger" src="images/emojis/DarknessFinger.webp"/>
-</button>
-</span>
-</span>
-<button aria-label="Send 100 reaction" data-reaction="💯" title="100" type="button">
-         💯
-        </button>
-</div>
-</div>
-<div class="chat-picker" hidden="" id="chat-picker">
-<div class="picker-tabs">
-<button class="active" data-picker-tab="emoji" type="button">
-         😀 Emoji
-        </button>
-<button data-picker-tab="gifs" type="button">
-         GIFs
-        </button>
-<button data-picker-tab="custom" type="button">
-         Custom
-        </button>
-<button aria-label="Close picker" id="close-picker" type="button">
-         ✕
-        </button>
-</div>
-<section class="picker-panel" id="emoji-panel">
-<div class="light-emoji">
-<input aria-label="Search emojis" autocomplete="off" id="emoji-search" placeholder="Search emojis…" type="search"/>
-<div class="emoji-categories" id="emoji-categories">
-</div>
-<div class="emoji-grid" id="emoji-grid">
-</div>
-</div>
-</section>
-<section class="picker-panel" hidden="" id="gifs-panel">
-<input aria-label="Search GIFs" id="gif-search" placeholder="Search GIFs…" type="search"/>
-<div class="gif-results" id="gif-results">
-</div>
-<p class="gif-status" id="gif-status">
-</p>
-<div hidden="" id="gif-limit">
-<strong>
-          ☝️ NO MORE FINGERING!
-         </strong>
-<p>
-          Masa has reached his daily limit. Please try again later.
-         </p>
-<button id="gif-retry" type="button">
-          🔥 Recharge Finger
-         </button>
-</div>
-<small>
-         Powered by
-         <a href="https://giphy.com/" rel="noopener noreferrer" target="_blank">
-          GIPHY
-         </a>
-</small>
-</section>
-<section class="picker-panel" hidden="" id="custom-panel">
-<div class="custom-results" id="custom-results">
-</div>
-</section>
-</div>
-<form id="message-form">
-<button aria-label="Open emoji and GIF picker" id="open-picker" title="Emojis and GIFs" type="button">
-        😀
-       </button>
-<input aria-label="Chat message" autocomplete="off" disabled="" id="message-input" maxlength="300" placeholder="Send a message…" required=""/>
-<button disabled="" id="send-button" type="submit">
+       </div>
+        <div class="chat-actions" aria-label="Chat games">
+          <button type="button" id="roll-dice" aria-label="Roll a six-sided die" title="Roll D6">🎲</button>
+          <button type="button" id="draw-card" aria-label="Draw a random Gundam card" title="Draw random card">🃏</button>
+        </div>
+        <div class="quick-reactions" aria-label="Live floating reactions">
+          <button type="button" data-reaction="🔥" aria-label="Send fire reaction" title="Hype">🔥</button>
+          <button type="button" data-reaction="❤️" aria-label="Send heart reaction" title="Love">❤️</button>
+          <button type="button" data-reaction="😂" aria-label="Send laughing reaction" title="Laugh">😂</button>
+          <span class="finger-reaction-wrap">
+            <button type="button" id="finger-reaction" data-reaction="☝️" aria-label="Send Shining Finger reaction; hold to choose skin tone" title="Click to react, hold to choose skin tone">☝️</button>
+            <span class="finger-tone-picker" id="finger-tone-picker" role="group" aria-label="Choose Shining Finger skin tone" hidden>
+              <button type="button" data-finger-tone="☝️" aria-label="Default skin tone">☝️</button>
+              <button type="button" data-finger-tone="☝🏻" aria-label="Light skin tone">☝🏻</button>
+              <button type="button" data-finger-tone="☝🏼" aria-label="Medium-light skin tone">☝🏼</button>
+              <button type="button" data-finger-tone="☝🏽" aria-label="Medium skin tone">☝🏽</button>
+              <button type="button" data-finger-tone="☝🏾" aria-label="Medium-dark skin tone">☝🏾</button>
+              <button type="button" data-finger-tone="☝🏿" aria-label="Dark skin tone">☝🏿</button>
+              <button type="button" data-finger-tone="shining-finger" aria-label="Shining Finger green"><img src="images/emojis/ShiningFinger.webp" alt="Shining Finger"></button>
+              <button type="button" data-finger-tone="darkness-finger" aria-label="Darkness Finger purple"><img src="images/emojis/DarknessFinger.webp" alt="Darkness Finger"></button>
+            </span>
+          </span>
+          <button type="button" data-reaction="💯" aria-label="Send 100 reaction" title="100">💯</button>
+        </div>
+      </div>
+      <div class="chat-picker" id="chat-picker" hidden>
+        <div class="picker-tabs">
+         <button type="button" class="active" data-picker-tab="emoji">😀 Emoji</button>
+         <button type="button" data-picker-tab="gifs">GIFs</button>
+         <button type="button" data-picker-tab="custom">Custom</button>
+         <button type="button" id="close-picker" aria-label="Close picker">✕</button>
+        </div>
+        <section id="emoji-panel" class="picker-panel"><div class="light-emoji"><input id="emoji-search" type="search" placeholder="Search emojis…" aria-label="Search emojis" autocomplete="off"><div id="emoji-categories" class="emoji-categories"></div><div id="emoji-grid" class="emoji-grid"></div></div></section>
+        <section id="gifs-panel" class="picker-panel" hidden>
+         <input id="gif-search" type="search" placeholder="Search GIFs…" aria-label="Search GIFs" />
+         <div class="gif-results" id="gif-results"></div>
+         <p class="gif-status" id="gif-status"></p>
+         <div id="gif-limit" hidden><strong>☝️ NO MORE FINGERING!</strong><p>Masa has reached his daily limit. Please try again later.</p><button type="button" id="gif-retry">🔥 Recharge Finger</button></div>
+         <small>Powered by <a href="https://giphy.com/" target="_blank" rel="noopener noreferrer">GIPHY</a></small>
+        </section>
+        <section id="custom-panel" class="picker-panel" hidden><div id="custom-results" class="custom-results"></div></section>
+       </div>
+      <form id="message-form">
+       <button id="open-picker" type="button" aria-label="Open emoji and GIF picker" title="Emojis and GIFs">😀</button>
+       <input aria-label="Chat message" autocomplete="off" disabled="" id="message-input" maxlength="300" placeholder="Send a message…" required=""/>
+       <button disabled="" id="send-button" type="submit">
         ➤
        </button>
-</form>
-<p class="hint" id="chat-feedback">
+      </form>
+      <p class="hint" id="chat-feedback">
        Messages are public. Be respectful.
       </p>
-</div>
-</aside>
-</div>
-</main><footer class="streams-footer"><span>MASA’S GCG HUB</span><span>UNOFFICIAL GUNDAM CARD GAME FAN RESOURCE · NOT AFFILIATED WITH BANDAI</span></footer>
-<dialog id="nickname-dialog">
-<form id="nickname-form" method="dialog">
-<div class="profile-preview">
-<img alt="" hidden="" id="profile-preview-avatar"/>
-<span id="profile-preview-name">
-      Your name
-     </span>
-</div>
-<h2>
-     Edit your chat profile
-    </h2>
-<p>
-     Choose your name, avatar and name colour.
+     </div>
+    </aside>
+   </div>
+   <p class="footer">
+    Hi xD
+   </p>
+  </main>
+  <dialog id="nickname-dialog">
+   <form id="nickname-form" method="dialog">
+    <button type="button" id="profile-close" class="profile-close" aria-label="Close profile editor without saving" title="Close without saving">×</button>
+    <div class="profile-preview"><img id="profile-preview-avatar" alt="" hidden/><span id="profile-preview-name">Your name</span></div>
+    <h2>Edit your chat profile</h2>
+    <p>Choose your name, avatar and name colour.</p>
+    <label for="nickname-input">YOUR NICKNAME</label>
+    <input autocomplete="nickname" id="nickname-input" maxlength="24" minlength="2" placeholder="e.g. GundamFan" required=""/>
+    <label>CHOOSE YOUR AVATAR</label>
+    <div class="avatar-tabs" role="group" aria-label="Avatar category">
+      <button type="button" class="active" data-avatar-category="Pilots" aria-pressed="true">Pilots</button>
+      <button type="button" data-avatar-category="Units" aria-pressed="false">Mobile Suits</button>
+    </div>
+    <div id="avatar-grid" class="avatar-grid" aria-label="Available avatars"></div>
+    <p id="avatar-feedback" class="avatar-feedback" aria-live="polite"></p>
+    <label>NAME COLOUR</label>
+    <div id="profile-colors" class="profile-colors" aria-label="Choose name colour"></div>
+    <p class="error" id="nickname-error">
     </p>
-<label for="nickname-input">
-     YOUR NICKNAME
-    </label>
-<input autocomplete="nickname" id="nickname-input" maxlength="24" minlength="2" placeholder="e.g. GundamFan" required=""/>
-<label>
-     CHOOSE YOUR AVATAR
-    </label>
-<div aria-label="Avatar category" class="avatar-tabs" role="group">
-<button aria-pressed="true" class="active" data-avatar-category="Pilots" type="button">
-      Pilots
-     </button>
-<button aria-pressed="false" data-avatar-category="Units" type="button">
-      Mobile Suits
-     </button>
-</div>
-<div aria-label="Available avatars" class="avatar-grid" id="avatar-grid">
-</div>
-<p aria-live="polite" class="avatar-feedback" id="avatar-feedback">
-</p>
-<label>
-     NAME COLOUR
-    </label>
-<div aria-label="Choose name colour" class="profile-colors" id="profile-colors">
-</div>
-<p class="error" id="nickname-error">
-</p>
-<button type="submit">
+    <button type="submit">
      Save profile
     </button>
-<p class="hint">
+    <p class="hint">
      You can change your profile later.
     </p>
-</form>
-</dialog>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
-</script>
-<script src="js/admin-config.js">
-</script>
-<script src="js/giphy-config.js">
-</script>
-<script defer="" src="js/streams.js">
-</script>
-<script defer="" src="js/streams-mobile-picker.js"></script>
-</body>
+   </form>
+  </dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+  </script>
+  <script src="js/admin-config.js">
+  </script>
+  <script src="js/giphy-config.js"></script>
+  <script defer="" src="js/streams.js?v=20261108-v12">
+  </script>
+ </body>
 </html>

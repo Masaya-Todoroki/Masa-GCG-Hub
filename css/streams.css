@@ -2126,3 +2126,379 @@ body.theatre-mode .streams-footer { display: none; }
 @keyframes stream-card-flip { 0%,20% { transform:rotateY(0); } 100% { transform:rotateY(180deg); } }
 @keyframes stream-card-float { 0% { opacity:0; transform:translate(-50%,12px) scale(.6); } 12% { opacity:1; transform:translate(-50%,0) scale(1.05); } 23% { transform:translate(-50%,0) scale(1); } 78% { opacity:1; transform:translate(-50%,-7px); } 100% { opacity:0; transform:translate(-50%,-22px); } }
 @media (prefers-reduced-motion: reduce) { .stream-walker-drawn-card { animation:none; transform:translateX(-50%); } .stream-walker-card-flipper { animation:none; transform:rotateY(180deg); } }
+
+/* Chat username readability — shared, adjustable highlight colours. */
+:root {
+  --streams-name-bg: #dbeaf8;
+  --streams-name-text: #174c78;
+  --streams-name-border: #bdd7ed;
+  --streams-admin-name-bg: #fff0cf;
+  --streams-admin-name-text: #805000;
+  --streams-admin-name-border: #e9d39c;
+}
+.messages .msg-top .msg-name {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  max-width: 75%;
+  padding: 3px 8px;
+  border: 1px solid var(--streams-name-border);
+  border-radius: 5px;
+  background: var(--streams-name-bg);
+  color: var(--streams-name-text);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+  text-shadow: none;
+  overflow-wrap: anywhere;
+}
+.messages .msg-top .msg-name.admin {
+  background: var(--streams-admin-name-bg);
+  border-color: var(--streams-admin-name-border);
+  color: var(--streams-admin-name-text);
+}
+
+/* ============================================================
+   CHAT READABILITY — adjust these settings together
+   Retains username colours supplied by the chat JavaScript.
+   ============================================================ */
+:root {
+  --streams-chat-message-bg: #e5edf6;
+  --streams-chat-name-tint: 23%;
+  --streams-chat-name-radius: 5px;
+}
+.chat .messages-wrap, .chat .messages {
+  background-color: var(--streams-chat-message-bg);
+}
+.messages .msg-top .msg-name,
+.messages .msg-top .msg-name.admin,
+.msg-body .msg-name {
+  /* JS inline colours remain authoritative; no hardcoded blue/gold. */
+  color: inherit;
+  -webkit-text-stroke: 0 transparent !important;
+  text-shadow: none !important;
+  paint-order: normal;
+  background-color: color-mix(in srgb, currentColor var(--streams-chat-name-tint), white);
+  border: 0;
+  border-radius: var(--streams-chat-name-radius);
+  padding: 3px 8px;
+  font-weight: 800;
+}
+/* A user-specific inline style.color beats the stylesheet's inherit rule. */
+
+/* ============================================================
+   CHAT READABILITY v3 — tune here; preserve user-selected colours
+   ============================================================ */
+:root {
+  --streams-chat-name-default: #194b77;
+  --streams-chat-name-outline: rgba(12, 28, 45, .55);
+  --streams-chat-name-outline-width: .35px;
+  --streams-chat-name-highlight-opacity: 22%;
+  --streams-profile-colour-panel: #263b52;
+  --streams-profile-selected-ring: #ffffff;
+}
+/* The JS sets inline colour for known users. Avoid overriding it. */
+.messages .msg-top .msg-name,
+.messages .msg-top .msg-name.admin {
+  color: var(--streams-chat-name-default);
+  background: color-mix(in srgb, currentColor var(--streams-chat-name-highlight-opacity), #e5edf6);
+  border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+  -webkit-text-stroke: var(--streams-chat-name-outline-width) var(--streams-chat-name-outline);
+  text-shadow: none !important;
+  paint-order: stroke fill;
+}
+/* Ensure inline colour from profile data still wins over the fallback above. */
+.messages .msg-top .msg-name[style*="color"] {
+  background: color-mix(in srgb, currentColor var(--streams-chat-name-highlight-opacity), #e5edf6);
+}
+/* Dark swatch tray makes white visible; distinct selected ring for all colours. */
+#nickname-form .profile-colors {
+  background: var(--streams-profile-colour-panel);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #55718c;
+}
+#nickname-form .profile-color {
+  border: 2px solid #15293d;
+  box-shadow: 0 0 0 1px #8ba8bf;
+}
+#nickname-form .profile-color.selected {
+  outline: 3px solid var(--streams-profile-selected-ring);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 2px #162a3d, 0 0 0 6px rgba(117,185,238,.5);
+}
+
+/* Chat readability v4: shared controls */
+:root {
+  --streams-chat-message-bg: #d6e3f0;
+  --streams-chat-white-name-bg: #233b54;
+  --streams-chat-white-name-border: #55738f;
+}
+.chat .messages-wrap, .chat .messages { background-color: var(--streams-chat-message-bg); }
+.messages .msg-top .msg-name,
+.messages .msg-top .msg-name.admin {
+  background-color: color-mix(in srgb, currentColor 18%, var(--streams-chat-message-bg));
+  -webkit-text-stroke: .35px rgba(10, 28, 45, .6);
+}
+.messages .msg-top .msg-name.stream-name-white,
+.messages .msg-top .msg-name.admin.stream-name-white {
+  color: #fff;
+  background: var(--streams-chat-white-name-bg);
+  border-color: var(--streams-chat-white-name-border);
+  -webkit-text-stroke: .3px #071524;
+}
+#nickname-dialog { position: relative; }
+#nickname-dialog .profile-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin: -8px -8px 0 0;
+  border: 1px solid #9dbbd4;
+  border-radius: 8px;
+  background: #e1edf8;
+  color: #193954;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+}
+#nickname-dialog .profile-close:hover { background: #c9dfef; }
+#nickname-dialog .profile-close:focus-visible { outline: 3px solid #2b79b5; outline-offset: 2px; }
+
+/* v5 — crisp black outline, no drop shadow, preserve profile colours. */
+:root {
+  --streams-name-outline-colour: #000000;
+  --streams-name-outline-width: 0.8px;
+  --streams-chat-name-outline: #000000;
+  --streams-chat-name-outline-width: 0.8px;
+}
+#nickname-display,
+.msg-name,
+.stream-walker-name,
+.messages .msg-top .msg-name,
+.messages .msg-top .msg-name.admin,
+.messages .msg-top .msg-name.stream-name-white,
+.messages .msg-top .msg-name.admin.stream-name-white {
+  -webkit-text-stroke: var(--streams-name-outline-width) var(--streams-name-outline-colour) !important;
+  paint-order: stroke fill;
+  text-shadow: none !important;
+}
+
+/* v6: Restore chat control positions and compact profile editor. */
+.identity {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 6px 10px;
+}
+.identity-profile { grid-column: 1; grid-row: 1; display: flex; align-items: center; gap: 7px; min-width: 0; overflow: hidden; }
+.identity-profile #nickname-display { flex: 0 1 auto; }
+.identity-profile #edit-nickname { flex: 0 0 auto; }
+.identity > .chat-actions { grid-column: 2; grid-row: 1; margin: 0; justify-self: end; }
+.identity > .quick-reactions { grid-column: 1 / -1; grid-row: 2; justify-self: end; margin: 0; }
+
+#nickname-dialog {
+  box-sizing: border-box;
+  width: min(480px, calc(100vw - 24px));
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 20px);
+  padding: 12px 20px 14px;
+  overflow-y: auto;
+  position: relative;
+}
+#nickname-form { gap: 7px; }
+#nickname-dialog .profile-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  float: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-family: Arial, sans-serif;
+  font-size: 23px;
+  line-height: 1;
+  z-index: 10;
+}
+#nickname-form .profile-preview { min-height: 52px; padding: 5px 44px 5px 10px; }
+#nickname-form .profile-preview img { width: 43px; height: 43px; }
+#nickname-form h2 { font-size: clamp(20px, 3vh, 26px); line-height: 1.1; }
+#nickname-form p { margin: 0; }
+#nickname-form label { margin: 0; }
+#nickname-form input { padding: 8px 10px; }
+#nickname-form .avatar-tabs button { padding: 6px; }
+#nickname-form .avatar-grid { max-height: none; overflow: visible; gap: 5px; padding: 1px; }
+#nickname-form .avatar-option { padding: 4px 2px; gap: 2px; }
+#nickname-form .avatar-option img { width: 42px; height: 42px; }
+#nickname-form .avatar-option span { font-size: 10px; }
+#nickname-form .profile-colors { padding: 9px 12px; }
+#nickname-form .profile-color { width: 29px; height: 29px; }
+#nickname-form button[type="submit"] { padding: 9px; }
+@media (max-height: 750px) and (min-width: 520px) {
+  #nickname-dialog { padding: 8px 16px; }
+  #nickname-form { gap: 4px; }
+  #nickname-form .profile-preview { min-height: 42px; padding-top: 2px; padding-bottom: 2px; }
+  #nickname-form .profile-preview img { width: 35px; height: 35px; }
+  #nickname-form .avatar-option img { width: 32px; height: 32px; }
+  #nickname-form .avatar-option { padding: 2px; }
+  #nickname-form .avatar-tabs button { padding: 4px; }
+  #nickname-form .profile-colors { padding: 6px 10px; }
+  #nickname-form .profile-color { width: 25px; height: 25px; }
+}
+@media (max-width: 519px) {
+  #nickname-dialog { padding: 12px; }
+  #nickname-form .avatar-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* v7 — give the profile close button its own space; improve name legibility. */
+:root {
+  --streams-name-outline-width: 0.5px;
+  --streams-chat-name-outline-width: 0.5px;
+  --streams-name-letter-spacing: 0.3px;
+}
+/* Keep the close button in the light popup area, not over the dark preview. */
+#nickname-form .profile-preview {
+  margin-right: 45px;
+  padding-right: 10px;
+}
+#nickname-dialog .profile-close {
+  top: 12px;
+  right: 12px;
+  transform: none;
+  line-height: 1;
+  text-align: center;
+}
+#nickname-display,
+.msg-name,
+.stream-walker-name,
+.messages .msg-top .msg-name,
+.messages .msg-top .msg-name.admin,
+.messages .msg-top .msg-name.stream-name-white,
+.messages .msg-top .msg-name.admin.stream-name-white {
+  font-weight: 650;
+  letter-spacing: var(--streams-name-letter-spacing);
+  -webkit-text-stroke: var(--streams-name-outline-width) #000 !important;
+  text-shadow: none !important;
+}
+
+/* v8 — white username contrast, shared outline thickness.
+   Change these values here to tune all displayed names. */
+:root {
+  --streams-chat-white-name-bg: #b8c4d0;
+  --streams-chat-white-name-border: #9eafbf;
+  --streams-name-outline-width: 0.8px;
+  --streams-chat-name-outline-width: 0.8px;
+}
+/* Explicit white-name styling beats the generic tinted-background rule. */
+.messages .msg-top .msg-name.stream-name-white,
+.messages .msg-top .msg-name.admin.stream-name-white {
+  background: var(--streams-chat-white-name-bg) !important;
+  border: 1px solid var(--streams-chat-white-name-border) !important;
+  color: #fff;
+}
+
+/* v9 — restore the original dark chat aesthetic without changing the profile editor.
+   Adjust these variables to tune the entire chat panel. */
+:root {
+  --streams-chat-dark-bg: #1d2b3b;
+  --streams-chat-dark-bottom: #1d2b3b;
+  --streams-chat-dark-text: #e9f1fa;
+  --streams-chat-dark-muted: #a8bfd4;
+}
+.chat { background: var(--streams-chat-dark-bg) !important; border-color: #344b60; }
+.chat .messages-wrap, .chat .messages { background: var(--streams-chat-dark-bg) !important; }
+.chat .msg-body, .chat .msg-body p, .chat .msg-body span:not(.msg-name) { color: var(--streams-chat-dark-text); }
+.chat .msg-time, .chat .hint { color: var(--streams-chat-dark-muted); }
+.chat .chat-bottom { background: var(--streams-chat-dark-bottom) !important; border-top-color: #344b60; color: var(--streams-chat-dark-text); }
+.chat .identity { color: var(--streams-chat-dark-text); }
+.chat .identity button:not(.quick-reactions button) { color: #bddcf2; }
+.chat .messages .msg-top .msg-name,
+.chat .messages .msg-top .msg-name.admin,
+.chat .messages .msg-top .msg-name.stream-name-white,
+.chat .messages .msg-top .msg-name.admin.stream-name-white,
+.chat .msg-body .msg-name {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  -webkit-text-stroke: var(--streams-name-outline-width) #000 !important;
+  paint-order: stroke fill;
+  text-shadow: none !important;
+}
+/* Keep saved inline username colours intact. */
+.chat .messages .msg-top .msg-name.stream-name-white,
+.chat .messages .msg-top .msg-name.admin.stream-name-white { color: #fff; }
+.chat #nickname-display { background: transparent !important; box-shadow: none !important; }
+.chat .chat-picker { background: #122131; border-color: #4c6982; color: #e9f1fa; }
+.chat .chat-picker::placeholder { color: #8ea9be; }
+.chat .quick-reactions button { color: #e9f1fa; }
+.chat .quick-reactions button:hover { background: #35516b; }
+
+/* v10 — subtle separators between consecutive chat messages. */
+:root {
+  --streams-chat-divider-colour: rgba(166, 192, 216, 0.20);
+  --streams-chat-divider-spacing: 10px;
+}
+.chat .messages > .msg + .msg {
+  border-top: 1px solid var(--streams-chat-divider-colour);
+  padding-top: var(--streams-chat-divider-spacing);
+}
+
+/* v11 — compact chat toolbar: profile, reactions and games share one row. */
+:root {
+  --streams-chat-toolbar-gap: 6px;
+}
+.chat .chat-bottom .identity {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--streams-chat-toolbar-gap);
+  margin-bottom: 8px;
+  min-width: 0;
+}
+.chat .chat-bottom .identity > .identity-profile {
+  flex: 1 1 auto;
+  min-width: 0;
+  grid-column: auto;
+  grid-row: auto;
+}
+.chat .chat-bottom .identity > .quick-reactions {
+  flex: 0 0 auto;
+  grid-column: auto;
+  grid-row: auto;
+  justify-self: auto;
+  flex-wrap: nowrap;
+  margin: 0;
+  gap: 4px;
+}
+.chat .chat-bottom .identity > .chat-actions {
+  flex: 0 0 auto;
+  grid-column: auto;
+  grid-row: auto;
+  justify-self: auto;
+  margin: 0;
+  gap: 4px;
+}
+/* Preserve readability on narrow screens rather than squeezing or clipping buttons. */
+@media (max-width: 680px) {
+  .chat .chat-bottom .identity { flex-wrap: wrap; }
+  .chat .chat-bottom .identity > .identity-profile { flex: 1 1 100%; }
+  .chat .chat-bottom .identity > .quick-reactions { margin-left: auto; }
+}
+
+/* v12 — restore card preview readability on dark chat and flip-card back face. */
+.chat .stream-drawn-card-link { color:#9bcfff; font-weight:700; text-decoration:underline; text-underline-offset:3px; }
+.chat .stream-drawn-card-link:hover { color:#fff; }
+.stream-walker-card-back { position:absolute; inset:0; display:grid; place-items:center; border:2px solid #7fa7d2; border-radius:4px; background:linear-gradient(135deg,#11243b,#35689c); color:#fff; font-weight:900; font-size:12px; backface-visibility:hidden; box-shadow:0 2px 5px #0009; }
