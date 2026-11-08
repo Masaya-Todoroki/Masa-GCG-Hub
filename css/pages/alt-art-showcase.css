@@ -485,3 +485,37 @@ body.viewer-fullscreen .viewer-floating-exit {
 .reveal-image {
     visibility: hidden;
 }
+
+/* Viewer fixes: reserve the complete footer area, including responsive height. */
+:root { --showcase-footer-space: 48px; }
+.image-viewer { bottom: var(--showcase-footer-space) !important; }
+body.viewer-fullscreen .image-viewer { top: 0 !important; bottom: 0 !important; }
+body.viewer-fullscreen .reveal-image { pointer-events: auto !important; }
+.viewer-floating-save { display: none; position: fixed; z-index: 501; top: 15px; right: 185px; padding: 12px 15px; background: white; border: 1px solid #8abde0; border-radius: 7px; color: #183a5b; font: 800 14px Arial,sans-serif; text-decoration: none; }
+body.viewer-fullscreen .viewer-floating-save { display: block; }
+@media (max-width: 700px) { .viewer-floating-save { right: 170px; } }
+
+/* Shared header clearance: keep the page banner below the full logo/header.
+   Both pages use the same variables as css/shared-header.css. */
+@media (min-width: 1001px) {
+  .showcase-controls { top: var(--shared-header-height, 116px) !important; }
+}
+@media (max-width: 1000px) {
+  .showcase-controls { top: var(--shared-header-mobile-height, 83px) !important; }
+}
+
+/* Fullscreen controls: stack Save beneath Exit, with no overlap. */
+body.viewer-fullscreen .viewer-floating-save {
+  top: 72px !important;
+  right: 18px !important;
+  left: auto !important;
+  box-sizing: border-box;
+  min-width: 154px;
+  text-align: center;
+}
+body.viewer-fullscreen .viewer-floating-exit {
+  top: 15px !important;
+  right: 18px !important;
+  min-width: 154px;
+  box-sizing: border-box;
+}

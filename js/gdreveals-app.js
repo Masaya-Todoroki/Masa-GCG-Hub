@@ -317,3 +317,25 @@ updateViewerBounds();
 // Cached images may already be complete before their load event is handled.
 if (image.complete && image.naturalWidth)
     requestAnimationFrame(fitImage);
+
+/* Keep the artwork fitted after the header/footer have settled. */
+function syncShowcaseViewer() {
+    updateViewerBounds();
+    const footer = document.querySelector('.showcase-footer');
+    if (footer) document.documentElement.style.setProperty('--showcase-footer-space', Math.ceil(footer.getBoundingClientRect().height) + 'px');
+    requestAnimationFrame(() => requestAnimationFrame(fitImage));
+}
+window.addEventListener('load', syncShowcaseViewer);
+window.addEventListener('resize', syncShowcaseViewer);
+if ('ResizeObserver' in window) {
+    const footer = document.querySelector('.showcase-footer');
+    if (footer) new ResizeObserver(syncShowcaseViewer).observe(footer);
+}
+/* Preserve native right-click Save image as... on the actual <img>. */
+image.addEventListener('contextmenu', event => event.stopPropagation());
+const saveImageLink = document.getElementById('saveFullscreenImage');
+if (saveImageLink) {
+    const updateSaveLink = () => { saveImageLink.href = image.currentSrc || image.src; };
+    image.addEventListener('load', updateSaveLink);
+    updateSaveLink();
+}

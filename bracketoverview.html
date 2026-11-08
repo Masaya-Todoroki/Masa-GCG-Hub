@@ -1,87 +1,79 @@
 <!DOCTYPE html>
+
 <html lang="en">
- <head>
-  <!-- GCG PAGE SETTINGS: Update page title, navigation URLs, and content below. Shared visual settings: css/pages/*.css; page behaviour: js/*.js. -->
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <title>
+<head>
+<!-- GCG PAGE SETTINGS: Update page title, navigation URLs, and content below. Shared visual settings: css/pages/*.css; page behaviour: js/*.js. -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>
    Bracket Overview | Masa's GCG Hub
   </title>
-  <link href="css/pages/bracket-overview.css" rel="stylesheet"/>
- </head>
- <body>
-  <header class="hub-header">
-   <a aria-label="Masa's GCG Hub home" class="header-brand" href="index.html">
-    <img alt="Masa's GCG Hub" class="brand-logo" src="images/Branding/logo.png"/>
-   </a>
-   <nav aria-label="Main navigation" class="promo-home-nav">
-    <a class="home-tab" href="index.html">
-     Home
-    </a>
-   </nav>
-  </header>
-  <main class="bracket-page">
-   <h1 class="section-title">
+<link href="css/pages/bracket-overview.css" rel="stylesheet"/>
+<link href="css/shared-header.css" rel="stylesheet"/></head>
+<body>
+<script src="js/shared-header.js"></script>
+<main class="bracket-page">
+<h1 class="section-title">
     Bracket Overview
    </h1>
-   <p class="subtitle">
+<p class="subtitle">
     Swiss undefeated progression
    </p>
-   <div class="control">
-    <label for="players">
+<div class="control">
+<label for="players">
      Number of players
     </label>
-    <input id="players" inputmode="numeric" max="100000" min="2" step="1" type="number" value="10"/>
-   </div>
-   <div class="summary">
-    <div>
-     <span>
+<input id="players" inputmode="numeric" max="100000" min="2" step="1" type="number" value="10"/>
+</div>
+<div class="summary">
+<div>
+<span>
       Normal rounds
      </span>
-     <strong id="rounds">
+<strong id="rounds">
       4
      </strong>
-    </div>
-    <div>
-     <span>
+</div>
+<div>
+<span>
       Earliest projected finish
      </span>
-     <strong id="earliest">
+<strong id="earliest">
       3
      </strong>
-    </div>
-   </div>
-   <div class="tablewrap">
-    <table>
-     <thead>
-      <tr>
-       <th>
+</div>
+</div>
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>
         Round
        </th>
-       <th>
+<th>
         Undefeated
        </th>
-       <th>
+<th>
         Comments
        </th>
-      </tr>
-     </thead>
-     <tbody id="results">
-     </tbody>
-    </table>
-   </div>
-  </main>
-  <footer class="hub-footer">
-   <span>
+</tr>
+</thead>
+<tbody id="results">
+</tbody>
+</table>
+</div>
+</main>
+<footer class="hub-footer">
+<span>
     MASA’S GCG HUB
    </span>
-   <span>
+<span>
     UNOFFICIAL GUNDAM CARD GAME FAN RESOURCE · NOT AFFILIATED WITH BANDAI
    </span>
-  </footer>
-  <script src="js/image-extension-fallback.js">
-  </script>
-  <script defer="" src="js/bracketoverview.js">
-  </script>
- </body>
+</footer>
+<script src="js/image-extension-fallback.js">
+</script>
+<script defer="" src="js/bracketoverview.js">
+</script>
+</body>
 </html>

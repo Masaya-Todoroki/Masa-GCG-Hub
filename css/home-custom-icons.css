@@ -1,0 +1,24 @@
+/* Homepage custom icon controls — edit these values to resize the artwork. */
+:root {
+  --store-promo-icon-size: 62px;
+  --store-promo-art-scale: 1.0;
+}
+#cards .promo-grid > .promo-card .promo-symbol.promo-symbol-image {
+  width: var(--store-promo-icon-size) !important;
+  height: var(--store-promo-icon-size) !important;
+  flex: 0 0 var(--store-promo-icon-size) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  overflow: visible;
+}
+#cards .promo-grid > .promo-card .promo-symbol.promo-symbol-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(var(--store-promo-art-scale));
+}
+@media (max-width: 760px) {
+  :root { --store-promo-icon-size: 54px; }
+}

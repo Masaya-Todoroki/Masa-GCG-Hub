@@ -1,446 +1,418 @@
 <!DOCTYPE html>
+
 <html lang="en">
- <head>
-  <!-- GCG PAGE SETTINGS: Update page title, navigation URLs, and content below. Shared visual settings: css/pages/*.css; page behaviour: js/*.js. -->
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
+<head>
+<!-- GCG PAGE SETTINGS: Update page title, navigation URLs, and content below. Shared visual settings: css/pages/*.css; page behaviour: js/*.js. -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>
    Masaya - GCG Hub
   </title>
-  <link href="images/Branding/favicon.png" rel="icon" type="image/png"/>
-  <style>
+<link href="images/Branding/favicon.png" rel="icon" type="image/png"/>
+<style>
    .tabs [hidden]{display:none!important}.streams-nav{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}
   </style>
-  <link href="css/pages/home.css" rel="stylesheet"/>
- </head>
- <body>
-  <a aria-label="Admin Mode — open admin dashboard" class="gcg-admin-indicator" hidden="" href="admin.html" id="gcg-admin-indicator">
+<link href="css/pages/home.css" rel="stylesheet"/>
+<link href="css/shared-header.css" rel="stylesheet"/></head>
+<body>
+<a aria-label="Admin Mode — open admin dashboard" class="gcg-admin-indicator" hidden="" href="admin.html" id="gcg-admin-indicator">
    Admin Mode
   </a>
-  <div class="container">
-   <header class="hub-header">
-    <a aria-label="Masa's GCG Hub home" class="header-brand" href="index.html">
-     <img alt="Masa's GCG Hub" class="brand-logo" src="images/Branding/logo.png"/>
-    </a>
-    <nav aria-label="GCG Hub sections" class="tabs">
-     <button class="tab-btn active" data-tab="cards">
-      Cards
-     </button>
-     <button class="tab-btn" data-tab="deck-builders">
-      Deck Builders
-     </button>
-     <button class="tab-btn" data-tab="simulators">
-      Simulators
-     </button>
-     <button class="tab-btn" data-tab="tools">
-      Tools
-     </button>
-     <button class="tab-btn" data-tab="news">
-      News
-     </button>
-     <a class="tab-btn streams-nav nav-external" href="streams.html">
-      Streams
-     </a>
-     <a class="tab-btn streams-nav nav-admin" hidden="" href="GCGPairCreator.html" id="gcg-admin-pair-tab">
-      Pair Creator
-     </a>
-    </nav>
-    <button aria-expanded="false" aria-label="Toggle navigation" class="header-menu" type="button">
-     ☰
-    </button>
-   </header>
-   <div aria-hidden="true" class="blueprint-decor decor-left">
-   </div>
-   <div aria-hidden="true" class="blueprint-decor decor-right">
-   </div>
-   <div class="tab-content active" id="cards">
-    <section aria-label="Booster sets" class="hero-section">
-     <div class="hero-heading">
-      <h1>
+<div class="container">
+<script src="js/shared-header.js"></script>
+<div aria-hidden="true" class="blueprint-decor decor-left">
+</div>
+<div aria-hidden="true" class="blueprint-decor decor-right">
+</div>
+<div class="tab-content active" id="cards">
+<section aria-label="Booster sets" class="hero-section">
+<div class="hero-heading">
+<h1>
        BOOSTER SETS
        <span aria-hidden="true" class="speed-stripes">
         ////
        </span>
-      </h1>
-     </div>
-     <div aria-label="Gundam booster set explorer" class="set-explorer">
-      <button aria-label="Scroll booster sets left" class="carousel-arrow carousel-arrow-left" type="button">
+</h1>
+</div>
+<div aria-label="Gundam booster set explorer" class="set-explorer">
+<button aria-label="Scroll booster sets left" class="carousel-arrow carousel-arrow-left" type="button">
        ‹
       </button>
-      <div class="set-explorer-scroll" id="set-explorer-scroll">
-       <div class="set-explorer-track" id="set-explorer-track">
-       </div>
-      </div>
-      <button aria-label="Scroll booster sets right" class="carousel-arrow carousel-arrow-right" type="button">
+<div class="set-explorer-scroll" id="set-explorer-scroll">
+<div class="set-explorer-track" id="set-explorer-track">
+</div>
+</div>
+<button aria-label="Scroll booster sets right" class="carousel-arrow carousel-arrow-right" type="button">
        ›
       </button>
-      <div class="set-selected-options" hidden="" id="set-selected-options">
-       <h3 id="set-selected-title">
+<div class="set-selected-options" hidden="" id="set-selected-options">
+<h3 id="set-selected-title">
         GD06
        </h3>
-       <div class="set-selected-links" id="set-selected-links">
-       </div>
-       <p class="set-selected-tip">
+<div class="set-selected-links" id="set-selected-links">
+</div>
+<p class="set-selected-tip">
         Click artwork to return to all sets.
        </p>
-      </div>
-     </div>
-    </section>
-    <div class="dashboard">
-     <div class="promo-grid">
-      <a class="promo-card" href="storepromos.html">
-       <span class="promo-symbol">
-        ★
-       </span>
-       <span class="promo-copy">
-        <small>
+</div>
+</div>
+</section>
+<div class="dashboard">
+<div class="promo-grid">
+<a class="promo-card" href="storepromos.html">
+<span class="promo-symbol">
+<img class="store-promo-icon-image" src="images/Branding/storepromoicon.png" alt="" loading="lazy">
+</span>
+<span class="promo-copy">
+<small>
          GCG CARD COLLECTION
         </small>
-        <strong>
+<strong>
          Store Promos
         </strong>
-        <span>
+<span>
          Browse Store Tournament promotional cards by season
         </span>
-       </span>
-       <span class="promo-chevron">
+</span>
+<span class="promo-chevron">
         ›
        </span>
-      </a>
-      <a class="promo-card" href="ex-base-resource-promos.html">
-       <span class="promo-symbol">
-        ▤
-       </span>
-       <span class="promo-copy">
-        <small>
+</a>
+<a class="promo-card" href="ex-base-resource-promos.html">
+<span class="promo-symbol">
+<img class="home-custom-icon-image" src="images/Branding/resourcepromoicon.png" alt="" loading="lazy">
+</span>
+<span class="promo-copy">
+<small>
          SPECIAL CARDS
         </small>
-        <strong>
+<strong>
          EX Base / EX Resource / Resource
         </strong>
-        <span>
+<span>
          Browse EX Base, EX Resource and Resource promotional cards
         </span>
-       </span>
-       <span class="promo-chevron">
+</span>
+<span class="promo-chevron">
         ›
        </span>
-      </a>
-     </div>
-     <aside class="updates-panel">
-      <h2>
+</a>
+</div>
+<aside class="updates-panel">
+<div class="updates-header">
+<h2>
        LATEST UPDATES
        <span>
         ////
        </span>
-      </h2>
-      <div aria-live="polite" id="homepage-latest-news">
-       <p class="updates-loading">
+</h2>
+<button class="view-updates" id="homepage-view-all-news" type="button">
+       VIEW ALL UPDATES
+       <span aria-hidden="true">›</span>
+</button>
+</div>
+<div aria-live="polite" id="homepage-latest-news">
+<p class="updates-loading">
         Loading official GCG news…
        </p>
-      </div>
-      <button class="view-updates" id="homepage-view-all-news" type="button">
-       VIEW ALL UPDATES
-       <span>
-        ›
-       </span>
-      </button>
-     </aside>
-    </div>
-   </div>
-   <!-- Add more deck builders by copying one of the set-section blocks below. -->
-   <div class="tab-content secondary-tab" id="deck-builders">
-    <div class="secondary-heading">
-     <span>
+</div>
+
+</aside>
+</div>
+</div>
+<!-- Add more deck builders by copying one of the set-section blocks below. -->
+<div class="tab-content secondary-tab" id="deck-builders">
+<div class="secondary-heading">
+<span>
       DECK BUILDERS
      </span>
-     <span class="secondary-heading-line">
-     </span>
-    </div>
-    <div class="secondary-grid">
-     <a class="promo-card secondary-card" href="DeckBuilder" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="images/Branding/favicon.png"/>
-       <span class="brand-icon-fallback">
+<span class="secondary-heading-line">
+</span>
+</div>
+<div class="secondary-grid">
+<a class="promo-card secondary-card" href="DeckBuilder" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="images/Branding/favicon.png"/>
+<span class="brand-icon-fallback">
         ▣
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         Masa's Deck Builder
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-     <a class="promo-card secondary-card" href="https://exburst.dev/gundam/" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://exburst.dev/favicon.ico"/>
-       <span class="brand-icon-fallback">
+</a>
+<a class="promo-card secondary-card" href="https://exburst.dev/gundam/" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://exburst.dev/favicon.ico"/>
+<span class="brand-icon-fallback">
         ⚡
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         ExBurst
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-     <a class="promo-card secondary-card" href="https://tcggather.com/decks/build/new?tcg=gundam" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.google.com/s2/favicons?domain=tcggather.com&amp;sz=128"/>
-       <span class="brand-icon-fallback">
+</a>
+<a class="promo-card secondary-card" href="https://tcggather.com/decks/build/new?tcg=gundam" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.google.com/s2/favicons?domain=tcggather.com&amp;sz=128"/>
+<span class="brand-icon-fallback">
         ▤
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         TCG Gather
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-    </div>
-   </div>
-   <div class="tab-content secondary-tab" id="simulators">
-    <div class="secondary-heading">
-     <span>
+</a>
+</div>
+</div>
+<div class="tab-content secondary-tab" id="simulators">
+<div class="secondary-heading">
+<span>
       SIMULATORS
      </span>
-     <span class="secondary-heading-line">
-     </span>
-    </div>
-    <div class="secondary-grid">
-     <a class="promo-card secondary-card" href="https://mobilesuitarena.com" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://mobilesuitarena.com/favicon.ico"/>
-       <span class="brand-icon-fallback">
+<span class="secondary-heading-line">
+</span>
+</div>
+<div class="secondary-grid">
+<a class="promo-card secondary-card" href="https://mobilesuitarena.com" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://mobilesuitarena.com/favicon.ico"/>
+<span class="brand-icon-fallback">
         ⚔
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         Mobile Suit Arena
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-     <a class="promo-card secondary-card" href="https://newtypearena.com" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.google.com/s2/favicons?domain=newtypearena.com&amp;sz=128"/>
-       <span class="brand-icon-fallback">
+</a>
+<a class="promo-card secondary-card" href="https://newtypearena.com" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.google.com/s2/favicons?domain=newtypearena.com&amp;sz=128"/>
+<span class="brand-icon-fallback">
         ✦
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         New Type Arena
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-     <a class="promo-card secondary-card" href="https://play.exburst.dev/gundam" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.google.com/s2/favicons?domain=exburst.dev&amp;sz=128"/>
-       <span class="brand-icon-fallback">
+</a>
+<a class="promo-card secondary-card" href="https://play.exburst.dev/gundam" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.google.com/s2/favicons?domain=exburst.dev&amp;sz=128"/>
+<span class="brand-icon-fallback">
         ⚡
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         EX Burst
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-     <a class="promo-card secondary-card" href="https://cardbattlelab.com/play/" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.google.com/s2/favicons?domain=cardbattlelab.com&amp;sz=128"/>
-       <span class="brand-icon-fallback">
+</a>
+<a class="promo-card secondary-card" href="https://cardbattlelab.com/play/" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.google.com/s2/favicons?domain=cardbattlelab.com&amp;sz=128"/>
+<span class="brand-icon-fallback">
         ▣
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         Card Battle Lab
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-     <a class="promo-card secondary-card" href="https://play.zumbosim.com" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://play.zumbosim.com/favicon.ico"/>
-       <span class="brand-icon-fallback">
+</a>
+<a class="promo-card secondary-card" href="https://play.zumbosim.com" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://play.zumbosim.com/favicon.ico"/>
+<span class="brand-icon-fallback">
         ◈
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         Zumbo Sim
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-     <a class="promo-card secondary-card" href="https://www.wingtable.net/gcg" rel="noopener noreferrer" target="_blank">
-      <span aria-hidden="true" class="promo-symbol brand-symbol">
-       <img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.wingtable.net/favicon.ico"/>
-       <span class="brand-icon-fallback">
+</a>
+<a class="promo-card secondary-card" href="https://www.wingtable.net/gcg" rel="noopener noreferrer" target="_blank">
+<span aria-hidden="true" class="promo-symbol brand-symbol">
+<img alt="" class="site-brand-image" decoding="async" loading="lazy" src="https://www.wingtable.net/favicon.ico"/>
+<span class="brand-icon-fallback">
         ▤
        </span>
-      </span>
-      <span class="promo-copy">
-       <strong>
+</span>
+<span class="promo-copy">
+<strong>
         Wing Table
        </strong>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-    </div>
-   </div>
-   <div class="tab-content secondary-tab" id="tools">
-    <div class="secondary-heading">
-     <span>
+</a>
+</div>
+</div>
+<div class="tab-content secondary-tab" id="tools">
+<div class="secondary-heading">
+<span>
       TOOLS
      </span>
-     <span class="secondary-heading-line">
-     </span>
-    </div>
-    <div class="secondary-grid">
-     <a class="promo-card secondary-card" href="bracketoverview.html">
-      <span aria-hidden="true" class="promo-symbol">
-       ⌗
-      </span>
-      <span class="promo-copy">
-       <small>
+<span class="secondary-heading-line">
+</span>
+</div>
+<div class="secondary-grid">
+<a class="promo-card secondary-card" href="bracketoverview.html">
+<span aria-hidden="true" class="promo-symbol">
+<img class="home-custom-icon-image" src="images/Branding/bracketicon.png" alt="" loading="lazy">
+</span>
+<span class="promo-copy">
+<small>
         TOURNAMENT TOOL
        </small>
-       <strong>
+<strong>
         Bracket Overview
        </strong>
-       <span>
+<span>
         View and manage tournament brackets
        </span>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-     <a class="promo-card secondary-card" href="GCG-AAPairings.html">
-      <span aria-hidden="true" class="promo-symbol">
-       ◈
-      </span>
-      <span class="promo-copy">
-       <small>
+</a>
+<a class="promo-card secondary-card" href="GCG-AAPairings.html">
+<span aria-hidden="true" class="promo-symbol">
+<img class="home-custom-icon-image" src="images/Branding/aapairingsicon.png" alt="" loading="lazy">
+</span>
+<span class="promo-copy">
+<small>
         CARD GALLERY
        </small>
-       <strong>
+<strong>
         Alt Art Pairings
        </strong>
-       <span>
+<span>
         Browse alternate-art card pairings
        </span>
-      </span>
-      <span aria-hidden="true" class="promo-chevron">
+</span>
+<span aria-hidden="true" class="promo-chevron">
        ›
       </span>
-     </a>
-    </div>
-   </div>
-   <div class="tab-content" id="news">
-    <div class="set-section news-section">
-     <h2 class="set-title" id="news-admin-trigger" title="Gundam Card Game News">
+</a>
+</div>
+</div>
+<div class="tab-content" id="news">
+<div class="set-section news-section">
+<h2 class="set-title" id="news-admin-trigger" title="Gundam Card Game News">
       Gundam Card Game News
      </h2>
-     <div hidden="" id="news-admin-controls">
-      <button id="news-force-refresh" type="button">
+<div hidden="" id="news-admin-controls">
+<button id="news-force-refresh" type="button">
        ↻ Force Refresh
       </button>
-      <span id="news-admin-status" role="status">
-      </span>
-     </div>
-     <p class="news-intro">
+<span id="news-admin-status" role="status">
+</span>
+</div>
+<p class="news-intro">
       Official Gundam Card Game announcements.
      </p>
-     <div class="news-controls">
-      <div aria-label="News source" class="news-segmented" role="group">
-       <button aria-pressed="true" class="news-source-btn active" data-source="x" type="button">
+<div class="news-controls">
+<div aria-label="News source" class="news-segmented" role="group">
+<button aria-pressed="true" class="news-source-btn active" data-source="x" type="button">
         X Posts
        </button>
-       <button aria-pressed="false" class="news-source-btn" data-source="website" type="button">
+<button aria-pressed="false" class="news-source-btn" data-source="website" type="button">
         Website
        </button>
-      </div>
-      <div aria-label="News language" class="news-segmented" role="group">
-       <button aria-pressed="true" class="news-lang-btn active" data-account="ENG" type="button">
+</div>
+<div aria-label="News language" class="news-segmented" role="group">
+<button aria-pressed="true" class="news-lang-btn active" data-account="ENG" type="button">
         English
        </button>
-       <button aria-pressed="false" class="news-lang-btn" data-account="JP" type="button">
+<button aria-pressed="false" class="news-lang-btn" data-account="JP" type="button">
         Japanese
        </button>
-      </div>
-     </div>
-     <div class="news-feed" id="news-feed">
-      <p class="news-loading" id="news-loading">
+</div>
+</div>
+<div class="news-feed" id="news-feed">
+<p class="news-loading" id="news-loading">
        Open News to load the latest posts.
       </p>
-      <div id="news-timeline">
-      </div>
-     </div>
-    </div>
-   </div>
-   <footer class="hub-footer">
-    <span>
+<div id="news-timeline">
+</div>
+</div>
+</div>
+</div>
+<footer class="hub-footer">
+<span>
      MASA’S GCG HUB
     </span>
-    <span>
+<span>
      UNOFFICIAL GUNDAM CARD GAME FAN RESOURCE · NOT AFFILIATED WITH BANDAI
     </span>
-   </footer>
-  </div>
-  <!-- Cloudflare Web Analytics -->
-  <script src="js/image-extension-fallback.js">
-  </script>
-  <script data-cf-beacon='{"token": "21db3789c68b42d09f9d4f6ec60400cf"}' defer="" src="https://static.cloudflareinsights.com/beacon.min.js">
-  </script>
-  <!-- End Cloudflare Web Analytics -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
-  </script>
-  <script src="js/admin-config.js">
-  </script>
-  <script defer="" src="js/admin-indicator.js">
-  </script>
-  <script defer="" src="js/index-app.js">
-  </script>
-  <script defer="" src="js/home-navigation.js">
-  </script>
-  <script defer="" src="js/home-latest-news.js">
-  </script>
-  <script>
+</footer>
+</div>
+<!-- Cloudflare Web Analytics -->
+<script src="js/image-extension-fallback.js">
+</script>
+<script data-cf-beacon='{"token": "21db3789c68b42d09f9d4f6ec60400cf"}' defer="" src="https://static.cloudflareinsights.com/beacon.min.js">
+</script>
+<!-- End Cloudflare Web Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+</script>
+<script src="js/admin-config.js">
+</script>
+<script defer="" src="js/admin-indicator.js">
+</script>
+<script defer="" src="js/index-app.js">
+</script>
+<script defer="" src="js/home-navigation.js">
+</script>
+<script defer="" src="js/home-latest-news.js">
+</script>
+<script>
    document.querySelectorAll('.site-brand-image').forEach(img => {
   const markFallback = () => img.closest('.brand-symbol')?.classList.add('image-unavailable');
   img.addEventListener('error', markFallback, { once: true });
   if (img.complete && img.naturalWidth === 0) markFallback();
 });
   </script>
-  <script defer="" src="js/home-tab-deeplinks.js">
-  </script>
- </body>
+<script defer="" src="js/home-tab-deeplinks.js">
+</script>
+</body>
 </html>

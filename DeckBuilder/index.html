@@ -18,22 +18,13 @@
   <link rel="stylesheet" href="css/05-sizing-and-final-layout.css">
      <link rel="icon" type="image/png" href="images/Branding/favicon.png">
     <link rel="stylesheet" href="css/gcg-theme.css">
+    <link rel="stylesheet" href="../css/shared-header.css">
 </head>
  <body>
   <!-- #region Header and Navigation -->
-  <!-- SITE HEADER AND MAIN NAVIGATION -->
-  <header>
-   <div>
-    <h1 class="deck-brand-heading"><img class="deck-brand-logo" src="images/Branding/logo.png" alt="Masa's GCG Hub"></h1>
-    <small>
-     Masa's GCG Deck Builder v1.1.0
-    </small>
-   </div>
-   <div class="header-actions">
-    <span class="pill" id="countHeader">Loading cards…</span>
-    <a class="btn home-link" href="https://masayatodoroki.com/" aria-label="Return to masayatodoroki.com">⌂ Home</a>
-   </div>
-  </header>
+  <!-- One shared header for all pages; paths resolve from the site root. -->
+  <script src="../js/shared-header.js"></script>
+  <div class="deck-page-title">Deck Builder <span>v1.1.0</span></div>
   <nav class="view-switch">
    <button class="btn primary" id="browseTab" type="button">
     <svg class="ui-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Card Browser
@@ -149,7 +140,7 @@
    <!-- #endregion Deck Manager Tab -->
    <!-- #region Deck Viewer Drawer -->
    <aside class="sidebar" id="browserDeckSidebar">
-    <div class="mobile-deck-handle" id="mobileDeckHandle" aria-label="Drag or flick to expand or collapse deck preview" role="group" aria-label="Deck drawer controls" tabindex="0" aria-expanded="false">
+    <div class="mobile-deck-handle" id="mobileDeckHandle" role="group" aria-label="Drag or flick to expand or collapse deck preview" tabindex="0" aria-expanded="false">
      <span class="mobile-deck-grip" aria-hidden="true"></span>
      <span>Deck Viewer <span id="mobileDeckCount"></span></span>
      <div class="deck-drawer-controls"><button type="button" id="deckDrawerMinimise" aria-label="Minimise deck drawer" title="Minimise">−</button><button type="button" id="deckDrawerMaximise" aria-label="Maximise deck drawer" title="Maximise">□</button></div>

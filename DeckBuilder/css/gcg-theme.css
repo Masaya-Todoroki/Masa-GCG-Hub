@@ -1,9 +1,337 @@
-/* V22 - matching official GCG-inspired palette; all controls retain their existing layout/behaviour. */
-:root { --gcg-metal:linear-gradient(180deg, #8faec9 0%, #7197b9 25%, #507da5 55%, #315d86 80%, #24496e 100%); --gcg-metal-hover:linear-gradient(180deg, #a4bed4 0%, #85a7c3 25%, #6289ac 55%, #3d6b93 80%, #2c567c 100%); }
-html,body { background:#141c27; }
-header { background:#1c2938; border-bottom-color:#42576a; }
-.sidebar { background:#192535; border-left-color:#3b5166; }
-.btn.primary, .primary, button.primary { background:var(--gcg-metal); border-color:#9dbbd1; color:#fff; text-shadow:none; }
-.btn.primary:hover, .primary:hover, button.primary:hover { background:var(--gcg-metal-hover); }
-.btn:not(.primary) { border-color:#536b81; }
-.btn:not(.primary):hover { background:#38546e; }
+/* =====================================================================
+   MASA'S GCG HUB — DECK BUILDER SLATE-BLUE THEME v2
+   EDITABLE DESIGN SETTINGS: change values here, not across other files.
+   This file loads LAST; all existing JS, drawer gestures and layout remain.
+   ===================================================================== */
+:root {
+  --deck-quantity-badge-bg: #c5e4ff;
+  --deck-quantity-badge-text: #102b4c;
+  --deck-quantity-badge-border: #6a9ccb;
+  /* Deck Viewer card tiles — edit these to adjust the expanded drawer */
+  --viewer-tile-bg: #dfe8f2;
+  --viewer-tile-border: #819dbb;
+  --viewer-tile-text: #193450;
+  --viewer-tile-muted: #4c6682;
+  --viewer-tile-button-bg: #edf4fa;
+  --viewer-tile-button-border: #a0b7d0;
+  --hub-ink: #142c49;
+  --hub-text: #1c3552;
+  --hub-muted: #4c6682;
+  --hub-bg: #9dafc5;
+  --hub-surface: #d8e3ef;
+  --hub-surface-alt: #c4d3e4;
+  --hub-line: #809dbd;
+  --hub-line-strong: #6387b0;
+  --hub-accent: #146ec4;
+  --hub-accent-dark: #07509d;
+  --hub-header-height: 116px;
+  --hub-corner: 12px;
+  --hub-shadow: 0 4px 16px rgba(18,45,78,.15);
+  --hub-tech-grid: 32px;
+  --hub-grid-opacity: .36;
+  --hub-metal: linear-gradient(180deg,#66b5f4 0%,#2588dc 42%,#0755a6 100%);
+  --hub-metal-hover: linear-gradient(180deg,#84c7ff 0%,#389be8 42%,#0866c0 100%);
+  color-scheme: light;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  color: var(--hub-text);
+  background: var(--hub-bg);
+}
+html,body { background:var(--hub-bg); color:var(--hub-text); }
+body { background-image:linear-gradient(rgba(110,164,221,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(110,164,221,.045) 1px,transparent 1px);background-size:var(--hub-tech-grid) var(--hub-tech-grid); }
+header { min-height:var(--hub-header-height);padding:15px 24px;position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(120deg,#f7fbff 0%,#e7f2ff 58%,#d7eaff 100%);border-bottom:2px solid var(--hub-line-strong);color:var(--hub-ink); }
+header::before { content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.65;background:linear-gradient(135deg,transparent 70%,rgba(91,158,225,.18) 70%,rgba(91,158,225,.18) 73%,transparent 73%),repeating-linear-gradient(135deg,transparent 0 22px,rgba(64,145,220,.09) 22px 25px,transparent 25px 60px); }
+header::after {content:"";position:absolute;right:19%;bottom:0;width:32%;height:3px;background:linear-gradient(90deg,transparent,#2b85d4,transparent);pointer-events:none;}
+.deck-brand-heading {margin:0 0 4px;line-height:1;}
+.deck-brand-logo {display:block;max-width:min(260px,56vw);height:auto;max-height:86px;object-fit:contain;}
+header small {font-size:12px;color:var(--hub-muted);}
+.header-actions {display:flex;align-items:center;gap:12px;}
+.pill {background:#f7fbff;border:1px solid var(--hub-line);color:var(--hub-ink);}
+header .home-link {background:#fff;border:1px solid var(--hub-line-strong);font-weight:700;}
+header .home-link:hover {background:#e3f1ff;}
+.view-switch {position:relative;background:linear-gradient(180deg,#fff,#edf5ff);border-bottom:1px solid var(--hub-line);box-shadow:inset 0 -2px 0 #e1efff;}
+.view-switch .btn {border:1px solid var(--hub-line-strong);border-radius:10px;background:linear-gradient(180deg,#fff,#e7f2ff);color:var(--hub-ink);box-shadow:0 2px 5px rgba(31,96,167,.06);}
+.view-switch .btn.primary {background:var(--hub-metal);color:#fff;border-color:#2377c8;box-shadow:0 4px 10px rgba(20,103,188,.22);}
+.view-switch .btn:not(.primary):hover {background:#dbeeff;}
+.btn,button:not(.color-filter),select,input,textarea {accent-color:var(--hub-accent);}
+.btn {background:linear-gradient(180deg,#fff,#eaf3ff);border-color:var(--hub-line);color:var(--hub-ink);}
+.btn:hover {background:#deefff;color:var(--hub-ink);}
+.btn.primary,.primary,button.primary {background:var(--hub-metal);border-color:#2377c8;color:#fff;text-shadow:none;}
+.btn.primary:hover,.primary:hover,button.primary:hover {background:var(--hub-metal-hover);color:#fff;}
+.btn:not(.primary) {border-color:var(--hub-line);}
+.btn:not(.primary):hover {background:#dfeeff;}
+input,select,textarea {background:#fff;color:var(--hub-ink);border:1px solid var(--hub-line-strong);box-shadow:inset 0 1px 3px rgba(33,94,161,.035);}
+input::placeholder,textarea::placeholder {color:#8aa0ba;}
+input:focus,select:focus,textarea:focus {outline:2px solid rgba(35,126,214,.2);border-color:var(--hub-accent);}
+small,.muted {color:var(--hub-muted);}
+.colour-banner {background:linear-gradient(180deg,#f9fcff,#edf5ff);border-bottom:1px solid var(--hub-line);}
+.colour-banner-label {color:var(--hub-ink);}
+.colour-banner-label span {color:var(--hub-muted);}
+.color-filter {background:#fff;color:var(--hub-ink);border-color:var(--shade-edge);box-shadow:0 2px 4px rgba(30,77,125,.055);}
+.color-filter:hover:not(:disabled) {filter:none;background:#edf6ff;}
+.color-filter[aria-pressed="true"] {background:color-mix(in srgb,var(--shade) 16%,white);color:var(--hub-ink);border-color:var(--shade);box-shadow:inset 0 0 0 1px var(--shade),0 2px 7px rgba(20,80,145,.12);}
+.shell {color:var(--hub-text);}
+main {background:transparent;}
+.browser-sort-row small,#results {color:var(--hub-muted);}
+.card-scale-control {background:#f0f6ff;border:1px solid var(--hub-line);color:var(--hub-ink);border-radius:var(--hub-corner);}
+.card-scale-control label {color:var(--hub-ink);}
+.card-scale-control .scale-step {background:#fff;border-color:var(--hub-line-strong);color:var(--hub-ink);}
+.card-scale-control .scale-step:hover {background:#d9ebff;border-color:var(--hub-accent);}
+.card-scale-control input[type=range] {accent-color:var(--hub-accent);}
+.sort-direction,.set-filter summary {background:#fff;color:var(--hub-ink);border-color:var(--hub-line-strong);}
+.set-filter-options {background:#fff;color:var(--hub-ink);border-color:var(--hub-line);box-shadow:var(--hub-shadow);}
+.cards {border-bottom-color:var(--hub-line);color:var(--hub-text);}
+.card-cell {background:#fff;border-color:var(--hub-line);box-shadow:0 2px 6px rgba(35,88,145,.07);}
+.card-cell:hover {border-color:var(--hub-accent);}
+/* Deck Manager: preserve all grids and card sizes. */
+.deck-view {background:transparent;color:var(--hub-text);}
+.deck-display .deck-group,.deck-manage,.deck-grid-item {background:#fff;border-color:var(--hub-line);color:var(--hub-text);box-shadow:var(--hub-shadow);}
+.deck-display .viewer-heading h2,.deck-manage h3,.deck-group h3 {color:var(--hub-ink);}
+.deck-manage label {color:var(--hub-muted);}
+.deck-grid-actions button {background:#edf5ff;border-color:var(--hub-line);color:var(--hub-ink);}
+.deck-grid-actions button:hover {background:#d6eaff;}
+/* Bottom drawer: visuals ONLY; no change to position, height, touch-action or drag state. */
+.shell:not(.deck-mode) #browserDeckSidebar {background:var(--hub-surface);border-color:var(--hub-line-strong);box-shadow:0 -8px 30px rgba(31,83,142,.2);}
+.shell:not(.deck-mode) #mobileDeckHandle {background:linear-gradient(180deg,#f7fbff,#dfeeff);color:var(--hub-ink);border-bottom:1px solid var(--hub-line-strong);}
+.mobile-deck-grip {background:#6e9dcf;box-shadow:0 1px 2px rgba(30,83,137,.1);}
+.deck-drawer-controls button {background:#fff;color:var(--hub-ink);border-color:var(--hub-line-strong);}
+.deck-drawer-controls button:hover {background:#dceeff;}
+.shell:not(.deck-mode) #browserDeckSidebar .deck-drawer-scroll {background:#fff;color:var(--hub-text);}
+#browserDeckSidebar .pill {background:#f1f7ff;border-color:var(--hub-line);color:var(--hub-ink);}
+#browserDeckSidebar .deck-section-heading,#browserDeckSidebar .deck-section-count {color:var(--hub-ink);border-color:var(--hub-line);}
+#browserDeckSidebar .deck-section-count {color:var(--hub-muted)!important;}
+#browserDeckSidebar .card-cell {background:#fff;border-color:var(--hub-line);}
+/* Dialogs retain their structure; light palette for text and surfaces where safe. */
+:focus-visible {outline-color:var(--hub-accent);}
+@media(max-width:600px){
+  :root {--hub-header-height:88px;}
+  header {padding:10px 12px;gap:8px;}
+  .deck-brand-logo {max-width:min(200px,50vw);max-height:65px;}
+  header small {font-size:10px;}
+  .header-actions {gap:6px;}
+  header .pill {font-size:10px;padding:4px 6px;}
+  .view-switch .btn {min-width:0;}
+  .colour-banner {padding:12px 8px;}
+  .color-filter {min-width:62px;padding:8px 7px;}
+}
+
+
+/* ===============================================================
+   V2 SLATE-BLUE OVERRIDES — visual styling only.
+   All drawer transforms, heights, pointer/touch handling and JS are
+   deliberately left to the existing Deck Builder implementation.
+   =============================================================== */
+:root {
+  --deck-v2-page: #9dafc5;
+  --deck-v2-panel: #d5e0ed;
+  --deck-v2-panel-raised: #e5edf5;
+  --deck-v2-card: #dfe8f2;
+  --deck-v2-border: #819dbb;
+  --deck-v2-ink: #193450;
+  --deck-v2-muted: #4c6682;
+  --deck-v2-header-subtitle: #344f6b;
+}
+html, body { background-color: var(--deck-v2-page); color:var(--deck-v2-ink); }
+body { background-image:linear-gradient(rgba(35,73,116,.038) 1px,transparent 1px),linear-gradient(90deg,rgba(35,73,116,.038) 1px,transparent 1px); }
+/* Header: shared component handles height, logo size, alignment and nav. */
+body > header.shared-site-header { background:#fff !important; overflow:visible !important; isolation:auto; }
+body > header.shared-site-header::before,body > header.shared-site-header::after { content:none !important; }
+body > header.shared-site-header .deck-header-count { margin-left:auto; background:#eef4fa; color:#244464; border:1px solid #b7cce0; font-size:12px; white-space:nowrap; }
+body > header.shared-site-header .promo-home-nav { margin-left:0 !important; }
+.deck-page-title { display:flex;align-items:baseline;gap:8px;padding:9px 24px;background:#b9cbdf;border-bottom:1px solid var(--deck-v2-border);font-size:14px;font-weight:800;letter-spacing:.035em;color:var(--deck-v2-ink); }
+.deck-page-title span { font-weight:500;color:var(--deck-v2-muted);font-size:12px; }
+.view-switch { background:linear-gradient(180deg,#dce7f2,#bdcfe2); }
+.colour-banner { background:#c4d4e5; }
+.shell,main,.deck-view { color:var(--deck-v2-ink); }
+.card-scale-control { background:var(--deck-v2-panel);border-color:var(--deck-v2-border); }
+.card-cell { background:var(--deck-v2-card);border-color:var(--deck-v2-border); }
+/* Category panel surfaces: match the specific desktop layout selector. */
+#deckViewer #deckGridGroups > .deck-group {
+  background: var(--deck-v2-panel);
+  border-color: var(--deck-v2-border);
+  color: var(--deck-v2-ink);
+}
+#deckViewer #deckGridGroups > .deck-group .deck-group-head h3,
+#deckViewer #deckGridGroups > .deck-group .deck-group-head {
+  color: var(--deck-v2-ink);
+}
+/* Drawer section surfaces, without changing positioning or gesture rules. */
+#browserDeckSidebar #deckList .deck-group,
+#browserDeckSidebar #deckList .deck-section,
+#browserDeckSidebar #deckList .deck-grid-item {
+  background: var(--deck-v2-panel);
+  border-color: var(--deck-v2-border);
+  color: var(--deck-v2-ink);
+}
+/* Deck Manager groups and generated cards: fix the remaining dark-theme surfaces. */
+#deckViewer .deck-group, .deck-display .deck-group, #deckGridGroups > .deck-group { background:var(--deck-v2-panel);border:1px solid var(--deck-v2-border);color:var(--deck-v2-ink);box-shadow:0 3px 9px rgba(20,48,84,.09); }
+#deckViewer .deck-group-head h3, #deckViewer .viewer-heading h2, #deckViewer .deck-group-head, .deck-group h3 { color:var(--deck-v2-ink); }
+#deckViewer .deck-grid-item, .deck-grid-item { background:var(--deck-v2-card);border:1px solid var(--deck-v2-border);color:var(--deck-v2-ink); }
+#deckViewer .deck-grid-actions button, .deck-grid-actions button { background:#edf4fa;color:var(--deck-v2-ink);border:1px solid #a0b7d0; }
+#deckViewer .deck-grid-actions button:hover, .deck-grid-actions button:hover { background:#c5ddf4; }
+#deckViewer .deck-grid-actions span, .deck-grid-actions span, .deck-text-label { color:var(--deck-v2-ink); }
+.deck-manage { background:var(--deck-v2-panel-raised);border-color:var(--deck-v2-border);color:var(--deck-v2-ink); }
+.deck-manage h3,.deck-manage label { color:var(--deck-v2-ink); }
+.deck-manage #deckName { background:#f2f6fa;color:var(--deck-v2-ink); }
+/* Expanded Deck Viewer and drawer list: readable text, lighter cards. */
+.shell:not(.deck-mode) #browserDeckSidebar,
+.shell:not(.deck-mode) #browserDeckSidebar .deck-drawer-scroll { background:var(--deck-v2-panel);color:var(--deck-v2-ink); }
+.shell:not(.deck-mode) #mobileDeckHandle { background:linear-gradient(180deg,#eaf1f8,#b9cee4);color:var(--deck-v2-ink);border-top:2px solid #5387c1; }
+#browserDeckSidebar #deckList .deck-section-heading, #browserDeckSidebar .deck-section-heading { color:var(--deck-v2-ink);border-bottom-color:var(--deck-v2-border); }
+#browserDeckSidebar #deckList .deck-section-count { color:var(--deck-v2-muted) !important; }
+#browserDeckSidebar .card-cell, #browserDeckSidebar .deck-grid-item { background:var(--deck-v2-card);color:var(--deck-v2-ink);border-color:var(--deck-v2-border); }
+#browserDeckSidebar .card-cell :is(.card-name,.card-id,.card-count,.card-title),
+#browserDeckSidebar .deck-grid-item :is(.card-name,.card-id,.card-count,.card-title) { color:var(--deck-v2-ink); }
+#browserDeckSidebar .deck-grid-actions button { background:#eaf1f8;color:var(--deck-v2-ink);border-color:var(--deck-v2-border); }
+#browserDeckSidebar .deck-grid-actions span { color:var(--deck-v2-ink); }
+#browserDeckSidebar .pill { background:#eaf1f8;color:var(--deck-v2-ink); }
+.mobile-deck-grip { background:#477db9;box-shadow:0 0 0 2px rgba(255,255,255,.7); }
+/* Keep popovers and modals readable against the darker page. */
+.set-filter-options, .dialog, .modal .dialog { color:var(--deck-v2-ink); }
+@media(max-width:1000px) {
+  body > header.shared-site-header .deck-header-count { font-size:10px;padding:5px 7px; }
+}
+@media(max-width:600px) {
+  .deck-page-title { padding:8px 12px; }
+  body > header.shared-site-header .deck-header-count { order:2;margin-left:auto; }
+  body > header.shared-site-header .promo-home-nav { order:3; }
+}
+
+/* ===============================================================
+   V2.2 — ACTUAL DRAWER CARD COMPONENT (.deckitem)
+   Previous theme targeted .card-cell / .deck-grid-item, but the
+   Deck Viewer renders .deckitem. Applies on desktop AND mobile.
+   No geometry, transforms, or touch/drag behaviour changed.
+   =============================================================== */
+#browserDeckSidebar #deckList .deckitem {
+  background: var(--viewer-tile-bg);
+  border-color: var(--viewer-tile-border);
+  color: var(--viewer-tile-text);
+}
+#browserDeckSidebar #deckList .deckitem .label,
+#browserDeckSidebar #deckList .deckitem .label strong {
+  color: var(--viewer-tile-text);
+}
+#browserDeckSidebar #deckList .deckitem .label small {
+  color: var(--viewer-tile-muted);
+}
+#browserDeckSidebar #deckList .deckitem .actions span {
+  color: var(--viewer-tile-text);
+}
+#browserDeckSidebar #deckList .deckitem .actions button {
+  background: var(--viewer-tile-button-bg);
+  color: var(--viewer-tile-text);
+  border-color: var(--viewer-tile-button-border);
+}
+#browserDeckSidebar #deckList .deckitem .actions button:hover:not(:disabled) {
+  background: #c5ddf4;
+}
+#browserDeckSidebar #deckList .deckitem .actions button[title="Add up to 4 copies"]:not(:disabled) {
+  background: #146ec4;
+  color: #fff;
+  border-color: #07509d;
+}
+
+/* =====================================================================
+   DECK BUILDER HEADER — MATCH SITE'S SLANTED HOME NAV
+   The shared header renders .deck-header-count only on DeckBuilder.
+   Edit these values to adjust the Home tab without changing other pages.
+   ===================================================================== */
+:root {
+  --deck-home-tab-background: #b8e5ff;
+  --deck-home-tab-text: #14233e;
+  --deck-home-tab-slant: 18px;
+  --deck-home-tab-min-width: 126px;
+}
+header.shared-site-header:has(.deck-header-count) .promo-home-nav .tab-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: var(--deck-home-tab-min-width) !important;
+  padding: 16px 26px !important;
+  background: var(--deck-home-tab-background) !important;
+  color: var(--deck-home-tab-text) !important;
+  clip-path: polygon(var(--deck-home-tab-slant) 0, 100% 0, calc(100% - var(--deck-home-tab-slant)) 100%, 0 100%) !important;
+  border-radius: 0 !important;
+}
+header.shared-site-header:has(.deck-header-count) .promo-home-nav .tab-btn:hover {
+  background: #9bd5f6 !important;
+}
+
+
+/* ===============================================================
+   V2.5 — DECK MANAGEMENT POPUPS (editable palette)
+   Modal stacking is deliberately higher than the shared header.
+   Do not apply this z-index to #modal (card inspector): it has
+   special deck-drawer stacking behaviour.
+   =============================================================== */
+:root {
+  --deck-popup-bg: #d8e3ef;
+  --deck-popup-panel: #eaf1f8;
+  --deck-popup-input: #f3f7fb;
+  --deck-popup-border: #8faac7;
+  --deck-popup-text: #193450;
+  --deck-popup-muted: #506b88;
+  --deck-popup-overlay: rgba(14,29,49,.64);
+  --deck-popup-layer: 20000;
+}
+/* Keep management dialogs above the header, including on short screens. */
+.modal:not(#modal) {
+  z-index: var(--deck-popup-layer) !important;
+  background: var(--deck-popup-overlay);
+  box-sizing: border-box;
+  max-height: 100dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: max(12px, env(safe-area-inset-top)) 14px max(12px, env(safe-area-inset-bottom));
+}
+.modal:not(#modal) > :is(.deck-text-dialog,.deck-image-dialog) {
+  box-sizing: border-box;
+  background: var(--deck-popup-bg);
+  border: 1px solid var(--deck-popup-border);
+  color: var(--deck-popup-text);
+  box-shadow: 0 22px 55px rgba(19,45,78,.28);
+  max-height: calc(100dvh - 28px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.modal:not(#modal) :is(h1,h2,h3,strong,label,p,.deck-text-help,.deck-text-top) { color:var(--deck-popup-text); }
+.modal:not(#modal) :is(small,.empty,.find-deck-event-end small,.find-deck-event-copy small,.find-deck-result small,.find-deck-navigation small) { color:var(--deck-popup-muted); }
+.modal:not(#modal) :is(input,select,textarea) {
+  background:var(--deck-popup-input);
+  border:1px solid var(--deck-popup-border);
+  color:var(--deck-popup-text);
+}
+.modal:not(#modal) :is(input,select,textarea)::placeholder { color:var(--deck-popup-muted); }
+.modal:not(#modal) :is(.find-deck-result,.find-deck-event) {
+  background:var(--deck-popup-panel);
+  border:1px solid var(--deck-popup-border);
+  color:var(--deck-popup-text);
+}
+.modal:not(#modal) :is(.find-deck-result,.find-deck-event) strong { color:var(--deck-popup-text); }
+.modal:not(#modal) .find-deck-event:is(:hover,:focus-visible) { background:#d4e5f5; }
+.modal:not(#modal) :is(.find-deck-results,.find-deck-toolbar,.find-deck-filters,.find-deck-event-filter,.find-deck-navigation) { color:var(--deck-popup-text); }
+.modal:not(#modal) .btn:not(.primary) {
+  background:linear-gradient(180deg,#fff,#e6eef8);
+  border-color:var(--deck-popup-border);
+  color:var(--deck-popup-text);
+}
+.modal:not(#modal) .btn.primary { color:#fff; }
+/* Find Deck has long result lists: scroll inside the popup, never under the header. */
+#findDeckModal .find-deck-dialog { max-height:calc(100dvh - 28px); }
+#findDeckModal .find-deck-results { max-height:min(48dvh,520px); }
+@media(max-height:650px) {
+  .modal:not(#modal) { align-items:flex-start; }
+  #findDeckModal .find-deck-results { max-height:36dvh; }
+}
+
+/* V2.6 — High-contrast quantity badges over card artwork. */
+.deck-qty,
+#deckViewer .deck-qty,
+.deck-display .deck-qty {
+  background: var(--deck-quantity-badge-bg) !important;
+  color: var(--deck-quantity-badge-text) !important;
+  border: 1px solid var(--deck-quantity-badge-border) !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+  box-shadow: 0 1px 4px rgba(12, 36, 66, .22);
+}

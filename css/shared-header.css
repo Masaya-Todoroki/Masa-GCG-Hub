@@ -1,0 +1,140 @@
+/* =====================================================================
+   MASA'S GCG HUB — SINGLE SOURCE OF HEADER LAYOUT
+   These settings apply to all public pages. Keep this stylesheet LAST.
+   ===================================================================== */
+:root {
+  --shared-header-height: 116px;
+  --shared-header-mobile-height: 83px;
+  --shared-header-padding-x: clamp(20px, 4.5vw, 80px);
+  --shared-header-mobile-padding-x: 14px;
+  --shared-header-logo-width: clamp(180px, 17vw, 280px);
+  --shared-header-logo-mobile-width: 180px;
+  --shared-header-bg: rgba(255,255,255,.96);
+}
+header.shared-site-header,
+body header.shared-site-header,
+body.aa-page header.shared-site-header,
+body.gcg-promo-page header.shared-site-header,
+header.top.shared-site-header {
+  box-sizing: border-box !important;
+  flex: 0 0 var(--shared-header-height) !important;
+  width: 100% !important;
+  height: var(--shared-header-height) !important;
+  min-height: var(--shared-header-height) !important;
+  max-height: var(--shared-header-height) !important;
+  padding: 0 var(--shared-header-padding-x) !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+  gap: 22px !important;
+  background: var(--shared-header-bg) !important;
+  border: 0 !important;
+  border-bottom: 1px solid #7ca9d0 !important;
+  border-radius: 0 !important;
+  position: relative !important;
+  z-index: 100 !important;
+  transform: none !important;
+}
+header.shared-site-header::before,
+header.shared-site-header::after { pointer-events: none; }
+header.shared-site-header .header-brand {
+  display: flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+  line-height: 0 !important;
+}
+header.shared-site-header .brand-logo {
+  display: block !important;
+  width: var(--shared-header-logo-width) !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: 94px !important;
+  object-fit: contain !important;
+  transform: none !important;
+}
+header.shared-site-header .tabs {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex: 0 1 auto !important;
+  flex-wrap: nowrap !important;
+  gap: 0 !important;
+  width: auto !important;
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+  background: none !important;
+  border: 0 !important;
+  transform: none !important;
+}
+header.shared-site-header .tab-btn {
+  box-sizing: border-box !important;
+  font-family: inherit !important;
+  font-size: clamp(11px, 1.04vw, 15px) !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: #14233e !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 16px clamp(8px,1.25vw,19px) !important;
+  white-space: nowrap !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transform: none !important;
+}
+header.shared-site-header .tab-btn:hover { background: #e6f4ff !important; }
+header.shared-site-header .tab-btn.active { background: #b8e5ff !important; }
+header.shared-site-header .header-menu { display: none !important; }
+header.shared-site-header #admin-link:not([hidden]) {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex: 0 0 auto !important;
+  margin-left: 12px !important;
+}
+@media (max-width: 1000px) {
+  header.shared-site-header,
+  body header.shared-site-header,
+  body.aa-page header.shared-site-header,
+  body.gcg-promo-page header.shared-site-header,
+  header.top.shared-site-header {
+    flex: 0 0 auto !important;
+    height: auto !important;
+    min-height: var(--shared-header-mobile-height) !important;
+    max-height: none !important;
+    padding: 8px var(--shared-header-mobile-padding-x) !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  header.shared-site-header .brand-logo { width: var(--shared-header-logo-mobile-width) !important; }
+  header.shared-site-header .header-menu {
+    display: block !important;
+    margin-left: auto !important;
+    border: 1px solid #9abdd8 !important;
+    border-radius: 2px !important;
+    background: white !important;
+    color: #204b6c !important;
+    font-size: 24px !important;
+    padding: 5px 10px !important;
+    cursor: pointer !important;
+  }
+  header.shared-site-header:has(.header-menu) .tabs {
+    display: none !important;
+    flex: 1 0 100% !important;
+    order: 3 !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    border-top: 1px solid #b4d0e4 !important;
+    background: white !important;
+  }
+  header.shared-site-header.menu-open .tabs { display: flex !important; }
+  header.shared-site-header .tab-btn { width: 100% !important; text-align: left !important; }
+  header.shared-site-header:not(:has(.header-menu)) .tabs { margin-left: auto !important; }
+}

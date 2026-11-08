@@ -3468,7 +3468,7 @@ body {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 14px !important;
-        align-items: stretch !important;
+        align-items: start !important;
     }
 
     #cards .dashboard > .promo-grid {
@@ -3482,7 +3482,7 @@ body {
         min-width: 0 !important;
         height: 142px !important;
         min-height: 0 !important;
-        align-self: center !important;
+        align-self: start !important;
         padding: 18px 18px !important;
     }
 
@@ -3538,4 +3538,234 @@ body {
 
 #cards .dashboard .promo-grid > .promo-card .promo-copy strong {
     line-height: 1.15 !important;
+}
+
+/* Store Promos custom artwork — adjust size here only. */
+:root { --store-promo-icon-scale: 1.12; }
+.promo-symbol .store-promo-icon-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(var(--store-promo-icon-scale));
+  pointer-events: none;
+}
+
+/* Custom homepage section icons. Edit these variables to adjust sizes. */
+:root {
+  --home-custom-icon-scale: 1.12;
+}
+.promo-symbol .home-custom-icon-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(var(--home-custom-icon-scale));
+  pointer-events: none;
+}
+
+/* ================================================================
+   HOMEPAGE CUSTOM ICONS — CONSISTENT CONTAINED ARTWORK
+   Edit these values to adjust all four icons in one place.
+   ================================================================ */
+:root {
+  --homepage-art-icon-size: 72px;
+  --homepage-art-icon-padding: 4px;
+}
+
+/* Cards and Tools: identical, unclipped image slots. */
+#cards .promo-grid > .promo-card .promo-symbol,
+#tools .secondary-grid > .promo-card .promo-symbol {
+  box-sizing: border-box !important;
+  width: var(--homepage-art-icon-size) !important;
+  height: var(--homepage-art-icon-size) !important;
+  flex: 0 0 var(--homepage-art-icon-size) !important;
+  min-width: 0 !important;
+  padding: var(--homepage-art-icon-padding) !important;
+  display: grid !important;
+  place-items: center !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  clip-path: none !important;
+  transform: none !important;
+  overflow: visible !important;
+}
+
+#cards .promo-grid > .promo-card .promo-symbol::before,
+#cards .promo-grid > .promo-card .promo-symbol::after,
+#tools .secondary-grid > .promo-card .promo-symbol::before,
+#tools .secondary-grid > .promo-card .promo-symbol::after {
+  content: none !important;
+  display: none !important;
+}
+
+#cards .promo-grid > .promo-card .promo-symbol img,
+#tools .secondary-grid > .promo-card .promo-symbol img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+@media (max-width: 760px) {
+  :root { --homepage-art-icon-size: 60px; }
+}
+
+/* ================================================================
+   SHARED HOMEPAGE BUTTON GRADIENT — ONE PLACE TO EDIT
+   Applies to Cards, Deck Builders, Simulators and Tools.
+   Soft blue behind artwork; gentle fade to white.
+   ================================================================ */
+:root {
+  --homepage-card-gradient-left: #d4e8f8;
+  --homepage-card-gradient-middle: #edf6fd;
+  --homepage-card-gradient-right: #ffffff;
+  --homepage-card-gradient: linear-gradient(90deg,
+    var(--homepage-card-gradient-left) 0%,
+    var(--homepage-card-gradient-middle) 48%,
+    var(--homepage-card-gradient-right) 100%);
+}
+#cards .promo-grid > .promo-card,
+.secondary-tab .secondary-grid > .promo-card {
+  background: var(--homepage-card-gradient) !important;
+}
+
+/* ================================================================
+   CARDS TAB — FIT SHORT DESKTOP VIEWPORTS (v6)
+   Only the Cards tab is compacted. Other tabs and mobile are unchanged.
+   Tune the variables here rather than changing the carousel elsewhere.
+   ================================================================ */
+@media (min-width: 1001px) and (max-height: 950px) {
+  :root {
+    --homepage-fit-carousel-height: clamp(265px, 34dvh, 355px);
+    --homepage-fit-heading-gap: 9px;
+    --homepage-fit-dashboard-gap: 0px;
+  }
+
+  #cards {
+    --booster-panel-height: var(--homepage-fit-carousel-height);
+  }
+  /* The explorer and selected-card mode share the same height variable. */
+  #cards .set-explorer,
+  #cards .set-explorer.is-selected {
+    --set-explorer-height: var(--homepage-fit-carousel-height) !important;
+  }
+  #cards .set-explorer-scroll,
+  #cards .set-explorer.is-selected .set-explorer-scroll,
+  #cards .set-explorer-track,
+  #cards .set-explorer.is-selected .set-explorer-track {
+    height: var(--homepage-fit-carousel-height) !important;
+    min-height: var(--homepage-fit-carousel-height) !important;
+    max-height: var(--homepage-fit-carousel-height) !important;
+  }
+  #cards .hero-heading {
+    margin-bottom: var(--homepage-fit-heading-gap) !important;
+  }
+  #cards .dashboard {
+    margin-top: var(--homepage-fit-dashboard-gap) !important;
+  }
+}
+
+/* =============================================================
+   HOMEPAGE NEWS HEADER ACTION — single header row
+   Change only these variables to tune the link styling.
+   ============================================================= */
+:root {
+  --homepage-news-action-color: #ffffff;
+  --homepage-news-action-size: 11px;
+}
+#cards .updates-panel .updates-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px 0 0;
+  background: linear-gradient(100deg,#2b638b,#1a527b);
+  min-height: 45px;
+}
+#cards .updates-panel .updates-header h2 {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent !important;
+  white-space: nowrap;
+}
+#cards .updates-panel .updates-header .view-updates {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  align-self: center;
+  margin: 0;
+  padding: 5px 0;
+  border: 0;
+  background: transparent !important;
+  color: var(--homepage-news-action-color);
+  font-size: var(--homepage-news-action-size);
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+#cards .updates-panel .updates-header .view-updates span {
+  color: inherit;
+  font-size: 19px;
+  line-height: 1;
+  padding: 0;
+}
+#cards .updates-panel .updates-header .view-updates:hover,
+#cards .updates-panel .updates-header .view-updates:focus-visible {
+  text-decoration: underline;
+}
+@media (max-width: 500px) {
+  #cards .updates-panel .updates-header { gap: 5px; padding-right: 9px; }
+  #cards .updates-panel .updates-header h2 { font-size: 14px !important; padding-left: 12px !important; }
+  #cards .updates-panel .updates-header .view-updates { font-size: 9px; }
+}
+
+/* ================================================================
+   V9 — ALIGN CARDS AND NEWS PANEL AT THE SAME TOP EDGE
+   The older three-column rule vertically centered the 142px promo
+   cards beside the taller news panel. Override only that alignment.
+   ================================================================ */
+@media (min-width: 1001px) {
+  #cards .dashboard > .promo-grid > .promo-card {
+    align-self: start !important;
+  }
+}
+
+/* V9: apply top alignment to the grid itself, not only its children.
+   Keep the news and promotional cards in the same grid row. */
+@media (min-width: 1001px) {
+  #cards .dashboard {
+    align-items: start !important;
+  }
+  #cards .dashboard > .promo-grid > .promo-card,
+  #cards .dashboard > .updates-panel {
+    align-self: start !important;
+    margin-top: 0 !important;
+  }
+}
+
+/* V10 — Align the Latest Updates panel with the two promo cards.
+   On desktop the news panel previously began ~38px above the promos.
+   This changes only its vertical position, without touching grid sizing. */
+@media (min-width: 1001px) {
+  #cards .dashboard > .updates-panel {
+    margin-top: 38px !important;
+  }
+}
+
+/* V11: match promo card top edges to the news panel, with space below carousel.
+   The promo-grid uses display:contents, so its cards are direct grid items. */
+@media (min-width: 1001px) {
+  #cards .dashboard > .promo-grid > .promo-card {
+    margin-top: 38px !important;
+  }
 }

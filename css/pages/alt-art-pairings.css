@@ -452,13 +452,13 @@ linear-gradient(180deg,#edf7ff,#f7fbff 65%,#eaf5ff);
     background: white;
     color: var(--navy);
     border-bottom: 1px solid #91b8d9;
-    padding: 8px clamp(18px,5vw,90px);
+    padding: 8px clamp(20px,4.5vw,80px);
     min-height: 76px;
     gap: 24px;
 }
 
 .site-brand {
-    width: 230px;
+    width: auto;
     display: flex;
     align-items: center;
     position: relative;
@@ -467,8 +467,8 @@ linear-gradient(180deg,#edf7ff,#f7fbff 65%,#eaf5ff);
 }
 
 .site-logo {
-    width: 165px;
-    max-height: 60px;
+    width: clamp(180px,17vw,280px);
+    max-height: 94px;
     object-fit: contain;
     position: relative;
     z-index: 1;
@@ -484,16 +484,6 @@ linear-gradient(180deg,#edf7ff,#f7fbff 65%,#eaf5ff);
 
 .site-logo:not([src=""]) {
     background: transparent;
-}
-
-.brand-tagline {
-    border-left: 1px solid #9dbed7;
-    padding-left: 20px;
-    white-space: pre-line;
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: .13em;
-    line-height: 1.4;
 }
 
 .home-link {
@@ -802,7 +792,7 @@ body.aa-page:has(#detail-view:not(.hidden)) .set-panel {
     }
 
     .site-brand {
-        width: 185px;
+        width: auto;
     }
 }
 
@@ -815,7 +805,7 @@ body.aa-page:has(#detail-view:not(.hidden)) .set-panel {
     }
 
     .site-brand {
-        width: 118px;
+        width: auto;
     }
 
     .site-logo {
@@ -825,14 +815,7 @@ body.aa-page:has(#detail-view:not(.hidden)) .set-panel {
     .logo-fallback {
         font-size: 14px;
     }
-
-    .brand-tagline {
-        font-size: 9px;
-        letter-spacing: .04em;
-        padding-left: 9px;
-    }
-
-    .home-link {
+.home-link {
         min-width: 78px;
         height: 46px;
         font-size: 14px;
