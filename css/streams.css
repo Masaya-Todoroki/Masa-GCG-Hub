@@ -2498,7 +2498,38 @@ body.theatre-mode .streams-footer { display: none; }
   .chat .chat-bottom .identity > .quick-reactions { margin-left: auto; }
 }
 
-/* v12 — restore card preview readability on dark chat and flip-card back face. */
-.chat .stream-drawn-card-link { color:#9bcfff; font-weight:700; text-decoration:underline; text-underline-offset:3px; }
-.chat .stream-drawn-card-link:hover { color:#fff; }
-.stream-walker-card-back { position:absolute; inset:0; display:grid; place-items:center; border:2px solid #7fa7d2; border-radius:4px; background:linear-gradient(135deg,#11243b,#35689c); color:#fff; font-weight:900; font-size:12px; backface-visibility:hidden; box-shadow:0 2px 5px #0009; }
+/* v17 — profile editor uses the Community Chat dark navy palette. */
+#nickname-dialog {
+  background: #1e2c3c;
+  color: #f0f5fc;
+  border: 1px solid #5b7e9d;
+  box-shadow: 0 24px 90px rgba(0, 9, 20, .72);
+}
+#nickname-dialog::backdrop { background: rgba(7, 16, 27, .82); }
+#nickname-form h2 { color: #fff; }
+#nickname-form p, #nickname-form .hint { color: #a9c2dc; }
+#nickname-form label { color: #a9cbea; }
+#nickname-form #nickname-input {
+  background: #142335;
+  color: #f6faff;
+  border: 1px solid #577b9a;
+  border-radius: 8px;
+}
+#nickname-form #nickname-input::placeholder { color: #91a9bf; }
+#nickname-form #nickname-input:focus-visible { outline: 2px solid #89c6fa; outline-offset: 1px; }
+#nickname-form .profile-preview { background: #142335; border-color: #577b9a; }
+#nickname-form .avatar-tabs button { background: #263b52; color: #e5f2ff; border-color: #5c7b94; }
+#nickname-form .avatar-tabs button.active { background: #315f86; border-color: #8bc5f2; }
+#nickname-form .avatar-option { background: #263b52; color: #eaf4ff; border-color: #526f87; }
+#nickname-form .avatar-option.selected { background: #315f86; border-color: #8bc5f2; }
+#nickname-form .profile-colors { background: #263b52; border-color: #577b9a; }
+#nickname-dialog .profile-close {
+  background: #263b52;
+  color: #f2f8ff;
+  border-color: #6686a0;
+}
+#nickname-dialog .profile-close:hover { background: #365b7a; }
+#nickname-dialog .profile-close:focus-visible { outline-color: #a0d5ff; }
+#nickname-form button[type="submit"] { background: #2c628c; border-color: #4a87b3; color: #fff; }
+#nickname-form button[type="submit"]:hover { background: #3877a7; }
+#nickname-form .error, #nickname-form .avatar-feedback { color: #ffb4aa; }
