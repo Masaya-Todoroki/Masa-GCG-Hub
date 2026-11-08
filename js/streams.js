@@ -255,7 +255,8 @@
         overlayEnabled=!!value;
         avatarLayer.hidden=!overlayEnabled;
         avatarToggle.setAttribute('aria-pressed',String(overlayEnabled));
-        avatarToggle.textContent=overlayEnabled?'👾 Avatars: On':'👾 Avatars: Off';
+        const avatarLabel=avatarToggle.querySelector('.gcg-avatar-toggle-label');
+        if(avatarLabel) avatarLabel.textContent=overlayEnabled?'Avatars: On':'Avatars: Off';
         try{localStorage.setItem('gcg_overlay_visible',String(overlayEnabled));}catch(_){}
     }
     avatarToggle.addEventListener('click',()=>setOverlayVisible(!overlayEnabled));

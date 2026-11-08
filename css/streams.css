@@ -2550,3 +2550,8 @@ body.theatre-mode .streams-footer { display: none; }
   background: #172b40e6; border: 1px solid #ffffff80;
   border-radius: 6px;
 }
+
+/* Gundam Card Game emblem on the viewer-avatar toggle */
+#avatars-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+#avatars-toggle .gcg-avatar-toggle-icon { display: block; width: 20px; height: 20px; object-fit: contain; flex: 0 0 20px; }
+#avatars-toggle[aria-pressed="false"] .gcg-avatar-toggle-icon { opacity: .55; }

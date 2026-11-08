@@ -335,3 +335,14 @@ header.shared-site-header:has(.deck-header-count) .promo-home-nav .tab-btn:hover
   text-shadow: none !important;
   box-shadow: 0 1px 4px rgba(12, 36, 66, .22);
 }
+
+/* Saved decks: maintain contrast inside the dark list rows. */
+#savedDecksModal .saved-deck-row strong {
+  color: #f4f8ff;
+}
+#savedDecksModal .saved-deck-row small {
+  color: #b9cee5;
+}
+#savedDecksModal .saved-deck-row .saved-deck-current {
+  color: #83b6ff;
+}
