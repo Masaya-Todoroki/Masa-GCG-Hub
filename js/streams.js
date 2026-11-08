@@ -425,12 +425,10 @@
         if(!dialog){
             dialog=document.createElement('dialog');dialog.id='stream-card-preview';
             dialog.className='stream-card-preview-dialog';
-            const close=document.createElement('button');close.type='button';close.className='stream-card-preview-close';close.textContent='✕';close.setAttribute('aria-label','Close card preview');
-            close.addEventListener('click',()=>dialog.close());
             const img=document.createElement('img');img.alt='';
             const caption=document.createElement('div');caption.className='stream-card-preview-caption';
-            dialog.append(close,img,caption);document.body.append(dialog);
-            dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+            dialog.append(img,caption);document.body.append(dialog);
+            dialog.addEventListener('click',()=>dialog.close());
         }
         const card=cardById.get(id);
         const img=dialog.querySelector('img');img.alt=card?`${card.name} (${id})`:id;
