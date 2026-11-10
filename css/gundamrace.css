@@ -662,3 +662,51 @@ textarea { border-radius: 2px; border: 1px solid #91b3d0; }
     font: inherit;
     font-weight: 750;
 }
+
+/* Multi-prize giveaway controls */
+.prize-actions { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+.prize-actions button { flex:1; min-width:145px; }
+.excluded-title { font-size:15px; margin:12px 0 6px; }
+.excluded-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 9px; border-bottom:1px solid #c6d8e7; }
+.excluded-row span { overflow-wrap:anywhere; }
+.excluded-flag { color:#a24141; font-weight:700; margin-left:auto; }
+.place span { flex:1; overflow-wrap:anywhere; }
+
+/* Prize draw actions shown directly after the finishing positions. */
+.prize-heading { margin: 16px 0 4px; padding-top: 12px; border-top: 2px solid #b3cde3; font-size: 18px; font-weight: 900; color: #173d64; }
+.prize-hint { margin: 2px 0 8px; color: #31516c; font-size: 13px; }
+#app .prize-actions button { background: #a32f3b; color: #fff; border: 1px solid #7d1c27; font-weight: 800; }
+#app .prize-actions button:hover:not(:disabled) { background: #81202a; }
+#app .prize-actions button:disabled { opacity: .5; cursor: default; }
+
+/* Prize controls first, with finishing positions below. */
+#results { display: flex; flex-direction: column; align-items: stretch; }
+#results .prize-heading { margin-top: 0; padding-top: 0; border-top: 0; }
+#results .prize-actions { margin: 5px 0; }
+#app #results .prize-race-again {
+    width: 100%;
+    background: var(--race-accent);
+    color: white;
+    border: 1px solid var(--race-ink);
+    font-weight: 900;
+    padding: 12px;
+    margin: 3px 0 10px;
+}
+#app #results .prize-race-again:disabled { opacity: .5; cursor: default; }
+#results .results-heading {
+    margin: 12px 0 4px;
+    padding-top: 12px;
+    border-top: 2px solid #b3cde3;
+    color: var(--race-ink);
+    font-size: 17px;
+}
+
+/* Per-finisher exclusion controls */
+#app #results .place .individual-exclude {
+  margin-left:auto; flex:0 0 auto; padding:8px 12px;
+  background:#a32f3b; color:#fff; border:1px solid #81202a;
+  border-radius:3px; font-weight:800; cursor:pointer;
+}
+#app #results .place .individual-exclude.is-excluded { background:#2e668e; border-color:#173d64; }
+#app #results .place .individual-exclude:hover { filter:brightness(.88); }
+#results .place span { min-width:0; }

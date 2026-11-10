@@ -26,7 +26,7 @@ const visualSetting = (name) => parseFloat(
 );
 
 const $=id=>document.getElementById(id),rand=(a,b)=>a+Math.random()*(b-a);
-let avatars=[],racers=[],running=false,frame=0,finishX=0,worldWidth=0,camera=0,placements=[],activeDurationMs=60000;
+let avatars=[],racers=[],running=false,frame=0,finishX=0,worldWidth=0,camera=0,placements=[],activeDurationMs=60000,roster=[],excludedWinners=[],resultsAutoOpened=false;
 function updateRaceProgress(value) {
     const progress = Math.max(0, Math.min(1, value));
     const percentage = `${(progress * 100).toFixed(2)}%`;
@@ -144,13 +144,15 @@ function render(){
 function prepare(){
  if(running)return;const names=$('names').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).slice(0,100);
  if(names.length<2){$('message').textContent='Please enter at least two players.';return}
- racers=names.map(name=>({name:name.slice(0,40),avatar:assignAvatar()}));placements=[];clearLivePlacements();render();
+ roster=names.map((name,i)=>({id:i,name:name.slice(0,40),avatar:assignAvatar()}));excludedWinners=[];racers=[...roster];placements=[];clearLivePlacements();render();
  $('overlay').style.display='none';$('status').textContent=racers.length+' racers ready';
 }
 function endRace(){
  running=false;setStartButton(false);placements=[...racers].sort((a,b)=>a.finishTime-b.finishTime);
  updateRaceProgress(1);
- $('status').textContent='Race finished';$('start').disabled=false;$('reset').disabled=false;$('edit').disabled=false;
+ updateEligibleRacers();
+ $('status').textContent='Race finished';$('start').disabled=racers.length<2;$('reset').disabled=false;$('edit').disabled=false;
+ if($('overlay').style.display==='flex'&&$('results'))showPlacements();
  // Keep the live finishers panel visible; the full results remain available via Placements.
 }
 function setStartButton(isRunning){
@@ -167,7 +169,9 @@ function stopRace(){
  setStartButton(false);
  $('reset').disabled=false;
  $('edit').disabled=false;
+ updateEligibleRacers();
  $('status').textContent='Race stopped';
+ if($('overlay').style.display==='flex'&&$('results'))showPlacements(false);
  // Preserve the progress bar and any already recorded finishers.
 }
 // The finishing order is shuffled once at the start, independently of avatars/names.
@@ -243,7 +247,9 @@ function plannedPosition(r,elapsedFraction){
  return finishX;
 }
 function start(){
- if(running||racers.length<2)return;
+ if(running)return;
+ updateEligibleRacers();
+ if(racers.length<2)return;
  const durationInput=$('duration');
  const requestedSeconds=Number(durationInput.value);
  if(!Number.isFinite(requestedSeconds)||requestedSeconds<1||requestedSeconds>3600){
@@ -253,7 +259,7 @@ function start(){
  }
  durationInput.setCustomValidity('');
  activeDurationMs=requestedSeconds*1000;
- randomBackground();clearLivePlacements();placements=[];render();
+ randomBackground();clearLivePlacements();placements=[];resultsAutoOpened=false;render();
  running=true;setStartButton(true);
  $('reset').disabled=true;$('edit').disabled=true;$('overlay').style.display='none';
  const begin=performance.now(),duration=activeDurationMs;
@@ -308,27 +314,89 @@ function recordFinisher(r){
  }
  const label=document.createElement('span');label.textContent=r.name;row.append(label);
  $('liveList').append(row);
+ if(placements.length===Math.min(5,racers.length)&&!resultsAutoOpened){
+  resultsAutoOpened=true;showPlacements();
+ }else if(resultsAutoOpened&&$('overlay').style.display==='flex'&&$('results')){
+  showPlacements(false);
+ }
  row.scrollIntoView({block:'nearest',behavior:'instant'});
 }
-function showPlacements(){
+// Keep a master roster so removing and restoring winners never loses their original entry.
+function updateEligibleRacers(){
+ const excluded=new Set(excludedWinners.map(r=>r.id));
+ const eligible=roster.filter(r=>!excluded.has(r.id));
+ if(!running)racers=eligible;
+ $('names').value=eligible.map(r=>r.name).join('\n');
+ updateCount();
+ $('start').disabled=!running&&eligible.length<2;
+ if(!running)$('status').textContent=`${eligible.length} racers eligible · ${excludedWinners.length} excluded`;
+}
+function toggleExcluded(id){
+ const found=excludedWinners.find(r=>r.id===id);
+ if(found)excludedWinners=excludedWinners.filter(r=>r.id!==id);
+ else{
+  const racer=roster.find(r=>r.id===id);
+  if(racer)excludedWinners.push(racer);
+ }
+ updateEligibleRacers();
+ showPlacements(false);
+}
+function restoreWinner(id){
+ excludedWinners=excludedWinners.filter(r=>r.id!==id);
+ updateEligibleRacers();
+ showPlacements();
+}
+function showPlacements(resetScroll=true){
  if(!placements.length)return;
- $('modalTitle').textContent='🏆 Final Placements';$('clearNames').style.display='none';$('names').style.display='none';$('namesCount').style.display='none';
- let list=$('results');if(!list){list=document.createElement('div');list.id='results';$('modal').insertBefore(list,$('modal').querySelector('.modalfooter'))}
- list.innerHTML='';
- placements.forEach((r,i)=>{const row=document.createElement('div');row.className='place';const b=document.createElement('b');b.textContent='#'+(i+1);row.append(b);if(r.avatar){const img=document.createElement('img');img.src=path(r.avatar)+'.png';img.onerror=()=>{if(!img.dataset.f){img.dataset.f='1';img.src=path(r.avatar)+'.webp'}else img.style.display='none'};row.append(img)}const text=document.createElement('span');text.textContent=r.name+(i===0?' 🏆':'');row.append(text);list.append(row)});
- $('prepare').textContent='Race Again';$('prepare').onclick=()=>{hideModal();start()};$('message').textContent='All finishing positions, first through last.';$('overlay').style.display='flex';
+ $('modalTitle').textContent=running?'🏆 Live Placements':'🏆 Final Placements';
+ $('clearNames').style.display='none';$('names').style.display='none';$('namesCount').style.display='none';
+ let list=$('results');
+ if(!list){list=document.createElement('div');list.id='results';$('modal').insertBefore(list,$('modal').querySelector('.modalfooter'))}
+ const previousScroll=list.scrollTop;
+ list.replaceChildren();
+ // Prize actions appear before the scrolling results, not after them.
+ const heading=document.createElement('div');heading.className='prize-heading';
+ heading.textContent='🎁 Next Prize Draw';list.append(heading);
+ const hint=document.createElement('p');hint.className='prize-hint';
+ hint.textContent='Exclude winners, then start the next race.';list.append(hint);
+ const raceAgain=document.createElement('button');
+ raceAgain.className='prize-race-again primary';
+ raceAgain.textContent=running?'🏁 Race in Progress':`🏁 Race Again (${racers.length} eligible)`;
+ raceAgain.disabled=running||roster.length-excludedWinners.length<2;
+ raceAgain.onclick=()=>{hideModal();start()};
+ list.append(raceAgain);
+ const resultsHeading=document.createElement('h3');
+ resultsHeading.className='results-heading';resultsHeading.textContent=running?'🏆 Finished So Far':'🏆 Finishing Positions';list.append(resultsHeading);
+ placements.forEach((r,i)=>{
+  const row=document.createElement('div');row.className='place';
+  const b=document.createElement('b');b.textContent='#'+(i+1);row.append(b);
+  if(r.avatar){const img=document.createElement('img');img.src=path(r.avatar)+'.webp';img.onerror=()=>{if(!img.dataset.f){img.dataset.f='1';img.src=path(r.avatar)+'.png'}else img.style.display='none'};row.append(img)}
+  const label=document.createElement('span');label.textContent=r.name+(i===0?' 🏆':'');row.append(label);
+  const excluded=excludedWinners.some(w=>w.id===r.id);
+  const action=document.createElement('button');
+  action.className='individual-exclude'+(excluded?' is-excluded':'');
+  action.textContent=excluded?'Restore':'Exclude';
+  action.setAttribute('aria-label',(excluded?'Restore ':'Exclude ')+r.name);
+  action.onclick=()=>toggleExcluded(r.id);
+  row.append(action);
+  list.append(row);
+ });
+ $('prepare').closest('.modalfooter').style.display='none';
+ $('message').textContent=running?'Race continues in the background. Exclusions apply to the next race.':`${racers.length} eligible for the next race. Use the Exclude / Restore buttons beside each finisher.`;
+ if(!resetScroll)list.scrollTop=previousScroll;
+ $('overlay').style.display='flex';
 }
 function hideModal(){$('overlay').style.display='none'}
 function edit(){
  if(running)return;
  $('modalTitle').textContent='Enter up to 100 Names';$('clearNames').style.display='';$('names').style.display='';$('namesCount').style.display='';
- $('results')?.remove();$('prepare').textContent='🏁 Prepare Race';$('prepare').onclick=prepare;
+ $('prepare').closest('.modalfooter').style.display='';$('results')?.remove();$('prepare').disabled=false;$('prepare').textContent='🏁 Prepare Race';$('prepare').onclick=prepare;
  $('message').textContent='One name per line. Avatars are assigned randomly.';$('overlay').style.display='flex';updateCount();
 }
 function updateCount(){const n=$('names').value.split(/\r?\n/).filter(s=>s.trim()).length;$('namesCount').textContent=`Names: ${n} / 100`}
 $('names').addEventListener('input',updateCount);$('clearNames').onclick=()=>{$('names').value='';updateCount()};
 $('prepare').onclick=prepare;$('start').onclick=()=>running?stopRace():start();$('edit').onclick=edit;
 $('reset').onclick=()=>{if(running)return;placements=[];clearLivePlacements();render();$('status').textContent='Ready for another race'};
-$('placements').onclick=()=>{if(placements.length&&!running)showPlacements()};
+$('placements').onclick=()=>{if(placements.length)showPlacements()};
 window.addEventListener('resize',()=>{if(!running&&racers.length)render()});
 loadProgressIcon();updateRaceProgress(0);randomBackground();loadAvatars();updateCount();
