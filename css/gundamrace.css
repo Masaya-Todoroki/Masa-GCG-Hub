@@ -710,3 +710,87 @@ textarea { border-radius: 2px; border: 1px solid #91b3d0; }
 #app #results .place .individual-exclude.is-excluded { background:#2e668e; border-color:#173d64; }
 #app #results .place .individual-exclude:hover { filter:brightness(.88); }
 #results .place span { min-width:0; }
+
+
+/* Modal close control — always accessible in the top-right corner. */
+.modal { position: relative; }
+.modalhead { padding-right: 38px; }
+#closeModal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid #b3cde3;
+    border-radius: 8px;
+    background: white;
+    color: var(--race-ink);
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+}
+#closeModal:hover { background: var(--race-panel); }
+
+
+/* Prize eligibility: on = included in next race, off = excluded. */
+#app #results .place .eligibility-toggle {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    min-width: 142px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 800;
+    color: var(--race-ink);
+}
+#app #results .place .eligibility-toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+#app #results .place .eligibility-track {
+    position: relative;
+    flex: 0 0 46px;
+    height: 26px;
+    border-radius: 99px;
+    background: #9ba9b9;
+    border: 1px solid #78899d;
+    transition: background .15s ease;
+}
+#app #results .place .eligibility-track::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 1px 3px #0003;
+    transition: transform .15s ease;
+}
+#app #results .place .eligibility-toggle input:checked + .eligibility-track {
+    background: #2e668e;
+    border-color: #234e70;
+}
+#app #results .place .eligibility-toggle input:checked + .eligibility-track::after {
+    transform: translateX(20px);
+}
+#app #results .place .eligibility-toggle input:focus-visible + .eligibility-track {
+    outline: 3px solid #edb44c;
+    outline-offset: 3px;
+}
+#app #results .place .eligibility-status {
+    width: 70px;
+    font-size: 13px;
+}
+#app #results .place .eligibility-toggle.is-excluded .eligibility-status {
+    color: #9b3b42;
+}

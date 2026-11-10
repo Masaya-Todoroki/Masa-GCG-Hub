@@ -77,18 +77,51 @@ function loadRoad(){
  road.src='images/gundamrace-assets/Seamless_Road.webp';
 }
 loadRoad();
-let currentBackground=0;
-function randomBackground(){
- const options=[1,2,3,4].filter(n=>n!==currentBackground);
- currentBackground=options[Math.floor(Math.random()*options.length)];
- const base=`BG_0${currentBackground}`;
- const paths=[];
- for(const folder of ['images/gundamrace-assets/','images/gundamrace-assets/background/'])
-  for(const ext of ['png','jpg','jpeg','webp'])paths.push(`${folder}${base}.${ext}`);
- const backdrop=document.querySelector('#scenery .backdrop');
- backdrop.style.backgroundImage='none';
- function tryNext(i){if(i>=paths.length)return;const im=new Image();im.onload=()=>{backdrop.style.backgroundImage=`url("${paths[i]}")`};im.onerror=()=>tryNext(i+1);im.src=paths[i]}
- tryNext(0);
+// Load scenery ahead of time so a new race doesn't wait on a background download.
+const BACKGROUND_NUMBERS = [1, 2, 3];
+const BACKGROUND_FOLDERS = [
+ 'images/gundamrace-assets/background/',
+ 'images/gundamrace-assets/'
+];
+const BACKGROUND_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg'];
+const backgroundCache = new Map();
+let currentBackground = 0;
+function loadBackground(number) {
+ if (backgroundCache.has(number)) return backgroundCache.get(number);
+ const base = `BG_0${number}`;
+ const paths = BACKGROUND_FOLDERS.flatMap(folder =>
+  BACKGROUND_EXTENSIONS.map(ext => `${folder}${base}.${ext}`)
+ );
+ const pending = new Promise(resolve => {
+  function tryNext(index) {
+   if (index >= paths.length) { resolve(null); return; }
+   const image = new Image();
+   image.onload = () => resolve(paths[index]);
+   image.onerror = () => tryNext(index + 1);
+   image.src = paths[index];
+  }
+  tryNext(0);
+ });
+ backgroundCache.set(number, pending);
+ return pending;
+}
+function preloadScenery() {
+ BACKGROUND_NUMBERS.forEach(loadBackground);
+ // The road texture is decoded by loadRoad(); warm the fence cache too.
+ const fence = new Image();
+ fence.src = 'images/gundamrace-assets/Fence.webp';
+}
+function randomBackground() {
+ const options = BACKGROUND_NUMBERS.filter(number => number !== currentBackground);
+ if (!options.length) return;
+ const chosen = options[Math.floor(Math.random() * options.length)];
+ currentBackground = chosen;
+ // Keep the previous image visible until the next background is ready.
+ loadBackground(chosen).then(url => {
+  if (url && currentBackground === chosen) {
+   document.querySelector('#scenery .backdrop').style.backgroundImage = `url("${url}")`;
+  }
+ });
 }
 function assignAvatar(){return avatars.length?avatars[Math.floor(Math.random()*avatars.length)]:null}
 function sprite(r){
@@ -361,9 +394,19 @@ function showPlacements(resetScroll=true){
  hint.textContent='Exclude winners, then start the next race.';list.append(hint);
  const raceAgain=document.createElement('button');
  raceAgain.className='prize-race-again primary';
- raceAgain.textContent=running?'🏁 Race in Progress':`🏁 Race Again (${racers.length} eligible)`;
+ raceAgain.textContent=running?'🏁 Race in Progress':`🏁 Prepare Next Race (${roster.length-excludedWinners.length} eligible)`;
  raceAgain.disabled=running||roster.length-excludedWinners.length<2;
- raceAgain.onclick=()=>{hideModal();start()};
+ raceAgain.onclick=()=>{
+  if(running)return;
+  updateEligibleRacers();
+  placements=[];
+  resultsAutoOpened=false;
+  clearLivePlacements();
+  $('results')?.remove();
+  hideModal();
+  render();
+  $('status').textContent=`${racers.length} racers ready for the next race`;
+ };
  list.append(raceAgain);
  const resultsHeading=document.createElement('h3');
  resultsHeading.className='results-heading';resultsHeading.textContent=running?'🏆 Finished So Far':'🏆 Finishing Positions';list.append(resultsHeading);
@@ -373,20 +416,31 @@ function showPlacements(resetScroll=true){
   if(r.avatar){const img=document.createElement('img');img.src=path(r.avatar)+'.webp';img.onerror=()=>{if(!img.dataset.f){img.dataset.f='1';img.src=path(r.avatar)+'.png'}else img.style.display='none'};row.append(img)}
   const label=document.createElement('span');label.textContent=r.name+(i===0?' 🏆':'');row.append(label);
   const excluded=excludedWinners.some(w=>w.id===r.id);
-  const action=document.createElement('button');
-  action.className='individual-exclude'+(excluded?' is-excluded':'');
-  action.textContent=excluded?'Restore':'Exclude';
-  action.setAttribute('aria-label',(excluded?'Restore ':'Exclude ')+r.name);
-  action.onclick=()=>toggleExcluded(r.id);
-  row.append(action);
+  // Checked means eligible for the next draw; unchecked means excluded.
+  const toggle=document.createElement('label');
+  toggle.className='eligibility-toggle'+(excluded?' is-excluded':'');
+  const input=document.createElement('input');
+  input.type='checkbox';
+  input.checked=!excluded;
+  input.setAttribute('aria-label',`${r.name} eligible for next race`);
+  input.onchange=()=>toggleExcluded(r.id);
+  const track=document.createElement('span');
+  track.className='eligibility-track';
+  track.setAttribute('aria-hidden','true');
+  const status=document.createElement('span');
+  status.className='eligibility-status';
+  status.textContent=excluded?'Excluded':'Eligible';
+  toggle.append(input,track,status);
+  row.append(toggle);
   list.append(row);
  });
  $('prepare').closest('.modalfooter').style.display='none';
- $('message').textContent=running?'Race continues in the background. Exclusions apply to the next race.':`${racers.length} eligible for the next race. Use the Exclude / Restore buttons beside each finisher.`;
+ $('message').textContent=running?'Race continues in the background. Exclusions apply to the next race.':`${racers.length} eligible for the next race. Use the eligibility switches beside each finisher.`;
  if(!resetScroll)list.scrollTop=previousScroll;
  $('overlay').style.display='flex';
 }
 function hideModal(){$('overlay').style.display='none'}
+$('closeModal').onclick=hideModal;
 function edit(){
  if(running)return;
  $('modalTitle').textContent='Enter up to 100 Names';$('clearNames').style.display='';$('names').style.display='';$('namesCount').style.display='';
@@ -399,4 +453,4 @@ $('prepare').onclick=prepare;$('start').onclick=()=>running?stopRace():start();$
 $('reset').onclick=()=>{if(running)return;placements=[];clearLivePlacements();render();$('status').textContent='Ready for another race'};
 $('placements').onclick=()=>{if(placements.length)showPlacements()};
 window.addEventListener('resize',()=>{if(!running&&racers.length)render()});
-loadProgressIcon();updateRaceProgress(0);randomBackground();loadAvatars();updateCount();
+loadProgressIcon();updateRaceProgress(0);preloadScenery();randomBackground();loadAvatars();updateCount();
