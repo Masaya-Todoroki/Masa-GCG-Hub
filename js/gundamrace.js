@@ -26,6 +26,7 @@ const visualSetting = (name) => parseFloat(
 );
 
 const $=id=>document.getElementById(id),rand=(a,b)=>a+Math.random()*(b-a);
+let avatarAssignments=[],avatarCategory="Pilots",selectedAvatarIndex=-1;
 let avatars=[],racers=[],running=false,frame=0,finishX=0,worldWidth=0,camera=0,placements=[],activeDurationMs=60000,roster=[],excludedWinners=[],resultsAutoOpened=false;
 function updateRaceProgress(value) {
     const progress = Math.max(0, Math.min(1, value));
@@ -54,7 +55,7 @@ async function loadAvatars(){
  try{const r=await fetch('data/Avatars.csv',{cache:'no-cache'});if(!r.ok)throw Error('HTTP '+r.status);
  const lines=(await r.text()).replace(/^\uFEFF/,'').trim().split(/\r?\n/),headers=lines.shift().split(',').map(x=>x.trim());
  for(const row of lines){const cells=row.split(',');for(const cat of ['Pilots','Units']){const value=cells[headers.indexOf(cat)]?.trim();if(value&&/^[a-z0-9_ ()-]+$/i.test(value))avatars.push(cat+'/'+value)}}
- $('status').textContent=avatars.length+' avatars loaded';
+ $('status').textContent=avatars.length+' avatars loaded';syncAvatarAssignments();
  }catch(e){$('status').textContent='Avatar list unavailable';$('message').textContent='Could not load data/Avatars.csv. Put gundamrace.html at your website root and open via a web server (not file://).';}
 }
 // Rotate the supplied road image 90 degrees in the browser. No extra asset required.
@@ -177,7 +178,7 @@ function render(){
 function prepare(){
  if(running)return;const names=$('names').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).slice(0,100);
  if(names.length<2){$('message').textContent='Please enter at least two players.';return}
- roster=names.map((name,i)=>({id:i,name:name.slice(0,40),avatar:assignAvatar()}));excludedWinners=[];racers=[...roster];placements=[];clearLivePlacements();render();
+ syncAvatarAssignments();roster=names.map((name,i)=>({id:i,name:name.slice(0,40),avatar:avatarAssignments[i]?.avatar||assignAvatar()}));excludedWinners=[];racers=[...roster];placements=[];clearLivePlacements();render();
  $('overlay').style.display='none';$('status').textContent=racers.length+' racers ready';
 }
 function endRace(){
@@ -434,6 +435,7 @@ function showPlacements(resetScroll=true){
   row.append(toggle);
   list.append(row);
  });
+ $('raceNamesPanel').hidden=true;$('raceAvatarsPanel').hidden=true;$('setRaceAvatars').style.display='none';
  $('prepare').closest('.modalfooter').style.display='none';
  $('message').textContent=running?'Race continues in the background. Exclusions apply to the next race.':`${racers.length} eligible for the next race. Use the eligibility switches beside each finisher.`;
  if(!resetScroll)list.scrollTop=previousScroll;
@@ -443,11 +445,80 @@ function hideModal(){$('overlay').style.display='none'}
 $('closeModal').onclick=hideModal;
 function edit(){
  if(running)return;
+ setAvatarPickerOpen(false);
+ $('raceNamesPanel').hidden=false;$('raceAvatarsPanel').hidden=true;$('setRaceAvatars').style.display='';
  $('modalTitle').textContent='Enter up to 100 Names';$('clearNames').style.display='';$('names').style.display='';$('namesCount').style.display='';
  $('prepare').closest('.modalfooter').style.display='';$('results')?.remove();$('prepare').disabled=false;$('prepare').textContent='🏁 Prepare Race';$('prepare').onclick=prepare;
- $('message').textContent='One name per line. Avatars are assigned randomly.';$('overlay').style.display='flex';updateCount();
+ $('message').textContent='';$('overlay').style.display='flex';updateCount();
 }
-function updateCount(){const n=$('names').value.split(/\r?\n/).filter(s=>s.trim()).length;$('namesCount').textContent=`Names: ${n} / 100`}
+function currentNames(){return $('names').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).slice(0,100).map(s=>s.slice(0,40))}
+function syncAvatarAssignments(){
+ const available=new Map();
+ for(const item of avatarAssignments){if(!available.has(item.name))available.set(item.name,[]);available.get(item.name).push(item)}
+ avatarAssignments=currentNames().map(name=>{const previous=available.get(name)?.shift();return previous||{name,avatar:assignAvatar()}});
+ // If the CSV arrived after names were entered, fill previously unassigned avatars.
+ for(const item of avatarAssignments)if(!item.avatar)item.avatar=assignAvatar();
+}
+function avatarThumbnail(id){
+ const img=document.createElement('img');img.alt='';img.loading='lazy';
+ if(!id)return img;
+ img.src=path(id)+'.webp';
+ img.onerror=()=>{if(!img.dataset.fallback){img.dataset.fallback='1';img.src=path(id)+'.png'}else img.style.visibility='hidden'};
+ return img;
+}
+function renderAvatarPlayers(){
+ const list=$('raceAvatarPlayers');list.replaceChildren();
+ avatarAssignments.forEach((item,index)=>{
+  const row=document.createElement('div');row.className='race-avatar-player';
+  const name=document.createElement('span');name.textContent=item.name;
+  const choose=document.createElement('button');choose.type='button';choose.className='race-avatar-current';
+  choose.append(avatarThumbnail(item.avatar));
+  choose.setAttribute('aria-label','Change avatar for '+item.name);
+  choose.dataset.playerIndex=index;
+  choose.onclick=()=>{selectedAvatarIndex=index;avatarCategory=item.avatar?.split('/')[0]||'Pilots';renderAvatarGrid();setAvatarPickerOpen(true);$('backToAvatarPlayers').focus();};
+  const random=document.createElement('button');random.type='button';random.textContent='🎲';random.title='Random avatar';random.setAttribute('aria-label','Randomise avatar for '+item.name);
+  random.onclick=()=>{item.avatar=assignAvatar();renderAvatarPlayers();if(selectedAvatarIndex===index)renderAvatarGrid()};
+  row.append(name,choose,random);list.append(row);
+ });
+}
+function renderAvatarGrid(){
+ const grid=$('raceAvatarGrid');grid.replaceChildren();
+ const current=avatarAssignments[selectedAvatarIndex];
+ $('modalTitle').textContent='Choose Avatar for '+(current?.name||'Player');
+ document.querySelectorAll('[data-race-category]').forEach(btn=>{const active=btn.dataset.raceCategory===avatarCategory;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active))});
+ for(const id of avatars.filter(a=>a.startsWith(avatarCategory+'/'))){
+  const button=document.createElement('button');button.type='button';button.className='race-avatar-option';
+  button.classList.toggle('selected',current?.avatar===id);button.setAttribute('aria-pressed',String(current?.avatar===id));
+  button.setAttribute('aria-label',id.split('/')[1]);button.append(avatarThumbnail(id));
+  button.onclick=()=>{if(!current)return;current.avatar=id;closeAvatarPicker();};grid.append(button);
+ }
+ if(!grid.children.length)grid.textContent='No avatars available in this category.';
+}
+function setAvatarPickerOpen(open){
+ $('modal').classList.toggle('avatar-picker-open',open);
+ $('raceAvatarPicker').hidden=!open;
+ $('prepare').closest('.modalfooter').style.display=open?'none':'';
+}
+function closeAvatarPicker(){
+ const index=selectedAvatarIndex;
+ setAvatarPickerOpen(false);$('modalTitle').textContent='Set Avatars';
+ selectedAvatarIndex=-1;renderAvatarPlayers();
+ $('raceAvatarPlayers').querySelector('[data-player-index="'+index+'"]')?.focus();
+}
+function showAvatarSetup(){
+ setAvatarPickerOpen(false);
+ syncAvatarAssignments();$('raceNamesPanel').hidden=true;$('raceAvatarsPanel').hidden=false;
+ $('modalTitle').textContent='Set Avatars';$('clearNames').style.display='none';$('namesCount').style.display='';
+ $('setRaceAvatars').style.display='none';$('prepare').closest('.modalfooter').style.display='';
+ $('raceAvatarPicker').hidden=true;selectedAvatarIndex=-1;renderAvatarPlayers();
+ $('message').textContent='';
+}
+function updateCount(){syncAvatarAssignments();$('namesCount').textContent=`Names: ${avatarAssignments.length} / 100`}
+$('setRaceAvatars').onclick=showAvatarSetup;
+$('backToNames').onclick=edit;
+$('backToAvatarPlayers').onclick=closeAvatarPicker;
+$('randomiseAll').onclick=()=>{avatarAssignments.forEach(item=>item.avatar=assignAvatar());renderAvatarPlayers();if(selectedAvatarIndex>=0)renderAvatarGrid()};
+document.querySelectorAll('[data-race-category]').forEach(btn=>btn.onclick=()=>{avatarCategory=btn.dataset.raceCategory;renderAvatarGrid()});
 $('names').addEventListener('input',updateCount);$('clearNames').onclick=()=>{$('names').value='';updateCount()};
 $('prepare').onclick=prepare;$('start').onclick=()=>running?stopRace():start();$('edit').onclick=edit;
 $('reset').onclick=()=>{if(running)return;placements=[];clearLivePlacements();render();$('status').textContent='Ready for another race'};

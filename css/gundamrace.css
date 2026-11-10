@@ -19,6 +19,15 @@
     --progress-icon-outline: 1px; /* White silhouette outline thickness */
     --progress-icon-shadow: 2px;  /* Dark shadow below the outline */
     --progress-flag-size: 32px;
+    /* Avatar grid and picker sizing */
+    --avatar-player-card-min: 130px;
+    --avatar-choice-card-min: 100px;
+    --avatar-preview-size: 72px;
+    --avatar-choice-size: 88px;
+    --avatar-grid-gap: 10px;
+    --avatar-card-padding: 8px;
+    --avatar-card-radius: 8px;
+    --avatar-dice-size: 38px;
     /* Hub-inspired interface controls */
     --race-header-height: 116px;
     --race-accent: #2e668e;
@@ -794,3 +803,30 @@ textarea { border-radius: 2px; border: 1px solid #91b3d0; }
 #app #results .place .eligibility-toggle.is-excluded .eligibility-status {
     color: #9b3b42;
 }
+
+/* =============================================================
+   AVATAR PICKER — EDITABLE SIZING ABOVE IN :root
+   Inspired by the Streams page Pilots / Mobile Suits picker.
+   ============================================================= */
+.race-setup-panel[hidden],#raceAvatarPicker[hidden] { display: none !important; }
+#raceNamesPanel { display:flex; flex:1; min-height:0; }
+#raceNamesPanel textarea { margin:12px 0; height:auto; min-height:0; }
+#raceAvatarsPanel { display:flex; flex:1; flex-direction:column; min-height:0; gap:10px; margin:12px 0; }
+.race-avatar-tools { display:flex; justify-content:space-between; gap:8px; }
+.race-avatar-players { overflow:auto; min-height:0; flex:1; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--avatar-player-card-min)),1fr)); gap:var(--avatar-grid-gap); align-content:start; }
+.race-avatar-player { display:grid; grid-template-columns:minmax(0,1fr) var(--avatar-dice-size); align-items:center; gap:var(--avatar-card-padding); padding:var(--avatar-card-padding); border:1px solid #b3cde3; border-radius:var(--avatar-card-radius); background:#fff; }
+.race-avatar-player>span { grid-column:1/-1; font-weight:700; text-align:center; overflow-wrap:anywhere; }
+#app .race-avatar-current { display:flex; justify-content:center; align-items:center; min-width:0; padding:0; }
+.race-avatar-current img { width:100%; height:var(--avatar-preview-size); object-fit:contain; image-rendering:pixelated; }
+#app .race-avatar-player>button:last-child { padding:0; width:var(--avatar-dice-size); height:var(--avatar-dice-size); }
+.race-avatar-picker { flex:1; min-height:0; display:flex; flex-direction:column; gap:var(--avatar-grid-gap); }
+#backToAvatarPlayers { align-self:flex-start; }
+.race-avatar-tabs { display:flex; gap:var(--avatar-grid-gap); }
+.race-avatar-tabs button { flex:1; }
+#app .race-avatar-tabs button.active { background:#174469; outline:2px solid #65b8f2; }
+.race-avatar-grid { overflow:auto; min-height:0; flex:1; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,var(--avatar-choice-card-min)),1fr)); gap:var(--avatar-grid-gap); align-content:start; padding:2px; }
+#app .race-avatar-option { display:flex; justify-content:center; align-items:center; border:2px solid #abc8e4; padding:var(--avatar-card-padding); border-radius:var(--avatar-card-radius); min-width:0; }
+#app .race-avatar-option.selected { border-color:#1269b6; box-shadow:inset 0 0 0 2px #65b8f2; }
+.race-avatar-option img { width:100%; height:var(--avatar-choice-size); object-fit:contain; image-rendering:pixelated; }
+.avatar-picker-open .race-avatar-tools,.avatar-picker-open .race-avatar-players { display:none; }
+#message:empty { display:none; }

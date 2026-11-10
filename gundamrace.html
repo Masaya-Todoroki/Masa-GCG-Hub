@@ -61,22 +61,38 @@
         Clear List
        </button>
       </div>
+      <div id="raceNamesPanel" class="race-setup-panel">
       <textarea id="names" placeholder="Masa
 Amuro
 Char
 Suletta
 Athrun" spellcheck="false"></textarea>
+      </div>
+      <div id="raceAvatarsPanel" class="race-setup-panel" hidden>
+       <div class="race-avatar-tools">
+        <button type="button" id="backToNames">← Back to Names</button>
+        <button type="button" id="randomiseAll">🔀 Randomise All</button>
+       </div>
+       <div id="raceAvatarPlayers" class="race-avatar-players"></div>
+       <div id="raceAvatarPicker" class="race-avatar-picker" hidden>
+        <button type="button" id="backToAvatarPlayers">← Back to Players</button>
+        <div class="race-avatar-tabs">
+         <button type="button" data-race-category="Pilots" class="active">Pilots</button>
+         <button type="button" data-race-category="Units">Mobile Suits</button>
+        </div>
+        <div id="raceAvatarGrid" class="race-avatar-grid"></div>
+       </div>
+      </div>
       <div class="modalfooter">
        <span id="namesCount">
         Names: 0 / 100
        </span>
+       <button type="button" id="setRaceAvatars">👤 Set Avatars</button>
        <button class="primary" id="prepare">
         🏁 Prepare Race
        </button>
       </div>
-      <div id="message">
-       One name per line. Avatars are randomly selected from your Streams collection.
-      </div>
+      <div id="message" role="status"></div>
      </div>
     </div>
    </section>
