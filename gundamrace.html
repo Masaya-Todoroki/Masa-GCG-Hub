@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <link href="css/shared-header.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Gundam Race
+  </title>
+  <link href="css/gundamrace.css" rel="stylesheet"/>
+  <link href="images/Branding/favicon.png" rel="icon"/>
+ </head>
+ <body>
+  <div id="app">
+   <header class="race-site-header shared-site-header">
+    <a aria-label="Masa's GCG Hub home" class="header-brand" href="index.html">
+     <img alt="Masa's GCG Hub" class="brand-logo" src="images/Branding/logo.png"/>
+    </a>
+    <h1 class="race-banner-title">
+     GUNDAM RACE
+    </h1>
+   </header>
+   <section id="race">
+    <div id="scenery">
+     <div class="backdrop">
+     </div>
+     <div class="track">
+     </div>
+     <div class="fence">
+     </div>
+    </div>
+    <div id="world">
+     <div id="finish">
+     </div>
+    </div>
+    <div id="raceProgress" role="progressbar" aria-label="Leading racer progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="race-progress-track">
+        <div id="raceProgressFill" class="race-progress-fill"></div>
+        <img id="raceProgressIcon" class="race-progress-icon" alt="GCG logo" src="images/Branding/GCG_Icon.webp" />
+      </div>
+      <span class="race-progress-finish" aria-hidden="true">🏁</span>
+    </div>
+    <aside aria-live="polite" id="livePlacements">
+     <div class="liveTitle">
+      🏆 Finishers &middot;
+      <span id="liveCount">
+       0
+      </span>
+     </div>
+     <div class="liveList" id="liveList">
+     </div>
+    </aside>
+    <div id="overlay">
+     <div class="modal" id="modal">
+      <div class="modalhead">
+       <h2 id="modalTitle">
+        Enter up to 100 Names
+       </h2>
+       <button id="clearNames">
+        Clear List
+       </button>
+      </div>
+      <textarea id="names" placeholder="Masa
+Amuro
+Char
+Suletta
+Athrun" spellcheck="false"></textarea>
+      <div class="modalfooter">
+       <span id="namesCount">
+        Names: 0 / 100
+       </span>
+       <button class="primary" id="prepare">
+        🏁 Prepare Race
+       </button>
+      </div>
+      <div id="message">
+       One name per line. Avatars are randomly selected from your Streams collection.
+      </div>
+     </div>
+    </div>
+   </section>
+   <footer id="toolbar">
+    <button id="edit">
+     👥 Players
+    </button>
+    <button class="primary" disabled="" id="start">
+     ▶ Start Race
+    </button>
+    <button id="reset">
+     &olarr; Reset
+    </button>
+    <label>
+     Duration
+     <input id="duration" type="number" min="1" max="3600" step="1" value="60" inputmode="numeric" aria-label="Race duration in seconds">
+     <span>seconds</span>
+    </label>
+    <span class="grow">
+    </span>
+    <span id="status">
+     Loading avatars&hellip;
+    </span>
+    <button id="placements">
+     🏆 Placements
+    </button>
+   </footer>
+  </div>
+  <script defer="" src="js/gundamrace.js">
+  </script>
+ </body>
+</html>
+

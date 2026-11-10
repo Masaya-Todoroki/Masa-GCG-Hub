@@ -1,0 +1,664 @@
+/* =============================================================
+   GUNDAM RACE — EDITABLE VISUAL SETTINGS
+   Change these values to adjust the appearance of the game.
+   ============================================================= */
+:root {
+    --character-size: 120px;
+    --fence-size: 150px;
+    --runway-percent: 70%;
+    --placements-width: 310px;
+    --name-size: 12px;
+    --name-bubble-padding-x: 8px;
+    --name-bubble-padding-y: 3px;
+    --name-bubble-border: 2px;
+    --name-bubble-radius: 9px;
+    --name-bubble-gap: 4px;
+    --progress-height: 44px;
+    --progress-track-height: 12px;
+    --progress-icon-size: 42px;
+    --progress-icon-outline: 1px; /* White silhouette outline thickness */
+    --progress-icon-shadow: 2px;  /* Dark shadow below the outline */
+    --progress-flag-size: 32px;
+    /* Hub-inspired interface controls */
+    --race-header-height: 116px;
+    --race-accent: #2e668e;
+    --race-ink: #14233e;
+    --race-panel: #f4f9ff;
+}
+
+/* =============================================================
+   PAGE STYLES — generally no need to edit below this line
+   ============================================================= */
+* {
+    box-sizing: border-box;
+}
+
+html,body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font: 15px system-ui,Segoe UI,sans-serif;
+    color: #eef7ff;
+    background: #06152b;
+}
+
+button,select,textarea {
+    font: inherit;
+}
+
+button,select {
+    background: #15365c;
+    border: 1px solid #5485b5;
+    color: white;
+    border-radius: 9px;
+    padding: 9px 13px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #245889;
+}
+
+button:disabled {
+    opacity: .45;
+    cursor: default;
+}
+
+.primary {
+    background: linear-gradient(#41aaff,#0863b8);
+    font-weight: 800;
+}
+
+#app {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+header {
+    height: 69px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 20px;
+    background: linear-gradient(100deg,#09264c,#125591 70%,#0b2850);
+    border-bottom: 3px solid #55b8ff;
+}
+
+h1 {
+    font-size: clamp(19px,3vw,30px);
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+header small {
+    color: #9dcfff;
+}
+
+header a {
+    color: #bce6ff;
+    text-decoration: none;
+}
+
+#race {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+    background: #66b5f3;
+}
+
+#scenery {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Three simple layers: stationary location, fence, and scrolling runway. */
+
+#scenery>div {
+    position: absolute;
+    left: 0;
+    right: 0;
+    image-rendering: pixelated;
+}
+
+#scenery .backdrop {
+    top: 0;
+    height: calc(100% - var(--runway-percent, 70%));
+    background: #5686b2 center center / cover no-repeat;
+}
+
+#scenery .fence {
+    top: calc(100% - var(--runway-percent, 70%) - var(--fence-size, 66px) + 4px);
+    height: var(--fence-size, 66px);
+    z-index: 1;
+    background-image: url("../images/gundamrace-assets/Fence.webp");
+    background-repeat: repeat-x;
+    background-position: var(--fence-offset,0px) bottom;
+    background-size: auto 100%;
+    filter: drop-shadow(0 2px 2px #0009);
+}
+
+#scenery .track {
+    top: calc(100% - var(--runway-percent, 70%));
+    bottom: 0;
+    background-color: #414b59;
+    background-image: var(--road-image,none);
+    background-repeat: repeat;
+    background-position: var(--road-offset,0px) 0;
+    background-size: var(--road-tile-width,auto) var(--road-tile-height,auto);
+    overflow: hidden;
+    border-top: 3px solid #9aa7b7;
+}
+
+#world {
+    position: absolute;
+    inset: 0 auto 0 0;
+    will-change: transform;
+}
+
+#finish {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 24px;
+    background: repeating-conic-gradient(#fff 0 25%,#16253c 0 50%) 0 0/24px 24px;
+    box-shadow: 0 0 25px #fff9;
+}
+
+.runner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 110px;
+    z-index: 2;
+    will-change: transform;
+}
+
+.runner .sprite {
+    width: var(--character-size, 76px);
+    height: var(--character-size, 76px);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 5px 3px #12233a88);
+}
+
+.runner .name {
+    font-size: var(--name-size, 12px);
+    font-weight: 850;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 4px #000,0 0 4px #000;
+}
+
+#hud {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    background: #061a33d9;
+    border: 1px solid #75b6e3;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: 800;
+}
+
+#toolbar {
+    flex-shrink: 0;
+    min-height: 64px;
+    background: #0a2446;
+    border-top: 3px solid #4da7e7;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 16px;
+    flex-wrap: wrap;
+}
+
+#toolbar .grow {
+    flex: 1;
+}
+
+#overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: #031326b0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+}
+
+.modal {
+    width: min(700px,96vw);
+    height: min(680px,90%);
+    max-height: 95%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: #eaf3ff;
+    color: #102744;
+    border: 4px solid #133b6b;
+    border-radius: 22px;
+    padding: 17px;
+    box-shadow: 0 15px 65px #0009;
+}
+
+.modal h2 {
+    margin: 0;
+    font-size: clamp(18px,3vw,25px);
+}
+
+.modalhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal button {
+    color: #fff;
+}
+
+textarea {
+    width: 100%;
+    height: min(48vh,420px);
+    flex: 1;
+    min-height: 180px;
+    resize: none;
+    border: 2px solid #789ac3;
+    border-radius: 12px;
+    padding: 13px;
+    margin: 12px 0;
+    background: white;
+    color: #152b45;
+    line-height: 1.5;
+    outline-color: #2a8bda;
+}
+
+.modalfooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.modalfooter .primary {
+    flex: 1;
+}
+
+#results {
+    overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap: 7px;
+    margin: 12px 0;
+}
+
+.place {
+    background: white;
+    border: 1px solid #9bb8d5;
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.place b {
+    min-width: 40px;
+    color: #0963b5;
+}
+
+.place img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+#status {
+    font-size: 12px;
+    color: #b3d7f4;
+}
+
+#message {
+    font-size: 12px;
+    color: #365979;
+}
+
+#namesCount {
+    font-weight: 750;
+}
+
+@media (max-width:650px) {
+    header {
+        height: 57px;
+        padding: 6px 10px;
+    }
+    #toolbar {
+        padding: 6px;
+        gap: 5px;
+    }
+    button,select {
+        padding: 7px 8px;
+    }
+    .runner {
+        width: 70px;
+    }
+    .runner .sprite {
+        width: var(--character-size, 76px);
+        height: var(--character-size, 76px);
+    }
+    .runner .name {
+        font-size: var(--name-size, 12px);
+    }
+    .modal {
+        padding: 10px;
+    }
+}
+
+#livePlacements {
+    position: absolute;
+    z-index: 4;
+    top: 60px;
+    left: 12px;
+    width: min(var(--placements-width, 310px),calc(100% - 24px));
+    max-height: calc(100% - 78px);
+    display: none;
+    flex-direction: column;
+    background: #081d37e8;
+    border: 1px solid #5aa8e4;
+    border-radius: 12px;
+    box-shadow: 0 8px 28px #0008;
+    overflow: hidden;
+}
+
+#livePlacements .liveTitle {
+    font-weight: 850;
+    padding: 10px 12px;
+    background: #103b68;
+    border-bottom: 1px solid #487ba6;
+}
+
+#livePlacements .liveList {
+    overflow-y: auto;
+    padding: 6px;
+}
+
+#livePlacements .liveRow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 5px 7px;
+    border-bottom: 1px solid #ffffff18;
+    font-size: 13px;
+}
+
+#livePlacements .liveRow:last-child {
+    border-bottom: 0;
+}
+
+#livePlacements .liveRow strong {
+    color: #8bd1ff;
+    min-width: 34px;
+}
+
+#livePlacements .liveRow img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+#livePlacements .liveRow span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width:650px) {
+    #livePlacements {
+        top: 55px;
+        width: min(220px,55vw);
+    }
+    #livePlacements .liveRow {
+        font-size: 11px;
+        padding: 3px;
+    }
+}
+
+/* =============================================================
+   MASA'S GCG HUB VISUAL THEME — race interface only
+   The road, fence, background and gameplay positioning are unchanged.
+   ============================================================= */
+html, body { font-family: Arial, "Segoe UI", sans-serif; color: var(--race-ink); }
+#app > header.race-site-header.shared-site-header {
+    flex: 0 0 var(--race-header-height) !important;
+    height: var(--race-header-height) !important;
+    min-height: 0 !important;
+    max-height: var(--race-header-height) !important;
+    background: #fff !important;
+    border-bottom: 1px solid #9fc3e3 !important;
+    padding: 0 clamp(20px, 4.5vw, 80px) !important;
+}
+.race-site-nav { display: flex; align-items: center; gap: clamp(12px, 2.2vw, 32px); }
+.race-site-nav a {
+    color: #14233e; text-decoration: none; font-weight: 850;
+    padding: 15px 16px; white-space: nowrap; font-size: 15px;
+}
+.race-site-nav a:hover { background: #d9efff; }
+#app button, #app select {
+    background: #fff; border: 1px solid #7da9d0; color: #163451;
+    border-radius: 2px; box-shadow: none; font-weight: 750;
+}
+#app button:hover:not(:disabled), #app select:hover { background: #d7edff; }
+#app button.primary {
+    background: #2e668e; border-color: #2e668e; color: #fff;
+    font-weight: 850;
+}
+#app button.primary:hover:not(:disabled) { background: #194b75; }
+#toolbar {
+    background: #eaf4ff; color: #14233e;
+    border-top: 2px solid #86b5d8;
+    box-shadow: 0 -3px 12px #0d2b4a1a;
+}
+#status { color: #426786; }
+#hud {
+    background: #fffef4f2; color: #173d61;
+    border: 1px solid #82afd2; border-radius: 2px;
+    font-weight: 900; letter-spacing: .03em;
+}
+#overlay { background: #061b35ad; }
+.modal {
+    background: linear-gradient(130deg, #e7f2fc, #fff 70%);
+    border: 2px solid #7ba9cf; border-radius: 2px;
+    box-shadow: 0 16px 52px #051b36a8;
+    color: #14233e;
+}
+.modalhead { border-bottom: 1px solid #b3cde3; padding-bottom: 10px; }
+.modal h2 { font-style: italic; font-weight: 950; letter-spacing: -.025em; }
+#app .modal button:not(.primary) { background: #2e668e; color: white; }
+#app .modal button:not(.primary):hover { background: #194b75; }
+textarea { border-radius: 2px; border: 1px solid #91b3d0; }
+.place { border-radius: 2px; background: white; }
+#livePlacements {
+    background: #f5fafff2; color: #14233e;
+    border: 1px solid #80a8c8; border-radius: 2px;
+}
+#livePlacements .liveTitle {
+    background: #2e668e; color: #fff;
+    font-weight: 950; font-style: italic; letter-spacing: .035em;
+    border-bottom: 0;
+}
+#livePlacements .liveRow { border-bottom: 1px solid #d0e1ef; }
+#livePlacements .liveRow strong { color: #2e668e; }
+@media (max-width: 1000px) {
+    #app > header.race-site-header.shared-site-header {
+        flex: 0 0 83px !important; height: 83px !important;
+        max-height: 83px !important; padding: 6px 14px !important;
+        flex-wrap: nowrap !important;
+    }
+    .race-site-nav { gap: 3px; }
+    .race-site-nav a { padding: 10px 7px; font-size: 12px; }
+}
+@media (max-width: 520px) {
+    #app > header.race-site-header.shared-site-header {
+        flex: 0 0 70px !important; height: 70px !important; max-height: 70px !important;
+    }
+    #app > header.race-site-header .brand-logo { width: 135px !important; }
+    .race-site-nav a { font-size: 11px; padding: 8px 4px; }
+}
+
+/* Race banner: logo links home; centered title replaces navigation */
+#app > header.race-site-header.shared-site-header {
+    justify-content: flex-start !important;
+}
+#app > header.race-site-header .race-banner-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    color: #14233e;
+    font-size: clamp(20px, 2.4vw, 38px);
+    font-weight: 950;
+    font-style: italic;
+    letter-spacing: .035em;
+    white-space: nowrap;
+    pointer-events: none;
+}
+/* Ensure racer labels stay legible against every runway texture. */
+#race .runner .name {
+    color: #ffffff !important;
+    text-shadow: 0 2px 3px #000, 0 0 5px #000, 1px 1px 0 #000;
+}
+@media (max-width: 600px) {
+    #app > header.race-site-header .race-banner-title {
+        left: auto;
+        right: 12px;
+        transform: none;
+        font-size: clamp(15px, 4vw, 22px);
+    }
+}
+
+/* =============================================================
+   RACE PROGRESS — adjust these values at the top of this CSS file
+   ============================================================= */
+#raceProgress {
+    position: absolute;
+    z-index: 5;
+    top: 12px;
+    left: 22px;
+    right: 22px;
+    height: var(--progress-height);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 5px #07192fa8);
+}
+.race-progress-track {
+    position: relative;
+    flex: 1;
+    height: var(--progress-track-height);
+    border: 2px solid #b5dcf5;
+    background: #071e38d9;
+    border-radius: 999px;
+    box-shadow: inset 0 0 5px #0009, 0 0 0 2px #0d3055a8;
+}
+.race-progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg,#1374ba,#53c6ff);
+    box-shadow: 0 0 12px #4dc3ff;
+}
+.race-progress-icon {
+    position: absolute;
+    width: var(--progress-icon-size);
+    height: var(--progress-icon-size);
+    object-fit: contain;
+    left: 0%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    /* Apply a white outline around the transparent pixels, not the image box. */
+    filter:
+        drop-shadow(var(--progress-icon-outline) 0 0 white)
+        drop-shadow(calc(-1 * var(--progress-icon-outline)) 0 0 white)
+        drop-shadow(0 var(--progress-icon-outline) 0 white)
+        drop-shadow(0 calc(-1 * var(--progress-icon-outline)) 0 white)
+        drop-shadow(0 var(--progress-icon-shadow) 2px rgba(0, 0, 0, 0.85));
+}
+.race-progress-finish {
+    font-size: var(--progress-flag-size);
+    line-height: 1;
+    text-shadow: 0 2px 5px #000;
+}
+#livePlacements { top: calc(12px + var(--progress-height) + 14px); max-height: calc(100% - var(--progress-height) - 40px); }
+@media (max-width: 650px) {
+    #raceProgress { left: 15px; right: 15px; gap: 6px; }
+}
+
+/* Start/Stop toggle — active race */
+#app button.stop-race { background: #b52d3a; color: #fff; border-color: #8f1f2a; }
+#app button.stop-race:hover:not(:disabled) { background: #941f2b; }
+
+/* =============================================================
+   DUCK RACE-STYLE RACER NAME BUBBLES
+   Labels float above the sprites without changing racer positions.
+   ============================================================= */
+#race .runner {
+    overflow: visible;
+}
+#race .runner .name {
+    position: absolute;
+    bottom: calc(100% + var(--name-bubble-gap));
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: 170px;
+    padding: var(--name-bubble-padding-y) var(--name-bubble-padding-x);
+    border: var(--name-bubble-border) solid #183a63;
+    border-radius: var(--name-bubble-radius);
+    background: #fff;
+    color: #14233e !important;
+    text-shadow: none !important;
+    font-size: var(--name-size);
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 2px 5px #0006;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* Editable race duration field */
+#app #duration {
+    width: 82px;
+    min-width: 65px;
+    padding: 7px 8px;
+    background: #fff;
+    color: #163451;
+    border: 1px solid #7da9d0;
+    border-radius: 2px;
+    font: inherit;
+    font-weight: 750;
+}
