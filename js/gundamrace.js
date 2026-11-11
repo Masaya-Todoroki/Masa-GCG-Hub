@@ -6,7 +6,8 @@
 const GAME_SETTINGS = {
     minimumSpeed: 0.75, // Never move slower than 75% of normal race pace.
     maximumSpeed: 3.0, // Cap dramatic comeback bursts at 3x normal pace.
-    comebackChance: 0.35, // Chance of a last-to-first style comeback storyline.
+    comebackChance: 0.35, // Chance of one special comeback storyline per race.
+    comebackRankWeights: [45, 30, 15, 10], // Relative chances for finishing 1st, 2nd, 3rd or 4th. Positions beyond the number of racers are ignored.
     finishSpread: 0.10, // Finishers arrive over the final 10% of race time.
     storylineVariation: 0.07, // How much the pack changes positions mid-race.
     finishPanelDelay: 0, // Reserved for future placement reveal timing.
@@ -220,6 +221,20 @@ function makeRacePlan(duration){
  const order=shuffle(racers);
  const n=order.length;
  const comeback=Math.random()<GAME_SETTINGS.comebackChance;
+ // Choose one eligible finishing rank, weighted towards a winning comeback.
+ // With fewer than four racers, only the available ranks are considered.
+ let comebackRank=-1;
+ if(comeback){
+  const weights=GAME_SETTINGS.comebackRankWeights.slice(0,n).map(w=>Math.max(0,Number(w)||0));
+  const total=weights.reduce((sum,w)=>sum+w,0);
+  if(total>0){
+   let pick=Math.random()*total;
+   for(let i=0;i<weights.length;i++){
+    pick-=weights[i];
+    if(pick<0){comebackRank=i;break;}
+   }
+  }
+ }
  const story=shuffle(racers);
  // This is a time-varying *visual* order, not the actual finishing order.
  // All racers share the same starting X position.
@@ -234,15 +249,15 @@ function makeRacePlan(duration){
   const storyIndex=story.indexOf(r);
   const storyBias=n>1?(0.5-storyIndex/(n-1)):0;
   const randomBias=rand(-1,1);
-  const winnerComeback=comeback&&rank===0;
+  const selectedComeback=rank===comebackRank;
   // Fractional progress checkpoints. Keep every interval feasible at the
   // minimum speed, while leaving room for late overtakes and strong boosts.
   const knots=[{t:0,p:0}];
   for(let k=1;k<stages.length-1;k++){
    const t=stages[k]*finishFraction;
    let offset=storyBias*GAME_SETTINGS.storylineVariation*2 + randomBias*0.025;
-   if(winnerComeback){
-    // The eventual winner stays near the back before a late charge.
+   if(selectedComeback){
+    // The selected racer stays near the back before a late charge.
     offset -= [0,0.055,0.11,0.13,0.07][k];
    }
    const ideal=t/finishFraction + offset*Math.sin(Math.PI*t/finishFraction);
