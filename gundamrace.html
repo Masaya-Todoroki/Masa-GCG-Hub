@@ -40,6 +40,7 @@
       </div>
       <span class="race-progress-finish" aria-hidden="true">🏁</span>
     </div>
+    <div id="raceTimer" role="timer" aria-label="Elapsed race time">00:00</div>
     <aside aria-live="polite" id="livePlacements">
      <div class="liveTitle">
       🏆 Finishers &middot;
@@ -106,10 +107,28 @@ Athrun" spellcheck="false"></textarea>
     <button id="reset">
      &olarr; Reset
     </button>
-    <label>
+    <label id="durationControl">
      Duration
      <input id="duration" type="number" min="1" max="3600" step="1" value="60" inputmode="numeric" aria-label="Race duration in seconds">
      <span>seconds</span>
+    </label>
+    <label id="nameSizeControl">
+     Name size
+     <input id="nameSize" type="range" aria-label="Racer name size">
+     <output id="nameSizeValue" for="nameSize"></output>
+    </label>
+    <label id="timerControl">
+     <input id="showTimer" type="checkbox" checked> Show timer
+    </label>
+    <label id="debugControls" hidden>
+     Debug scenario
+     <select id="debugScenario" aria-label="Force race scenario">
+      <option value="random">Random (live probabilities)</option>
+      <option value="normal">Normal race</option>
+      <option value="comeback">Comeback</option>
+      <option value="bait-success">Bait: Success</option>
+      <option value="bait-fail">Bait: Fail (5+ racers)</option>
+     </select>
     </label>
     <span class="grow">
     </span>
@@ -121,6 +140,8 @@ Athrun" spellcheck="false"></textarea>
     </button>
    </footer>
   </div>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script defer src="js/admin-config.js"></script>
   <script defer="" src="js/gundamrace.js">
   </script>
  </body>

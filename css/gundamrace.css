@@ -8,11 +8,27 @@
     --runway-percent: 70%;
     --placements-width: 310px;
     --name-size: 12px;
+    --name-slider-width: 140px;
+    --name-slider-thumb-size: 28px;
+    --name-slider-track-height: 6px;
+    --name-slider-thumb-image: url("../images/Branding/GCG_Icon.webp");
+    --toolbar-control-gap: 9px;
+    --toolbar-separator-spacing: 14px;
+    --toolbar-separator-color: #a9bfd4;
+    --toolbar-slider-track: #b7c9da;
+    --toolbar-value-width: 48px;
     --name-bubble-padding-x: 8px;
     --name-bubble-padding-y: 3px;
     --name-bubble-border: 2px;
     --name-bubble-radius: 9px;
     --name-bubble-gap: 4px;
+    --timer-font-size: 24px;
+    --timer-gap: 4px;
+    --timer-background: #0d2034e6;
+    --timer-color: #ffffff;
+    --timer-border: #54748d;
+    --timer-padding: 4px 16px;
+    --timer-radius: 5px;
     --progress-height: 44px;
     --progress-track-height: 12px;
     --progress-icon-size: 42px;
@@ -830,3 +846,101 @@ textarea { border-radius: 2px; border: 1px solid #91b3d0; }
 .race-avatar-option img { width:100%; height:var(--avatar-choice-size); object-fit:contain; image-rendering:pixelated; }
 .avatar-picker-open .race-avatar-tools,.avatar-picker-open .race-avatar-players { display:none; }
 #message:empty { display:none; }
+
+/* BAIT SCENARIOS: fallen runner remains at their track position. */
+.runner.bait-fallen .sprite { transform:scaleX(-1) rotate(-90deg) !important; transform-origin:50% 85%; }
+#debugControls[hidden] { display:none !important; }
+#debugControls select { max-width:190px; }
+
+/* Race toolbar name-size control */
+#durationControl, #nameSizeControl {
+    display: flex;
+    align-items: center;
+    gap: var(--toolbar-control-gap);
+    white-space: nowrap;
+    font-weight: 600;
+    min-height: 38px;
+}
+#nameSizeControl {
+    border-left: 1px solid var(--toolbar-separator-color);
+    padding-left: var(--toolbar-separator-spacing);
+    margin-left: 4px;
+}
+#nameSize {
+    appearance: none;
+    -webkit-appearance: none;
+    width: var(--name-slider-width);
+    height: var(--name-slider-thumb-size);
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+}
+#nameSize::-webkit-slider-runnable-track {
+    height: var(--name-slider-track-height);
+    border-radius: 999px;
+    background: var(--toolbar-slider-track);
+}
+#nameSize::-moz-range-track {
+    height: var(--name-slider-track-height);
+    border-radius: 999px;
+    background: var(--toolbar-slider-track);
+}
+#nameSize::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: var(--name-slider-thumb-size);
+    height: var(--name-slider-thumb-size);
+    margin-top: calc((var(--name-slider-track-height) - var(--name-slider-thumb-size)) / 2);
+    border: 1px solid var(--race-accent);
+    border-radius: 50%;
+    background: white var(--name-slider-thumb-image) center / 82% no-repeat;
+    box-shadow: 0 1px 3px #14233e33;
+}
+#nameSize::-moz-range-thumb {
+    width: var(--name-slider-thumb-size);
+    height: var(--name-slider-thumb-size);
+    box-sizing: border-box;
+    border: 1px solid var(--race-accent);
+    border-radius: 50%;
+    background: white var(--name-slider-thumb-image) center / 82% no-repeat;
+    box-shadow: 0 1px 3px #14233e33;
+}
+#nameSize:focus-visible { outline: 2px solid var(--race-accent); outline-offset: 4px; border-radius: 4px; }
+#nameSizeValue {
+    min-width: var(--toolbar-value-width);
+    padding: 5px 6px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    background: white;
+    border: 1px solid var(--toolbar-separator-color);
+    border-radius: 2px;
+}
+#toolbar button[hidden] { display:none !important; }
+@media (max-width:650px) {
+    #nameSizeControl { padding-left: var(--toolbar-control-gap); margin-left: 0; }
+    #nameSize { width: min(var(--name-slider-width), 30vw); }
+}
+
+/* Optional elapsed race timer */
+#raceTimer {
+    position: absolute; z-index: 5;
+    top: calc(12px + var(--progress-height) + var(--timer-gap));
+    left: 50%; transform: translateX(-50%);
+    font-size: var(--timer-font-size); font-weight: 800;
+    font-variant-numeric: tabular-nums; line-height: 1.2;
+    background: var(--timer-background); color: var(--timer-color);
+    border: 1px solid var(--timer-border); border-radius: var(--timer-radius);
+    padding: var(--timer-padding); pointer-events: none;
+}
+#raceTimer[hidden] { display: none !important; }
+#timerControl {
+    display: flex; align-items: center; gap: var(--toolbar-control-gap);
+    border-left: 1px solid var(--toolbar-separator-color);
+    padding-left: var(--toolbar-separator-spacing);
+    min-height: 38px; white-space: nowrap; font-weight: 600;
+    cursor: pointer;
+}
+#timerControl input { accent-color: var(--race-accent); cursor: pointer; margin: 0; }
+@media (max-width:650px) { #timerControl { padding-left: var(--toolbar-control-gap); } }
