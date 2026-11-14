@@ -30,6 +30,8 @@
         }
         showStream(data)
     }
+    // Shared card-draw animation settings.
+    const CARD_DRAW_SETTINGS = { event: 'card-draw', displayDurationMs: 4800 };
     // Avatar profile v13: CSV-backed local customiser; no database migration required.
     const PROFILE_VERSION = 'gcg_chat_profile_v1';
     const PROFILE_COLORS = ['#FFFFFF','#FFCE70','#FF8B9B','#BDA4FF','#72E6CB','#8BCBFF','#FFE681','#FFA775'];
@@ -381,6 +383,10 @@
         avatarPresence.on('presence',{event:'sync'},syncAvatarPresence)
           .on('presence',{event:'join'},()=>{syncAvatarPresence();requestRemoteProfiles();})
           .on('presence',{event:'leave'},syncAvatarPresence)
+          .on('broadcast',{event:CARD_DRAW_SETTINGS.event},({payload})=>{
+              if(!payload || payload.session_id===viewerSessionId || typeof payload.session_id!=='string' || typeof payload.card_id!=='string' || !/^[a-z0-9-]+$/i.test(payload.card_id))return;
+              animateDrawnCard(payload.card_id,payload.session_id);
+          })
           .on('broadcast',{event:'profile-change'},({payload})=>receiveRemoteProfile(payload))
           .on('broadcast',{event:'profile-request'},({payload})=>{
               if(payload?.session_id!==viewerSessionId)broadcastProfile(true);
@@ -437,9 +443,9 @@
         dialog.querySelector('.stream-card-preview-caption').textContent=card?`${card.name} (${id})`:id;
         if(!dialog.open)dialog.showModal();
     }
-    function animateDrawnCard(id){
+    function animateDrawnCard(id,sessionId=viewerSessionId){
         if(!overlayEnabled)return;
-        const walker=walkers.get(viewerSessionId);
+        const walker=walkers.get(sessionId);
         if(!walker)return;
         walker.element.querySelectorAll('.stream-walker-drawn-card').forEach(el=>el.remove());
         const holder=document.createElement('div');holder.className='stream-walker-drawn-card';
@@ -447,7 +453,7 @@
         const back=document.createElement('div');back.className='stream-walker-card-back';back.style.backgroundImage="url('images/basic/Card_White.png')";back.style.backgroundSize='contain';back.style.backgroundPosition='center';back.style.backgroundRepeat='no-repeat';
         const front=document.createElement('img');front.className='stream-walker-card-front';front.alt='Drawn card';setCardImage(front,id);
         flipper.append(back,front);holder.append(flipper);walker.element.append(holder);
-        setTimeout(()=>holder.remove(),4800);
+        setTimeout(()=>holder.remove(),CARD_DRAW_SETTINGS.displayDurationMs);
     }
     function renderMessages(rows){
         const box=$('messages');box.replaceChildren();if(!rows?.length){
@@ -1048,7 +1054,14 @@
                 p_nickname:nickname,p_message:`[gcg-card:${card.id}]`
             });
             if(error)throw error;
-            feedback('Messages are public. Be respectful.');animateDrawnCard(card.id);await loadMessages();
+            feedback('Messages are public. Be respectful.');animateDrawnCard(card.id);
+            if(avatarPresence){
+                try{
+                    const result=await avatarPresence.send({type:'broadcast',event:CARD_DRAW_SETTINGS.event,payload:{session_id:viewerSessionId,card_id:card.id}});
+                    if(result!=='ok')console.warn('Card draw broadcast:',result);
+                }catch(err){console.warn('Card draw broadcast failed:',err);}
+            }
+            await loadMessages();
         }catch(error){feedback('Card draw failed: '+error.message)}
         finally{button.disabled=false}
     });
