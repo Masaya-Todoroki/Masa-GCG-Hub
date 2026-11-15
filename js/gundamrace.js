@@ -4,6 +4,10 @@
 // Visual sizes and proportions are in css/gundamrace.css.
 // =============================================================
 const GAME_SETTINGS = {
+    // Player entry limits
+    maxRacers: 1000,
+    defaultEntriesPerPlayer: 1,
+    rosterPreferenceKey: "gcg-race-player-entries",
     // Optional countdown timer (local viewer preference)
     showTimerByDefault: true,
     timerPreferenceKey: "gcg-race-show-timer",
@@ -274,9 +278,17 @@ function updateRaceTimer(ms){
  if(timer.textContent!==value)timer.textContent=value;
 }
 function prepare(){
- if(running)return;const names=$('names').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).slice(0,100);
- if(names.length<2){$('message').textContent='Please enter at least two players.';return}
- syncAvatarAssignments();roster=names.map((name,i)=>({id:i,name:name.slice(0,40),avatar:avatarAssignments[i]?.avatar||assignAvatar()}));excludedWinners=[];racers=[...roster];placements=[];clearLivePlacements();render();updateRaceTimer(0);
+ if(running)return;
+ syncAvatarAssignments();
+ const total=totalEntries();
+ if(total>GAME_SETTINGS.maxRacers||total<2){updateCount();$('message').textContent=`Enter between 2 and ${GAME_SETTINGS.maxRacers} total racers.`;return;}
+ roster=[];
+ avatarAssignments.forEach((item,playerId)=>{
+  for(let entry=0;entry<item.entries;entry++)roster.push({id:roster.length,playerId,name:item.name,avatar:item.avatar||assignAvatar()});
+ });
+ // Randomise starting lane order, including entries belonging to the same player.
+ for(let i=roster.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[roster[i],roster[j]]=[roster[j],roster[i]];}
+ savePlayerSetup();excludedWinners=[];racers=[...roster];placements=[];clearLivePlacements();render();updateRaceTimer(0);
  $('overlay').style.display='none';$('status').textContent=racers.length+' racers ready';
 }
 function endRace(){
@@ -613,23 +625,26 @@ function updateEligibleRacers(){
  const excluded=new Set(excludedWinners.map(r=>r.id));
  const eligible=roster.filter(r=>!excluded.has(r.id));
  if(!running)racers=eligible;
- $('names').value=eligible.map(r=>r.name).join('\n');
+ const groups=new Map();
+ for(const r of eligible){if(!groups.has(r.playerId))groups.set(r.playerId,{name:r.name,avatar:r.avatar,entries:0});groups.get(r.playerId).entries++;}
+ avatarAssignments=[...groups.values()];
+ $('names').value=avatarAssignments.map(r=>r.name).join('\n');
  updateCount();
  $('start').disabled=!running&&eligible.length<2;
  if(!running)$('status').textContent=`${eligible.length} racers eligible · ${excludedWinners.length} excluded`;
 }
 function toggleExcluded(id){
- const found=excludedWinners.find(r=>r.id===id);
- if(found)excludedWinners=excludedWinners.filter(r=>r.id!==id);
- else{
-  const racer=roster.find(r=>r.id===id);
-  if(racer)excludedWinners.push(racer);
- }
+ const racer=roster.find(r=>r.id===id);
+ if(!racer)return;
+ const group=roster.filter(r=>r.playerId===racer.playerId);
+ if(excludedWinners.some(r=>r.playerId===racer.playerId))excludedWinners=excludedWinners.filter(r=>r.playerId!==racer.playerId);
+ else excludedWinners.push(...group);
  updateEligibleRacers();
  showPlacements(false);
 }
 function restoreWinner(id){
- excludedWinners=excludedWinners.filter(r=>r.id!==id);
+ const racer=roster.find(r=>r.id===id);
+ if(racer)excludedWinners=excludedWinners.filter(r=>r.playerId!==racer.playerId);
  updateEligibleRacers();
  showPlacements();
 }
@@ -645,7 +660,7 @@ function showPlacements(resetScroll=true){
  const heading=document.createElement('div');heading.className='prize-heading';
  heading.textContent='🎁 Next Prize Draw';list.append(heading);
  const hint=document.createElement('p');hint.className='prize-hint';
- hint.textContent='Exclude winners, then start the next race.';list.append(hint);
+ hint.textContent='Exclude winners (all their entries), then start the next race.';list.append(hint);
  const raceAgain=document.createElement('button');
  raceAgain.className='prize-race-again primary';
  raceAgain.textContent=running?'🏁 Race in Progress':`🏁 Prepare Next Race (${roster.length-excludedWinners.length} eligible)`;
@@ -700,17 +715,27 @@ function edit(){
  if(running)return;
  setAvatarPickerOpen(false);
  $('raceNamesPanel').hidden=false;$('raceAvatarsPanel').hidden=true;$('setRaceAvatars').style.display='';
- $('modalTitle').textContent='Enter up to 100 Names';$('clearNames').style.display='';$('names').style.display='';$('namesCount').style.display='';
+ $('modalTitle').textContent=`Enter Player Names (max ${GAME_SETTINGS.maxRacers} racers)`;$('clearNames').style.display='';$('names').style.display='';$('namesCount').style.display='';
  $('prepare').closest('.modalfooter').style.display='';$('results')?.remove();$('prepare').disabled=false;$('prepare').textContent='🏁 Prepare Race';$('prepare').onclick=prepare;
  $('message').textContent='';$('overlay').style.display='flex';updateCount();
 }
-function currentNames(){return $('names').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).slice(0,100).map(s=>s.slice(0,40))}
+function currentNames(){return $('names').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean).map(s=>s.slice(0,40))}
 function syncAvatarAssignments(){
  const available=new Map();
  for(const item of avatarAssignments){if(!available.has(item.name))available.set(item.name,[]);available.get(item.name).push(item)}
- avatarAssignments=currentNames().map(name=>{const previous=available.get(name)?.shift();return previous||{name,avatar:assignAvatar()}});
+ avatarAssignments=currentNames().map(name=>{const previous=available.get(name)?.shift();return previous||{name,avatar:assignAvatar(),entries:GAME_SETTINGS.defaultEntriesPerPlayer}});
  // If the CSV arrived after names were entered, fill previously unassigned avatars.
  for(const item of avatarAssignments)if(!item.avatar)item.avatar=assignAvatar();
+}
+function totalEntries(){return avatarAssignments.reduce((sum,item)=>sum+item.entries,0)}
+function savePlayerSetup(){try{localStorage.setItem(GAME_SETTINGS.rosterPreferenceKey,JSON.stringify(avatarAssignments));}catch(_){}}
+function restorePlayerSetup(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(GAME_SETTINGS.rosterPreferenceKey)||'null');
+  if(!Array.isArray(saved))return;
+  avatarAssignments=saved.filter(item=>item&&typeof item.name==='string'&&item.name.trim()).map(item=>({name:item.name.trim().slice(0,40),avatar:typeof item.avatar==='string'?item.avatar:null,entries:Number.isSafeInteger(item.entries)&&item.entries>0?item.entries:GAME_SETTINGS.defaultEntriesPerPlayer}));
+  $('names').value=avatarAssignments.map(item=>item.name).join('\n');
+ }catch(_){}
 }
 function avatarThumbnail(id){
  const img=document.createElement('img');img.alt='';img.loading='lazy';
@@ -730,8 +755,18 @@ function renderAvatarPlayers(){
   choose.dataset.playerIndex=index;
   choose.onclick=()=>{selectedAvatarIndex=index;avatarCategory=item.avatar?.split('/')[0]||'Pilots';renderAvatarGrid();setAvatarPickerOpen(true);$('backToAvatarPlayers').focus();};
   const random=document.createElement('button');random.type='button';random.textContent='🎲';random.title='Random avatar';random.setAttribute('aria-label','Randomise avatar for '+item.name);
-  random.onclick=()=>{item.avatar=assignAvatar();renderAvatarPlayers();if(selectedAvatarIndex===index)renderAvatarGrid()};
-  row.append(name,choose,random);list.append(row);
+  random.onclick=()=>{item.avatar=assignAvatar();savePlayerSetup();renderAvatarPlayers();if(selectedAvatarIndex===index)renderAvatarGrid()};
+  const entryLabel=document.createElement('label');entryLabel.textContent='Entries: ';entryLabel.style.cssText='grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:6px;color:#174469';
+  const entryInput=document.createElement('input');entryInput.type='number';entryInput.min='1';entryInput.step='1';entryInput.max=String(GAME_SETTINGS.maxRacers);entryInput.value=String(item.entries);entryInput.style.width='80px';entryInput.setAttribute('aria-label','Entries for '+item.name);
+  entryInput.onchange=()=>{
+   const requested=Number(entryInput.value), available=GAME_SETTINGS.maxRacers-totalEntries()+item.entries;
+   if(!Number.isSafeInteger(requested)||requested<1||requested>Math.max(item.entries,available)){
+    entryInput.value=String(item.entries);$('message').textContent=`Enter a whole number within the ${GAME_SETTINGS.maxRacers} racer cap.`;return;
+   }
+   item.entries=requested;updateCount();$('message').textContent='';
+  };
+  entryLabel.append(entryInput);
+  row.append(name,entryLabel,choose,random);list.append(row);
  });
 }
 function renderAvatarGrid(){
@@ -743,7 +778,7 @@ function renderAvatarGrid(){
   const button=document.createElement('button');button.type='button';button.className='race-avatar-option';
   button.classList.toggle('selected',current?.avatar===id);button.setAttribute('aria-pressed',String(current?.avatar===id));
   button.setAttribute('aria-label',id.split('/')[1]);button.append(avatarThumbnail(id));
-  button.onclick=()=>{if(!current)return;current.avatar=id;closeAvatarPicker();};grid.append(button);
+  button.onclick=()=>{if(!current)return;current.avatar=id;savePlayerSetup();closeAvatarPicker();};grid.append(button);
  }
  if(!grid.children.length)grid.textContent='No avatars available in this category.';
 }
@@ -766,11 +801,11 @@ function showAvatarSetup(){
  $('raceAvatarPicker').hidden=true;selectedAvatarIndex=-1;renderAvatarPlayers();
  $('message').textContent='';
 }
-function updateCount(){syncAvatarAssignments();$('namesCount').textContent=`Names: ${avatarAssignments.length} / 100`}
+function updateCount(){syncAvatarAssignments();const total=totalEntries();$('namesCount').textContent=`${avatarAssignments.length} players · ${total} / ${GAME_SETTINGS.maxRacers} racers`;$('prepare').disabled=total<2||total>GAME_SETTINGS.maxRacers;savePlayerSetup();}
 $('setRaceAvatars').onclick=showAvatarSetup;
 $('backToNames').onclick=edit;
 $('backToAvatarPlayers').onclick=closeAvatarPicker;
-$('randomiseAll').onclick=()=>{avatarAssignments.forEach(item=>item.avatar=assignAvatar());renderAvatarPlayers();if(selectedAvatarIndex>=0)renderAvatarGrid()};
+$('randomiseAll').onclick=()=>{avatarAssignments.forEach(item=>item.avatar=assignAvatar());savePlayerSetup();renderAvatarPlayers();if(selectedAvatarIndex>=0)renderAvatarGrid()};
 document.querySelectorAll('[data-race-category]').forEach(btn=>btn.onclick=()=>{avatarCategory=btn.dataset.raceCategory;renderAvatarGrid()});
 $('names').addEventListener('input',updateCount);$('clearNames').onclick=()=>{$('names').value='';updateCount()};
 $('prepare').onclick=prepare;$('start').onclick=()=>running?stopRace():start();$('edit').onclick=edit;
@@ -780,7 +815,7 @@ window.addEventListener('resize',()=>{if(!running&&racers.length)render()});
 // Initialise the race independently of optional toolbar controls.
 $("duration").addEventListener("input",()=>{if(!running)updateRaceTimer(0);});
 updateRaceTimer(0);
-loadProgressIcon();updateRaceProgress(0);preloadScenery();randomBackground();loadAvatars();updateCount();
+loadProgressIcon();updateRaceProgress(0);preloadScenery();randomBackground();restorePlayerSetup();$('modalTitle').textContent=`Enter Player Names (max ${GAME_SETTINGS.maxRacers} racers)`;loadAvatars();updateCount();
 // Live name-size control; no changes to race progress or racer state.
 const nameSizeInput=$('nameSize');
 if(nameSizeInput && $('nameSizeValue')){
