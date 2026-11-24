@@ -530,12 +530,20 @@
             target.append(img); return;
         }
         const codes = customEmojis.filter(e => /^:[a-z0-9_-]+:$/i.test(e.shortcode) && /^images\/emojis\/[a-zA-Z0-9_.-]+$/.test(e.image));
-        if (!codes.length) { target.textContent = message; return; }
-        const pattern = new RegExp('(' + codes.map(e => e.shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'g');
-        for (const part of String(message).split(pattern)) {
+        const cardPattern = '\\b[A-Z0-9]+-\\d{3}\\b';
+        const tokens = [...codes.map(e => e.shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), cardPattern];
+        const pattern = new RegExp('(' + tokens.join('|') + ')', 'gi');
+        for (const part of String(message || '').split(pattern)) {
             const found = codes.find(e => e.shortcode === part);
             if (found) { const img = document.createElement('img'); img.className = 'inline-emote'; img.alt = found.name || part; img.title = part; img.src = found.image; target.append(img); }
-            else target.append(document.createTextNode(part));
+            else if (/^[A-Z0-9]+-\d{3}$/i.test(part) && cardById.has(part.toUpperCase())) {
+                const id = part.toUpperCase();
+                const link = document.createElement('button');
+                link.type = 'button'; link.className = 'stream-drawn-card-link';
+                link.textContent = part; link.title = 'View ' + cardById.get(id).name;
+                link.addEventListener('click', () => openDrawnCard(id));
+                target.append(link);
+            } else target.append(document.createTextNode(part));
         }
     }
     function setPickerTab(tab) {
